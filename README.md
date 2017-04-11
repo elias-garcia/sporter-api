@@ -4,6 +4,6 @@ Social network witch purpose is to connect nearby athletes, offering the possibi
 
 # Autor
 
-- [Elías García Mariño](http://eliasgarcia.es) - Desarrollador web full stack
+- [Elías García Mariño](http://eliasgarcia.es) - Full stack web developer
 
-[Más información proximamente...]
+[More info coming soon...]
