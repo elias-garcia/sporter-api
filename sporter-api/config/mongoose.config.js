@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-module.exports = (config) => {
+const configure = (config) => {
 
   mongoose.connect(config.mongo);
 
@@ -20,3 +20,5 @@ module.exports = (config) => {
   });
   
 };
+
+module.exports = configure;
