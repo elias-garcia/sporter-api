@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const configure = (config) => {
 
+  mongoose.Promise = global.Promise;
+  
   mongoose.connect(config.mongo);
 
   mongoose.connection.on('connected', () => {

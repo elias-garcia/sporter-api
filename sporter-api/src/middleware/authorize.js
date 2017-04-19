@@ -19,6 +19,4 @@ const authorize = (req, res, next) => {
 
 };
 
-module.exports = {
-  authorize: authorize
-};
+module.exports = authorize;
