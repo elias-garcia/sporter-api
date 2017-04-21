@@ -1,8 +1,6 @@
 const createData = (title, data) => {
   const res = {
-    data: {
-
-    }
+    data: {}
   };
 
   res.data[title] = data;

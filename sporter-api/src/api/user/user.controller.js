@@ -17,6 +17,7 @@ const register = (req, res, next) => {
 };
 
 const find = (req, res, next) => {
+  // TODO: Handle posting an already existent user 
   User.findById(req.params.id, ('-password')).exec().then(user => {
     if (user) {
       res.status(200).json(http.createData(user));
