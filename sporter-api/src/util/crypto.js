@@ -4,17 +4,29 @@ const appConfig = require('../config/app.config');
 const algorithm = 'aes-256-ctr';
 
 const encrypt = (text) => {
-  var cipher = crypto.createCipher(algorithm, appConfig.aesSecret);
-  var crypted = cipher.update(text, 'utf8', 'hex');
-  crypted += cipher.final('hex');
-  return crypted;
+
+  try {
+    const cipher = crypto.createCipher(algorithm, appConfig.aesSecret);
+    let crypted = cipher.update(text, 'utf8', 'hex');
+    crypted += cipher.final('hex');
+    return crypted;
+  } catch (err) {
+    throw(err);
+  }
+
 };
  
 const decrypt = (text) => {
-  var decipher = crypto.createDecipher(algorithm, appConfig.aesSecret);
-  var dec = decipher.update(text, 'hex', 'utf8');
-  dec += decipher.final('utf8');
-  return dec;
+  
+  try {
+    const decipher = crypto.createDecipher(algorithm, appConfig.aesSecret);
+    let dec = decipher.update(text, 'hex', 'utf8');
+    dec += decipher.final('utf8');
+    return dec;
+  } catch(err) {
+    throw(err);
+  }
+  
 };
 
 module.exports = {

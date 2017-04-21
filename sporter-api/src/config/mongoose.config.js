@@ -4,7 +4,9 @@ const configure = (config) => {
 
   mongoose.Promise = global.Promise;
   
-  mongoose.connect(config.mongo);
+  mongoose.connect(config.mongo, () => {
+    mongoose.connection.db.dropDatabase();
+  });
 
   mongoose.connection.on('connected', () => {
     console.log(`Mongoose default connection open to ${config.mongo}`);

@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const sessionService = require('../session/session.service');
+const sessionController = require('../session/session.controller');
 
-router.post('/', sessionService.logIn(req, res));
+router.post('/', sessionController.logIn);
 
 module.exports = router;

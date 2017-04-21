@@ -15,17 +15,19 @@ const configure = (app, config) => {
   app.use(morgan('dev'));
 
   /* Endpoints that requires authorization */
-  app.use('/users', middleware.authorize);
+  app.get('/users', middleware.authorize);
+  app.put('/users', middleware.authorize);
+  app.delete('/users', middleware.authorize);
   app.use('/users/*', middleware.authorize);
 
   /* Routing configuration */
   app.use('/api', routes);
 
   /* Error handler for non existing routes */
-  app.use(error.handle404(req, res, next));
+  app.use(error.handle404);
 
   /* Error handler for unexpected errors */
-  app.use(error.handle500(err, req, res, next));
+  app.use(error.handle500);
 
 };
 

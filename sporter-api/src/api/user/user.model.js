@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('../../util/crypto');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -10,11 +11,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  firstName: {
+  first_name: {
     type: String,
     required: true
   },
-  lastName: {
+  last_name: {
     type: String,
     required: true
   },
@@ -24,21 +25,25 @@ const userSchema = new mongoose.Schema({
   },
   location: {
     type: String
-  },
-  timestamps: {
-    createdAt: {
-      type: Date,
-      required: true,
-      default: Date.now()
-    },
-    updatedAt: {
-      type: Date,
-      required: true,
-      default: Date.now()
-    }
   }
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+
+userSchema.pre('save', function(next) {
+  const user = this;
+console.log(this);
+  if (!user.isModified('password')) {
+    return next();
+  }
+
+  try {
+    this.password = crypto.encrypt(user.password);
+  } catch (err) {
+    return next(err);
+  }
+
+  return next();
 });
 
-const User = new mongoose.Model('user', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

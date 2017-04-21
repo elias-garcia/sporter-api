@@ -1,11 +1,12 @@
+const http = require('../util/http');
+
 const handle404 = (req, res, next) => {
-  console.log(err);
-  res.status(404).send();
+  res.status(404).json(http.createError(404, 'resource not found'));
 };
 
 const handle500 = (err, req, res, next) => {
   console.log(err);
-  res.status(500).send(err);
+  res.status(500).json(http.createError(500, err.message));
 };
 
 module.exports = {
