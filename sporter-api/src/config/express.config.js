@@ -14,7 +14,10 @@ const configure = (app, config) => {
   app.use(bodyParser.json());
   app.use(morgan('dev'));
 
-  /* Set the application/json content type on all responses */
+  /* Accept only Content Type application/json */
+  app.use(middleware.contentType);
+
+  /* Set the application/json Content Type on all responses */
   app.use((req, res, next) => {
     res.set('Content-Type', 'application/json');
     next();
