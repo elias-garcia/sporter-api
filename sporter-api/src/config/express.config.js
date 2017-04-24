@@ -14,11 +14,14 @@ const configure = (app, config) => {
   app.use(bodyParser.json());
   app.use(morgan('dev'));
 
+  /* Set the application/json content type on all responses */
+  app.use((req, res, next) => {
+    res.set('Content-Type', 'application/json');
+    next();
+  });
+
   /* Endpoints that requires authorization */
-  app.get('/users', middleware.authorize);
-  app.put('/users', middleware.authorize);
-  app.delete('/users', middleware.authorize);
-  app.use('/users/*', middleware.authorize);
+  app.post('/users/*', middleware.authorize);
 
   /* Routing configuration */
   app.use('/api', routes);

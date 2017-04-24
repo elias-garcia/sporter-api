@@ -13,11 +13,11 @@ const logIn = (req, res, next) => {
         }, appConfig.jwtSecret, {
           expiresIn: appConfig.jwtMaxAge
         });  
-        res.status(200).json(http.createData(token));
+        return res.status(200).json(http.createData(token));
       }
-      res.status(401).json(http.createError(401, 'invalid password'));
+      return res.status(401).json(http.createError(401, 'invalid password'));
     }
-    res.status(401).json(http.createError(401, 'invalid email'));
+    return res.status(401).json(http.createError(401, 'invalid email'));
   }).catch(err => {
     return next(err);
   });
