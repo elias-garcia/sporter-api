@@ -1,80 +1,111 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: http://sporter.com/api
 
 # Sporter API
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+This is the REST API used internally by the Sporter App. This API blueprint is subject to change due to
+technology restrictions, performance optimizations or changing requirements.
 
-## Questions Collection [/questions]
+## Authentication [/sessions]
 
-### List All Questions [GET]
+## Authenticate [POST]
 
++ Request (application/json)
+            
+    + Attributes
+    
+        + email: user@test.com (string, required)
+        + password: userpass (string, required)
+    
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+    + Attributes
+    
+        + data
+            + token: <token> (string, required)
+        
+## Users Collection [/users]
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+### Register a New User [POST]
 
 + Request (application/json)
 
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
+    + Attributes
+        
+        + email: user@test.com (string, required)
+        + password: userpass (string, required)
+        + first_name: User (string, required)
+        + last_name: Test (string, required)
+        + age: 30 (string, required)
+        + location: Madrid, Spain (string, required)
 
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
++ Response 200 (application/json)
 
     + Body
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
+    + Attributes
+        
+        + data
+            + token: <token> (required, string)
+            
+## User [/users/{id}]
+
+### Get User Information [GET]
+
++ Parameters
+    
+    + id: 58fab28f0826df9d2f09bd6f (string, required)
+
++ Response 200 (application/json)
+
+    + Attributes
+    
+        + data
+            + user
+            
+                + _id: 58fab28f0826df9d2f09bd6f
+                + email: user@test.com
+                + updated_at: `2017-04-24T15:58:53.598Z`
+                + created_at: `2017-04-24T15:58:53.598Z`
+                + first_name: User
+                + last_name: Test
+                + age: 30
+                + location: `Madrid, Spain`
+                
+### Update User Information [PUT]
+
++ Parameters
+
+    + id: 58fab28f0826df9d2f09bd6f (string, required)
+    
++ Request (application/json)
+    
+    + Header
+    
+            Authorization: Bearer <token>
+    
+    + Attributes
+        
+        + email: newuser@test.com (string, required)
+        + password: newuserpass (string, required)
+        + first_name: User (string, required)
+        + last_name: Test (string, required)
+        + age: 30 (string, required)
+        + location: Barcelona, Spain (string, required)
+        
++ Response 204 (application/json)
+ 
+
+### Delete a User [DELETE]
+
++ Parameters
+
+    + id: 58fab28f0826df9d2f09bd6f (string, required)
+
++ Request
+    
+    + Header
+    
+            Authorization: Bearer <token>
+
++ Response 204 (application/json)
