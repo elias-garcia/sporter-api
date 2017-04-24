@@ -4,10 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js"
   },
   "author": "Elías García",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/elias-garcia/sporter-app.git"
+    },
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.1",
@@ -17,10 +21,7 @@
     "morgan": "^1.8.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-http": "^3.0.0",
     "jshint": "^2.9.4",
-    "mocha": "^3.2.0",
     "nodemon": "^1.11.0"
   }
 }

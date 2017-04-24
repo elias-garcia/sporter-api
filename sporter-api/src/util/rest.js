@@ -8,7 +8,6 @@ const restful = function (req, res, next, handlers) {
           .set('Allow', Object.keys(handlers).join(', ').toUpperCase())
           .json(http.createError(405, 'method not allowed'));
     } else {
-        console.log(handlers[method]);
         handlers[method](req, res, next);
     }
 };
