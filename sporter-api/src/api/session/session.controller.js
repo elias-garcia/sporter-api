@@ -3,6 +3,7 @@ const crypto = require('../../util/crypto');
 const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
 const http = require('../../util/http');
+const rest = require('../../util/rest');
 
 const logIn = (req, res, next) => {
   User.findOne(req.body.email).exec().then(user => {
@@ -23,6 +24,12 @@ const logIn = (req, res, next) => {
   });
 };
 
+const session = (req, res, next) => {
+  rest.restful(req, res, next, {
+    post: logIn
+  });
+};
+
 module.exports = {
-  logIn
+  session
 };
