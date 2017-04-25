@@ -14,8 +14,11 @@ const register = (req, res, next) => {
           sub: user._id,
         }, appConfig.jwtSecret, {
           expiresIn: appConfig.jwtMaxAge
-        });  
-        return res.status(200).json(http.createData('token', token));
+        });
+        return res.status(200).json(http.createData('session', {
+          _id: user._id,
+          token: token
+        }));
     }).catch(err => {
       next(err);
     });
