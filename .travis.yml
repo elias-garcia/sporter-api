@@ -6,10 +6,13 @@ node_js:
 services:
   - mongodb
 
-install:
-  - npm install -g codecov
+before_install: cd sporter-api
 
-script: cd sporter-api && npm test
+install:
+  - npm i
+  - npm i -g codecov
+
+script: npm test
 
 after_success:
   - istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec
