@@ -26,7 +26,7 @@ const register = (req, res, next) => {
 };
 
 const find = (req, res, next) => {
-  User.findById(req.params.id,('-password -__v')).exec().then(user => {
+  User.findById(req.params.userId,('-password -__v')).exec().then(user => {
     if (user) {
       return res.status(200).json(http.createData('user', user));
     }
@@ -42,7 +42,7 @@ const update = (req, res, next) => {
   if (auth) {
     const token = auth.split(' ')[1];
     const decoded = jwt.decode(token);
-    User.findByIdAndUpdate(req.params.id, req.body).exec().then(user => {
+    User.findByIdAndUpdate(req.params.userId, req.body).exec().then(user => {
       return res.status(204);
     }).catch(err => {
       next(err);
@@ -51,7 +51,7 @@ const update = (req, res, next) => {
 };
 
 const remove = (req, res, next) => {
-  User.findByIdAndRemove(req.params.id).exec().then(user => {
+  User.findByIdAndRemove(req.params.userId).exec().then(user => {
     return res.status(204);
   }).catch(err => {
     next(err);

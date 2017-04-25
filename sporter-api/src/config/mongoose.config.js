@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const dbScript = require('../scripts/db-init');
 
 const configure = (config) => {
 
@@ -6,6 +7,7 @@ const configure = (config) => {
   
   mongoose.connect(config.mongo, () => {
     mongoose.connection.db.dropDatabase();
+    dbScript.init();
   });
 
   mongoose.connection.on('connected', () => {

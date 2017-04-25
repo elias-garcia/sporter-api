@@ -24,7 +24,7 @@ const configure = (app, config) => {
   });
 
   /* Endpoints that requires authorization */
-  app.post('/users/*', middleware.authorize);
+  app.put('/users/*', middleware.authorize);
 
   /* Routing configuration */
   app.use('/api', routes);

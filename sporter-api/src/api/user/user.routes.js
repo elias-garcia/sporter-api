@@ -3,6 +3,6 @@ const userController = require('./user.controller');
 
 router.all('/', userController.users);
 
-router.all('/:id', userController.user);
+router.all('/:userId', userController.user);
 
 module.exports = router;
