@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.model('User').schema;
 const sportSchema = mongoose.model('Sport').schema;
 const eventStatus = require('./event-status.enum');
+const eventIntensity = require('./event-intensity.enum');
 
 const eventSchema = new mongoose.Schema({
   name: {
@@ -30,6 +31,7 @@ const eventSchema = new mongoose.Schema({
   },
   intensity: {
     type: String,
+    enum: Object.keys(eventIntensity).map(key => eventIntensity[key]),
     required: true
   },
   paid: {
@@ -39,6 +41,7 @@ const eventSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: Object.keys(eventStatus).map(key => eventStatus[key]),
+    default: eventStatus.WAITING
   },
   host: {
     type: userSchema,

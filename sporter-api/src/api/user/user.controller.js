@@ -9,19 +9,19 @@ const register = (req, res, next) => {
     if (user) {
       return res.status(409).json(http.createError(409, 'user already exists'));
     }
-    User.create(req.body).then(user => {
-      const token = jwt.sign({
-          sub: user._id,
-        }, appConfig.jwtSecret, {
-          expiresIn: appConfig.jwtMaxAge
-        });
-        return res.status(200).json(http.createData('session', {
-          _id: user._id,
-          token: token
-        }));
-    }).catch(err => {
-      next(err);
+    return User.create(req.body);
+  }).then(user => {
+    const token = jwt.sign({
+      sub: user._id,
+    }, appConfig.jwtSecret, {
+      expiresIn: appConfig.jwtMaxAge
     });
+    return res.status(200).json(http.createData('session', {
+      _id: user._id,
+      token: token
+    }));
+  }).catch(err => {
+    next(err);
   });
 };
 
