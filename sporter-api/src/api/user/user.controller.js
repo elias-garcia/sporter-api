@@ -21,12 +21,12 @@ const register = (req, res, next) => {
       token: token
     }));
   }).catch(err => {
-    next(err);
+    return next(err);
   });
 };
 
 const find = (req, res, next) => {
-  User.findById(req.params.userId,('-password -__v')).exec().then(user => {
+  User.findById(req.params.userId, ('-password -__v')).exec().then(user => {
     if (user) {
       return res.status(200).json(http.createData('user', user));
     }
@@ -37,24 +37,28 @@ const find = (req, res, next) => {
 };
 
 const update = (req, res, next) => {
-  const auth = req.get('Authorization');
-
-  if (auth) {
-    const token = auth.split(' ')[1];
-    const decoded = jwt.decode(token);
-    User.findByIdAndUpdate(req.params.userId, req.body).exec().then(user => {
+    User.findById(req.params.userId).exec().then(user => {
+      if (user) {
+        return user.update(req.body);
+      }
+      return res.status(404).send(http.createError(404, 'user not found'));
+    }).then(user => {
       return res.status(204);
     }).catch(err => {
-      next(err);
+      return next(err);
     });
-  }
 };
 
 const remove = (req, res, next) => {
-  User.findByIdAndRemove(req.params.userId).exec().then(user => {
+  User.findById(req.params.userId).exec().then(user => {
+    if (user) {
+      return user.remove();
+    }
+    return res.status(404).send(http.createError(404, 'user not found'));
+  }).then(user => {
     return res.status(204);
   }).catch(err => {
-    next(err);
+    return next(err);
   });
 };
 

@@ -25,9 +25,9 @@ const findAll = (req, res, next) => {
   let query;
 
   if (req.params.location) {
-    query = Event.find({ 'location': { $regex : '/' + req.params.location + '/i' } });
+    query = Event.find({ 'location': { $regex : '/' + req.params.location + '/i' } }, '-__v');
   } else {
-    query = Event.find();
+    query = Event.find({ }, '-__v');
   }
 
   if (req.params.sport) {
@@ -35,7 +35,7 @@ const findAll = (req, res, next) => {
   }
 
   if (req.params.date) {
-    query.where('').gt(date.startDate(req.params.date)).lt(date.endDate(req.params.date));
+    query.where('start_date').gt(date.startDate(req.params.date)).lt(date.endDate(req.params.date));
   }
 
   query.sort().skip(skip).limit(limit).exec().then(events => {
