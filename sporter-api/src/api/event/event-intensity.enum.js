@@ -4,4 +4,4 @@ const eventIntensity = {
   HIGH: 'HIGH'
 };
 
-module.exports = intensity;
+module.exports = eventIntensity;

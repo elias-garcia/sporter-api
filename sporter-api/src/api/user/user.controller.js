@@ -3,11 +3,12 @@ const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
 const http = require('../../util/http');
 const rest = require('../../util/rest');
+const ApiError = require('../api-error');
 
 const register = (req, res, next) => {
   User.findOne(req.params.email).exec().then(user => {
     if (user) {
-      return res.status(409).json(http.createError(409, 'user already exists'));
+      throw new ApiError(409, 'user already exists');
     }
     return User.create(req.body);
   }).then(user => {
@@ -16,10 +17,7 @@ const register = (req, res, next) => {
     }, appConfig.jwtSecret, {
       expiresIn: appConfig.jwtMaxAge
     });
-    return res.status(200).json(http.createData('session', {
-      _id: user._id,
-      token: token
-    }));
+    return http.sendData('session', { _id: user._id, token: token });
   }).catch(err => {
     return next(err);
   });
@@ -27,10 +25,10 @@ const register = (req, res, next) => {
 
 const find = (req, res, next) => {
   User.findById(req.params.userId, ('-password -__v')).exec().then(user => {
-    if (user) {
-      return res.status(200).json(http.createData('user', user));
+    if (!user) {
+      throw new ApiError(404, 'user not found');
     }
-    return res.status(404).send(http.createError(404, 'user not found'));
+    return http.sendData('user', user);
   }).catch(err => {
     return next(err);
   });
@@ -38,12 +36,12 @@ const find = (req, res, next) => {
 
 const update = (req, res, next) => {
     User.findById(req.params.userId).exec().then(user => {
-      if (user) {
-        return user.update(req.body);
+      if (!user) {
+        throw new ApiError(404, 'user not found');
       }
-      return res.status(404).send(http.createError(404, 'user not found'));
+      return user.update(req.body);
     }).then(user => {
-      return res.status(204);
+      return http.sendEmpty();
     }).catch(err => {
       return next(err);
     });
@@ -51,12 +49,12 @@ const update = (req, res, next) => {
 
 const remove = (req, res, next) => {
   User.findById(req.params.userId).exec().then(user => {
-    if (user) {
-      return user.remove();
+    if (!user) {
+      throw new ApiError(404, 'user not found');
     }
-    return res.status(404).send(http.createError(404, 'user not found'));
+    return user.remove();
   }).then(user => {
-    return res.status(204);
+    return http.sendEmpty();
   }).catch(err => {
     return next(err);
   });

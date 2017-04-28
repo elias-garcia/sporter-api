@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const dbScript = require('../scripts/db-init');
+const dbScript = require('../scripts/db-prod');
 
 const configure = (config) => {
 

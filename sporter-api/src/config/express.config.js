@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const middleware = require('../middleware/index');
 const routes = require('../api/index');
 const error = require('../util/error');
+const appConfig = require('./app.config');
 
 const configure = (app, config) => {
 
@@ -20,14 +21,14 @@ const configure = (app, config) => {
   /* Set the application/json Content Type on all responses */
   app.use((req, res, next) => {
     res.set('Content-Type', 'application/json');
-    next();
+    return next();
   });
 
   /* Endpoints that requires authorization */
   app.put('/users/*', middleware.authorize);
 
   /* Routing configuration */
-  app.use('/api', routes);
+  app.use(appConfig.path, routes);
 
   /* Error handler for non existing routes */
   app.use(error.handle404);

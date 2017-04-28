@@ -1,19 +1,32 @@
+const appConfig = require('../../config/app.config');
 const Event = require('./event.model');
+const User = require('../user/user.model');
+const Sport = require('../sport/sport.model');
 const rest = require('../../util/rest');
 const http = require('../../util/http');
-const appConfig = require('../../config/app.config');
 const date = require('../../util/date');
+const ApiError = require('../api-error');
 
 const create = (req, res, next) => {
-  Event.findOne(req.body.eventId).then(event => {
-    if (event) {
-      return res.status(409).json(http.createError(409, 'event already exists'));
+  Promise.all([
+    Sport.findById(req.body.sportId),
+    User.findById(req.body.userId)
+  ]).then(values => {
+    if (!values[0]) {
+      throw new ApiError(404, 'sport not found');
     }
-    return Event.create(req.body);
+    if (!values[1]) {
+      throw new ApiError(404, 'user not found');
+    }
+    const event = req.body;
+    delete event.sport_id;
+    event[sport] = values[0];
+    event[host] = values[1];
+    return Event.create(event);
   }).then(event => {
-    return res.status(200).json(http.createData('event', event));
+    return http.sendData('event', event);
   }).catch(err => {
-    next(err);
+    return next(err);
   });
 };
 
@@ -39,7 +52,7 @@ const findAll = (req, res, next) => {
   }
 
   query.sort().skip(skip).limit(limit).exec().then(events => {
-    return res.status(200).json(http.createData('events', events));
+    return http.sendData('events', events);
   }).catch(err => {
     return next(err);
   });
@@ -47,10 +60,49 @@ const findAll = (req, res, next) => {
 
 const find = (req, res, next) => {
   Event.findById(req.eventId, '-__v').exec().then(event => {
-    if (event) {
-      return res.status(200).json(http.createData('event', event));
+    if (!event) {
+      throw new ApiError(404, 'event not found');
     }
-    return res.status(404).json(http.createError(404, 'event not found'));
+    return http.sendData('event', event);
+  }).catch(err => {
+    return next(err);
+  });
+};
+
+const update = (req, res, next) => {
+  Event.findById(req.params.eventId).exec().then(event => {
+    if (!event) {
+      throw new ApiError(404, 'event not found');
+    }
+    return event.update(req.body);
+  }).then(event => {
+    return http.sendEmpty();
+  }).catch(err => {
+    return next(err);
+  });
+};
+
+const remove = (req, res, next) => {
+  Event.findById(req.params.eventId).exec().then(event => {
+    if (!event) {
+      throw new ApiError(404, 'event not found');
+    }
+    return event.remove();
+  }).then(event => {
+    return http.sendEmpty();
+  }).catch(err => {
+    return next(err);
+  });
+};
+
+const join = (req, res, next) => {
+  // TODO: Find sport and user
+  Event.findById(req.params.eventId).exec().then(event => {
+    if (!event) {
+      return http.sendError(404, 'event not found');
+    }
+    event.players.push(req.body.player);
+    return http.sendData('event', event);
   }).catch(err => {
     return next(err);
   });
@@ -65,7 +117,10 @@ const events = (req, res, next) => {
 
 const event = (req, res, next) => {
   rest.restful(req, res, next, {
-    get: find
+    get: find,
+    put: update,
+    patch: join,
+    delete: remove
   });
 };
 

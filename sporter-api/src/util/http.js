@@ -1,15 +1,15 @@
-const createData = (title, data) => {
-  const res = {
+const sendData = (res, title, data) => {
+  const content = {
     data: {}
   };
 
-  res.data[title] = data;
+  content.data[title] = data;
 
-  return res;
+  return res.status(200).json(data);
 };
 
-const createError = (status, message, details) => {
-  const res = {
+const sendError = (res, status, message, details) => {
+  const content = {
     error: {
       status,
       message
@@ -17,16 +17,25 @@ const createError = (status, message, details) => {
   };
 
   if (details) {
-    res.error.details = [];
+    content.error.details = [];
     details.forEach(() => {
-      res.error.details.push(detail);
+      content.error.details.push(detail);
     });
   }
 
-  return res;
+  if (status === 415) {
+    res.set('Allow', Object.keys(handlers).join(', ').toUpperCase());
+  }
+
+  return res.status(status).json(content);
+};
+
+const sendEmpty = (res) => {
+  return res.status(204).end();
 };
 
 module.exports = {
-  createData,
-  createError
+  sendData,
+  sendError,
+  sendEmpty
 };
