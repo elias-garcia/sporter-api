@@ -24,10 +24,10 @@ const configure = (app, config) => {
     return next();
   });
 
-  /* Endpoints that requires authorization */
+  /* Endpoints that requires authentication/authorization */
   app.put('/users/*', middleware.authorize);
   app.delete('/users/*', middleware.authorize);
-  app.post('/events', middleware.authorize);
+  app.post('/events', middleware.authenticate);
   app.put('/events/*', middleware.authorize);
   app.patch('/events/*', middleware.authenticate);
   app.delete('/events/*', middleware.authorize);

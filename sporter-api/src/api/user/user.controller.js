@@ -14,7 +14,7 @@ const register = (req, res, next) => {
   }).then(user => {
     const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret,
       { expiresIn: appConfig.jwtMaxAge });
-    return http.sendData('session', { _id: user._id, token: token });
+    return http.sendData(res, 'session', { _id: user._id, token: token });
   }).catch(err => {
     return next(err);
   });
@@ -25,7 +25,7 @@ const find = (req, res, next) => {
     if (!user) {
       throw new ApiError(404, 'user not found');
     }
-    return http.sendData('user', user);
+    return http.sendData(res, 'user', user);
   }).catch(err => {
     return next(err);
   });
@@ -38,7 +38,7 @@ const update = (req, res, next) => {
       }
       return user.update(req.body);
     }).then(user => {
-      return http.sendEmpty();
+      return http.sendEmpty(res);
     }).catch(err => {
       return next(err);
     });
@@ -51,7 +51,7 @@ const remove = (req, res, next) => {
     }
     return user.remove();
   }).then(user => {
-    return http.sendEmpty();
+    return http.sendEmpty(res);
   }).catch(err => {
     return next(err);
   });

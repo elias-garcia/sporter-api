@@ -5,7 +5,7 @@ const sendData = (res, title, data) => {
 
   content.data[title] = data;
 
-  return res.status(200).json(data);
+  return res.status(200).json(content);
 };
 
 const sendError = (res, status, message, details) => {

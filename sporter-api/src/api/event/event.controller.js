@@ -24,7 +24,7 @@ const create = (req, res, next) => {
     event[host] = values[1];
     return Event.create(event);
   }).then(event => {
-    return http.sendData('event', event);
+    return http.sendData(res, 'event', event);
   }).catch(err => {
     return next(err);
   });
@@ -52,7 +52,7 @@ const findAll = (req, res, next) => {
   }
 
   query.sort().skip(skip).limit(limit).exec().then(events => {
-    return http.sendData('events', events);
+    return http.sendData(res, 'events', events);
   }).catch(err => {
     return next(err);
   });
@@ -63,7 +63,7 @@ const find = (req, res, next) => {
     if (!event) {
       throw new ApiError(404, 'event not found');
     }
-    return http.sendData('event', event);
+    return http.sendData(res, 'event', event);
   }).catch(err => {
     return next(err);
   });
@@ -76,7 +76,7 @@ const update = (req, res, next) => {
     }
     return event.update(req.body);
   }).then(event => {
-    return http.sendEmpty();
+    return http.sendEmpty(res);
   }).catch(err => {
     return next(err);
   });
@@ -95,10 +95,10 @@ const join = (req, res, next) => {
       throw new ApiError(404, 'sport not found');
     }
     if (!values[2]) {
-      return http.sendError(404, 'user not found');
+      throw new ApiError(404, 'user not found');
     }
     event.players.push(values[2]);
-    return http.sendData('event', event);
+    return http.sendData(res, 'event', event);
   }).catch(err => {
     return next(err);
   });
@@ -111,7 +111,7 @@ const remove = (req, res, next) => {
     }
     return event.remove();
   }).then(event => {
-    return http.sendEmpty();
+    return http.sendEmpty(res);
   }).catch(err => {
     return next(err);
   });
