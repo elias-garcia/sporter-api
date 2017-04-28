@@ -6,10 +6,10 @@ const handle404 = (req, res, next) => {
 };
 
 const handle500 = (err, req, res, next) => {
-  console.log(err);
   if (err instanceof ApiError) {
     return http.sendError(res, err.status, err.message);
   }
+  console.log(err);
   return http.sendError(res, 500, err.message);
 };
 module.exports = {

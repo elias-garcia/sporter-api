@@ -6,7 +6,7 @@ const rest = require('../../util/rest');
 const ApiError = require('../api-error');
 
 const register = (req, res, next) => {
-  User.findOne(req.params.email).exec().then(user => {
+  User.findOne({ email: req.body.email }).exec().then(user => {
     if (user) {
       throw new ApiError(409, 'user already exists');
     }

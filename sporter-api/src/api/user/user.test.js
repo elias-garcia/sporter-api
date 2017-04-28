@@ -29,9 +29,6 @@ describe('POST /users', () => {
       .end((err, res) => {
         expect(res).to.be.json;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.have.all.keys(['data']);
-        expect(res.body.data).to.have.all.keys(['session']);
         expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
         done();
     });
@@ -47,8 +44,8 @@ describe('POST /users', () => {
       .end((err, res) => {
         expect(res).to.be.json;
         expect(res).to.have.status(409);
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.have.all.keys(['error']);
+        expect(res.body.error.status).to.be.equal(409);
+        expect(res.body.error.message).to.be.equal('user already exists');
         done();
     });
   });
