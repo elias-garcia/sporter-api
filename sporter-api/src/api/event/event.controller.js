@@ -82,19 +82,6 @@ const update = (req, res, next) => {
   });
 };
 
-const remove = (req, res, next) => {
-  Event.findById(req.params.eventId).exec().then(event => {
-    if (!event) {
-      throw new ApiError(404, 'event not found');
-    }
-    return event.remove();
-  }).then(event => {
-    return http.sendEmpty();
-  }).catch(err => {
-    return next(err);
-  });
-};
-
 const join = (req, res, next) => {
   Promise.all([
     Event.findById(req.params.eventId),
@@ -112,6 +99,19 @@ const join = (req, res, next) => {
     }
     event.players.push(values[2]);
     return http.sendData('event', event);
+  }).catch(err => {
+    return next(err);
+  });
+};
+
+const remove = (req, res, next) => {
+  Event.findById(req.params.eventId).exec().then(event => {
+    if (!event) {
+      throw new ApiError(404, 'event not found');
+    }
+    return event.remove();
+  }).then(event => {
+    return http.sendEmpty();
   }).catch(err => {
     return next(err);
   });

@@ -11,12 +11,10 @@ const authenticate = (req, res, next) => {
       jwt.verify(token, appConfig.jwt);
       return next();
     } catch (err) {
-      return res.status(401).json(
-        http.createError(401, 'authorization token not valid'));
+      return http.sendError(401, 'authorization token not valid');
     }
   }
-  return res.status(401).json(
-    http.createError(401, 'you need to provide an authentication token'));
+  return http.sendError(401, 'you need to provide an authentication token');
 };
 
 module.exports = authenticate;

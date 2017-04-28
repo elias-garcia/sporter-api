@@ -12,11 +12,8 @@ const register = (req, res, next) => {
     }
     return User.create(req.body);
   }).then(user => {
-    const token = jwt.sign({
-      sub: user._id,
-    }, appConfig.jwtSecret, {
-      expiresIn: appConfig.jwtMaxAge
-    });
+    const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret,
+      { expiresIn: appConfig.jwtMaxAge });
     return http.sendData('session', { _id: user._id, token: token });
   }).catch(err => {
     return next(err);
