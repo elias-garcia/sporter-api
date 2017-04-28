@@ -20,7 +20,6 @@ const configure = (app, config) => {
 
   /* Set the application/json Content Type on all responses */
   app.use((req, res, next) => {
-    console.log('jeje');
     res.set('Content-Type', 'application/json');
     return next();
   });
