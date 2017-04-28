@@ -96,12 +96,21 @@ const remove = (req, res, next) => {
 };
 
 const join = (req, res, next) => {
-  // TODO: Find sport and user
-  Event.findById(req.params.eventId).exec().then(event => {
-    if (!event) {
-      return http.sendError(404, 'event not found');
+  Promise.all([
+    Event.findById(req.params.eventId),
+    Sport.findById(req.body.sportId),
+    User.findById(req.body.userId),
+  ]).then(values => {
+    if (!values[0]) {
+      throw new ApiError(404, 'event not found');
     }
-    event.players.push(req.body.player);
+    if (!values[1]) {
+      throw new ApiError(404, 'sport not found');
+    }
+    if (!values[2]) {
+      return http.sendError(404, 'user not found');
+    }
+    event.players.push(values[2]);
     return http.sendData('event', event);
   }).catch(err => {
     return next(err);
