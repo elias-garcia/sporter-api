@@ -4,7 +4,7 @@ const restful = function (req, res, next, handlers) {
     const method = req.method.toLowerCase();
 
     if (!(method in handlers)) {
-        return http.sendError(res, 405, 'method not allowed');
+        return http.sendError(res, 405, 'method not allowed', handlers);
     } else {
         handlers[method](req, res, next);
     }

@@ -1,3 +1,4 @@
+/* jshint expr: true */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../app');
@@ -9,12 +10,31 @@ const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
+const nonExistingUserId = '58ffc747a0033611f1f783a7';
+
 describe('Users', () => {
 
   afterEach((done) => {
     User.remove({ }, () => {
       done();
     });
+  });
+
+  describe('GET /users', () => {
+
+    it('should return 405, method not allowed', (done) => {
+      chai.request(app)
+        .get(`${apiPath}/users`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(405);
+          expect(res.body.error.status).to.be.equal(405);
+          expect(res.body.error.message).to.be.equal('method not allowed');
+          done();
+        });
+    });
+
   });
 
   describe('POST /users', () => {
@@ -54,36 +74,176 @@ describe('Users', () => {
 
   });
 
-  describe('GET /users', () => {
+  describe('PUT /users', () => {
+
+    it('should return 405, method not allowed', (done) => {
+      chai.request(app)
+        .put(`${apiPath}/users`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(405);
+          expect(res.body.error.status).to.be.equal(405);
+          expect(res.body.error.message).to.be.equal('method not allowed');
+          done();
+        });
+    });
+
+  });
+
+  describe('PATCH /users', () => {
+
+    it('should return 405, method not allowed', (done) => {
+      chai.request(app)
+        .patch(`${apiPath}/users`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(405);
+          expect(res.body.error.status).to.be.equal(405);
+          expect(res.body.error.message).to.be.equal('method not allowed');
+          done();
+        });
+    });
+
+  });
+
+  describe('DELETE /users', () => {
+
+    it('should return 405, method not allowed', (done) => {
+      chai.request(app)
+        .get(`${apiPath}/users`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(405);
+          expect(res.body.error.status).to.be.equal(405);
+          expect(res.body.error.message).to.be.equal('method not allowed');
+          done();
+        });
+    });
+
+  });
+
+  describe('GET /users/:userId', () => {
 
     it('should return 200 and a user when finding an existing user', (done) => {
+      const user = test.createUser();
+      
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .get(`${apiPath}/users/${doc._id}`)
+          .set('content-type', 'application/json')
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(200);
+            expect(res.body.data.user.email).to.be.equal(doc.email);
+            expect(res.body.data.user.firstName).to.be.equal(doc.firstName);
+            expect(res.body.data.user.lastName).to.be.equal(doc.lastName);
+            expect(res.body.data.user.location).to.be.equal(doc.location);
+            done();
+          });
+      });
+    });
+
+    it('should return 404 if the userId doesn\'t exist', (done) => {
+      chai.request(app)
+        .get(`${apiPath}/users/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(404);
+          expect(res.body.error.status).to.be.equal(404);
+          expect(res.body.error.message).to.be.equal('user not found');
+          done();
+        });
+    });
+
+  });
+
+  describe('PUT /users/:userId', () => {
+
+    it('should return 204 and update the user', (done) => {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        user.email = 'put@users.com';
+        user.first_name = 'newTestFirstName';
+        user.last_name = 'newTestLastName';
+        user.age = 20;
+        user.location = 'A Coruña';
+        chai.request(app)
+          .put(`${apiPath}/users/${doc._id}`)
+          .send(user)
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(204);
+            expect(res.body).to.be.empty;
+            done();
+          });
+      });
+    });
+
+    it('should return 404 when user doesn\'t exist', (done) => {
+      chai.request(app)
+        .delete(`${apiPath}/users/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(404);
+          expect(res.body.error.status).to.be.equal(404);
+          expect(res.body.error.message).to.be.equal('user not found');
+          done();
+        });
+    });
+  });
+
+  describe('PATCH /users/:userId', () => {
+
+    it('should return 405, method not allowed', (done) => {
+      chai.request(app)
+        .patch(`${apiPath}/users`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(405);
+          expect(res.body.error.status).to.be.equal(405);
+          expect(res.body.error.message).to.be.equal('method not allowed');
+          done();
+        });
+    });
+
+  });
+
+  describe('DELETE /users/:userId', () => {
+    
+    it('should return 204 and delete the existing user', (done) => {
       const user = test.createUser();
 
       User.create(user, (err, doc) => {
         chai.request(app)
-            .get(`${apiPath}/users/${doc._id}`)
+            .delete(`${apiPath}/users/${doc._id}`)
             .set('content-type', 'application/json')
             .end((err, res) => {
               expect(res).to.be.json;
-              expect(res).to.have.status(200);
+              expect(res).to.have.status(204);
+              expect(res.body).to.be.empty;
               done();
             });
       });
     });
 
-    it('should return 404 if the userId doesn\'t exists', (done) => {
-      const nonExistingUserId = '58ffc747a0033611f1f783a7';
-
+    it('should return 404 when user doesn\'t exist', (done) => {
       chai.request(app)
-          .get(`${apiPath}/users/${nonExistingUserId}`)
-          .set('content-type', 'application/json')
-          .end((err, res) => {
-            expect(res).to.be.json;
-            expect(res).to.have.status(404);
-            expect(res.body.error.status).to.be.equal(404);
-            expect(res.body.error.message).to.be.equal('user not found');
-            done();
-          });
+        .delete(`${apiPath}/users/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(404);
+          expect(res.body.error.status).to.be.equal(404);
+          expect(res.body.error.message).to.be.equal('user not found');
+          done();
+        });
     });
 
   });
