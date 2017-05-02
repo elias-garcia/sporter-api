@@ -12,8 +12,7 @@ install:
   - npm i
   - npm i -g codecov
 
-script: npm test
+script: istanbul cover ./node_modules/mocha/bin/_mocha ./src/**/*.test.js --report lcovonly -- -R spec
 
 after_success:
-  - istanbul cover ./node_modules/mocha/bin/_mocha ./src/**/*.test.js --report lcovonly -- -R spec
   - codecov

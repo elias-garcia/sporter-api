@@ -8,7 +8,7 @@ const sendData = (res, title, data) => {
   return res.status(200).json(content);
 };
 
-const sendError = (res, status, message, details) => {
+const sendError = (res, status, message, handlers) => {
   const content = {
     error: {
       status,
@@ -16,14 +16,7 @@ const sendError = (res, status, message, details) => {
     }
   };
 
-  if (details) {
-    content.error.details = [];
-    details.forEach(() => {
-      content.error.details.push(detail);
-    });
-  }
-
-  if (status === 415) {
+  if (status === 405) {
     res.set('Allow', Object.keys(handlers).join(', ').toUpperCase());
   }
 

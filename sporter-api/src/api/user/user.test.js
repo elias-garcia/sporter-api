@@ -11,43 +11,81 @@ chai.use(chaiHttp);
 
 describe('Users', () => {
 
-  beforeEach(() => {
-    User.remove({ });
-  });
-
-});
-
-describe('POST /users', () => {
-
-  it('should return an id and an auth token', (done) => {
-    const user = test.createUser();
-
-    chai.request(app)
-      .post(apiPath + '/users')
-      .set('Content-Type', 'application/json')
-      .send(user)
-      .end((err, res) => {
-        expect(res).to.be.json;
-        expect(res).to.have.status(200);
-        expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
-        done();
+  afterEach((done) => {
+    User.remove({ }, () => {
+      done();
     });
   });
 
-  it('should return 409 when posting a user with existing email', (done) => {
-    const user = test.createUser();
+  describe('POST /users', () => {
 
-    chai.request(app)
-      .post(apiPath + '/users')
-      .set('Content-Type', 'application/json')
-      .send(user)
-      .end((err, res) => {
-        expect(res).to.be.json;
-        expect(res).to.have.status(409);
-        expect(res.body.error.status).to.be.equal(409);
-        expect(res.body.error.message).to.be.equal('user already exists');
-        done();
+    it('should return 200, id and an auth token', (done) => {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${apiPath}/users`)
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(200);
+          expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
+          done();
+        });
     });
+
+    it('should return 409 when posting a user with an existing email', (done) => {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        User.create(user, (err, doc) => {
+          chai.request(app)
+            .post(`${apiPath}/users`)
+            .send(user)
+            .end((err, res) => {
+              expect(res).to.be.json;
+              expect(res).to.have.status(409);
+              expect(res.body.error.status).to.be.equal(409);
+              expect(res.body.error.message).to.be.equal('user already exists');
+              done();
+            });
+        });
+      });
+    });
+
+  });
+
+  describe('GET /users', () => {
+
+    it('should return 200 and a user when finding an existing user', (done) => {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+            .get(`${apiPath}/users/${doc._id}`)
+            .set('content-type', 'application/json')
+            .end((err, res) => {
+              expect(res).to.be.json;
+              expect(res).to.have.status(200);
+              done();
+            });
+      });
+    });
+
+    it('should return 404 if the userId doesn\'t exists', (done) => {
+      const nonExistingUserId = '58ffc747a0033611f1f783a7';
+
+      chai.request(app)
+          .get(`${apiPath}/users/${nonExistingUserId}`)
+          .set('content-type', 'application/json')
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(404);
+            expect(res.body.error.status).to.be.equal(404);
+            expect(res.body.error.message).to.be.equal('user not found');
+            done();
+          });
+    });
+
   });
 
 });
