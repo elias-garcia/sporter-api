@@ -10,14 +10,26 @@ const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
+let user;
+let userId, token;
 const nonExistingUserId = '58ffc747a0033611f1f783a7';
 const notValidToken = 'Bearer I1NiIsI6Ie.yJhbGciOiJIUz.eyJzdWkpXVCJ9';
 
 describe('Users', () => {
 
-  afterEach((done) => {
+  beforeEach((done) => {
+    user = test.createUser();
+
+    user.email = 'auth@test.com';
     User.remove({ }, () => {
-      done();
+      chai.request(app)
+        .post(`${apiPath}/users/`)
+        .send(user)
+        .end((err, res) => {
+          userId = res.body.data.session._id;
+          token = res.body.data.session.token;
+          done();
+        });
     });
   });
 
@@ -41,11 +53,11 @@ describe('Users', () => {
   describe('POST /users', () => {
 
     it('should return 200, id and an auth token', (done) => {
-      const user = test.createUser();
+      const localUser = test.createUser();
 
       chai.request(app)
         .post(`${apiPath}/users`)
-        .send(user)
+        .send(localUser)
         .end((err, res) => {
           expect(res).to.be.json;
           expect(res).to.have.status(200);
@@ -55,13 +67,13 @@ describe('Users', () => {
     });
 
     it('should return 409 when posting a user with an existing email', (done) => {
-      const user = test.createUser();
+      const localUser = test.createUser();
 
-      User.create(user, (err, doc) => {
-        User.create(user, (err, doc) => {
+      User.create(localUser, (err, doc) => {
+        User.create(localUser, (err, doc) => {
           chai.request(app)
             .post(`${apiPath}/users`)
-            .send(user)
+            .send(localUser)
             .end((err, res) => {
               expect(res).to.be.json;
               expect(res).to.have.status(409);
@@ -129,9 +141,9 @@ describe('Users', () => {
   describe('GET /users/:userId', () => {
 
     it('should return 200 and a user when finding an existing user', (done) => {
-      const user = test.createUser();
+      const localUser = test.createUser();
 
-      User.create(user, (err, doc) => {
+      User.create(localUser, (err, doc) => {
         chai.request(app)
           .get(`${apiPath}/users/${doc._id}`)
           .set('content-type', 'application/json')
@@ -165,84 +177,65 @@ describe('Users', () => {
   describe('PUT /users/:userId', () => {
 
     it('should return 204 and update the user', (done) => {
-      const user = test.createUser();
-
+      user.email = 'put@users.com';
+      user.first_name = 'newTestFirstName';
+      user.last_name = 'newTestLastName';
+      user.age = 20;
+      user.location = 'A Coruña';
       chai.request(app)
-        .post(`${apiPath}/users/`)
+        .put(`${apiPath}/users/${userId}`)
+        .set('authorization', `Bearer ${token}`)
         .send(user)
         .end((err, res) => {
-          user.email = 'put@users.com';
-          user.first_name = 'newTestFirstName';
-          user.last_name = 'newTestLastName';
-          user.age = 20;
-          user.location = 'A Coruña';
-          chai.request(app)
-            .put(`${apiPath}/users/${res.body.data.session._id}`)
-            .set('authorization', `Bearer ${res.body.data.session.token}`)
-            .send(user)
-            .end((err, res) => {
-              expect(res).to.be.json;
-              expect(res).to.have.status(204);
-              expect(res.body).to.be.empty;
-              done();
-            });
+          expect(res).to.be.json;
+          expect(res).to.have.status(204);
+          expect(res.body).to.be.empty;
+          done();
         });
     });
 
     it('should return 401 if the token is not supplied', (done) => {
-      const user = test.createUser();
-
-      User.create(user, (err, doc) => {
-        user.email = 'put@users.com';
-        user.first_name = 'newTestFirstName';
-        user.last_name = 'newTestLastName';
-        user.age = 20;
-        user.location = 'A Coruña';
-        chai.request(app)
-          .put(`${apiPath}/users/${doc._id}`)
-          .send(user)
-          .end((err, res) => {
-            expect(res).to.be.json;
-            expect(res).to.have.status(401);
-            expect(res.body.error.status).to.be.equal(401);
-            expect(res.body.error.message).to.be.equal('you need to provide an authentication token');
-            done();
-          });
-      });
+      chai.request(app)
+        .put(`${apiPath}/users/${userId}`)
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(401);
+          expect(res.body.error.status).to.be.equal(401);
+          expect(res.body.error.message).to.be.equal('you need to provide an authentication token');
+          done();
+        });
     });
 
     it('should return 401 if the token is not valid', (done) => {
-      const user = test.createUser();
-
-      User.create(user, (err, doc) => {
-        user.email = 'put@users.com';
-        user.first_name = 'newTestFirstName';
-        user.last_name = 'newTestLastName';
-        user.age = 20;
-        user.location = 'A Coruña';
-        chai.request(app)
-          .put(`${apiPath}/users/${doc._id}`)
-          .set('authorization', notValidToken)
-          .send(user)
-          .end((err, res) => {
-            expect(res).to.be.json;
-            expect(res).to.have.status(401);
-            expect(res.body.error.status).to.be.equal(401);
-            expect(res.body.error.message).to.be.equal('authorization token not valid');
-            done();
-          });
-      });
-    });
-
-    it('should return 404 when user doesn\'t exist', (done) => {
+      user.email = 'put@users.com';
+      user.first_name = 'newTestFirstName';
+      user.last_name = 'newTestLastName';
+      user.age = 20;
+      user.location = 'A Coruña';
       chai.request(app)
-        .delete(`${apiPath}/users/${nonExistingUserId}`)
-        .set('content-type', 'application/json')
+        .put(`${apiPath}/users/${userId}`)
+        .set('authorization', notValidToken)
+        .send(user)
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(404);
-          expect(res.body.error.status).to.be.equal(404);
-          expect(res.body.error.message).to.be.equal('user not found');
+          expect(res).to.have.status(401);
+          expect(res.body.error.status).to.be.equal(401);
+          expect(res.body.error.message).to.be.equal('authorization token not valid');
+          done();
+        });
+    });
+
+    it('should return 4043 if the token is valid but the user is not authorized', (done) => {
+      chai.request(app)
+        .put(`${apiPath}/users/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(403);
+          expect(res.body.error.status).to.be.equal(403);
+          expect(res.body.error.message).to.be.equal('you are not allowed to access this resource');
           done();
         });
     });
@@ -268,30 +261,55 @@ describe('Users', () => {
   describe('DELETE /users/:userId', () => {
     
     it('should return 204 and delete the existing user', (done) => {
-      const user = test.createUser();
-
-      User.create(user, (err, doc) => {
-        chai.request(app)
-            .delete(`${apiPath}/users/${doc._id}`)
-            .set('content-type', 'application/json')
-            .end((err, res) => {
-              expect(res).to.be.json;
-              expect(res).to.have.status(204);
-              expect(res.body).to.be.empty;
-              done();
-            });
-      });
+      chai.request(app)
+        .delete(`${apiPath}/users/${userId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(204);
+          expect(res.body).to.be.empty;
+          done();
+        });
     });
 
-    it('should return 404 when user doesn\'t exist', (done) => {
+    it('should return 401 if the token is not supplied', (done) => {
       chai.request(app)
-        .delete(`${apiPath}/users/${nonExistingUserId}`)
+        .delete(`${apiPath}/users/${userId}`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(404);
-          expect(res.body.error.status).to.be.equal(404);
-          expect(res.body.error.message).to.be.equal('user not found');
+          expect(res).to.have.status(401);
+          expect(res.body.error.status).to.be.equal(401);
+          expect(res.body.error.message).to.be.equal('you need to provide an authentication token');
+          done();
+        });
+    });
+
+    it('should return 401 if the token is not valid', (done) => {
+      chai.request(app)
+        .delete(`${apiPath}/users/${userId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', notValidToken)
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(401);
+          expect(res.body.error.status).to.be.equal(401);
+          expect(res.body.error.message).to.be.equal('authorization token not valid');
+          done();
+        });
+    });
+    
+    it('should return 403 if the token is valid but the user is not authorized', () => {
+      chai.request(app)
+        .delete(`${apiPath}/users/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .end((err, res) => {
+          expect(res).to.be.json;
+          expect(res).to.have.status(403);
+          expect(res.body.error.status).to.be.equal(403);
+          expect(res.body.error.message).to.be.equal('you are not allowed to accesss this resource');
           done();
         });
     });

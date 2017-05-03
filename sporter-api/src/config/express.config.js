@@ -25,10 +25,8 @@ const configure = (app, config) => {
   });
 
   /* Endpoints that requires authentication/authorization */
-  app.post(`${appConfig.path}/events`, middleware.authenticate);
-  app.put(`${appConfig.path}/events/*`, middleware.authenticate);
-  app.patch(`${appConfig.path}/events/*`, middleware.authenticate);
-  app.delete(`${appConfig.path}/events/*`, middleware.authenticate);
+  app.put(`${appConfig.path}/users/*`, middleware.authenticate);
+  app.delete(`${appConfig.path}/users/*`, middleware.authenticate);
 
   /* Routing configuration */
   app.use(appConfig.path, routes);

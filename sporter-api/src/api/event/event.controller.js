@@ -18,11 +18,7 @@ const create = (req, res, next) => {
     if (!values[1]) {
       throw new ApiError(404, 'user not found');
     }
-    const event = req.body;
-    delete event.sport_id;
-    event[sport] = values[0];
-    event[host] = values[1];
-    return Event.create(event);
+    return Event.create(req.body);
   }).then(event => {
     return http.sendData(res, 'event', event);
   }).catch(err => {
@@ -59,7 +55,7 @@ const findAll = (req, res, next) => {
 };
 
 const find = (req, res, next) => {
-  Event.findById(req.eventId, '-__v').exec().then(event => {
+  Event.findById(req.eventId, '-__v').populate('sport', 'host', 'players').exec().then(event => {
     if (!event) {
       throw new ApiError(404, 'event not found');
     }
@@ -97,7 +93,7 @@ const join = (req, res, next) => {
     if (!values[2]) {
       throw new ApiError(404, 'user not found');
     }
-    event.players.push(values[2]);
+    values[0].players.push(req.body);
     return http.sendData(res, 'event', event);
   }).catch(err => {
     return next(err);

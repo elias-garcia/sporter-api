@@ -1,10 +1,10 @@
 const User = require('../user/user.model');
 const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
-const auth = require('../../util/auth');
 const http = require('../../util/http');
 const rest = require('../../util/rest');
 const ApiError = require('../api-error');
+const auth = require('../../util/auth');
 
 const register = (req, res, next) => {
   User.findOne({ email: req.body.email }).exec().then(user => {
@@ -13,7 +13,8 @@ const register = (req, res, next) => {
     }
     return User.create(req.body);
   }).then(user => {
-    const token = auth.signToken(user._id);
+    const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret,
+      { expiresIn: appConfig.jwtMaxAge });;
     return http.sendData(res, 'session', { _id: user._id, token: token });
   }).catch(err => {
     return next(err);
@@ -32,25 +33,33 @@ const find = (req, res, next) => {
 };
 
 const update = (req, res, next) => {
-    User.findById(req.params.userId).exec().then(user => {
-      if (!user) {
-        throw new ApiError(404, 'user not found');
-      }
-      auth.authorize(req.params.userId, req.get('Authorization'));
-      return user.update(req.body);
-    }).then(user => {
-      return http.sendEmpty(res);
-    }).catch(err => {
-      return next(err);
-    });
-};
-
-const remove = (req, res, next) => {
+  try {
+    auth.authorize(req);
+  } catch(err) {
+    return next(err);
+  }
   User.findById(req.params.userId).exec().then(user => {
     if (!user) {
       throw new ApiError(404, 'user not found');
     }
-    auth.authorize(req.params.userId, req.get('Authorization'));
+    return user.update(req.body);
+  }).then(user => {
+    return http.sendEmpty(res);
+  }).catch(err => {
+    return next(err);
+  });
+};
+
+const remove = (req, res, next) => {
+  try {
+    auth.authorize(req);
+  } catch(err) {
+    return next(err);
+  }
+  User.findById(req.params.userId).exec().then(user => {
+    if (!user) {
+      throw new ApiError(404, 'user not found');
+    }
     return user.remove();
   }).then(user => {
     return http.sendEmpty(res);
