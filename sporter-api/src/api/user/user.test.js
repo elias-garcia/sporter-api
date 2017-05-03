@@ -11,6 +11,7 @@ const apiPath = appConfig.path;
 chai.use(chaiHttp);
 
 const nonExistingUserId = '58ffc747a0033611f1f783a7';
+const notValidToken = 'Bearer I1NiIsI6Ie.yJhbGciOiJIUz.eyJzdWkpXVCJ9';
 
 describe('Users', () => {
 
@@ -129,7 +130,7 @@ describe('Users', () => {
 
     it('should return 200 and a user when finding an existing user', (done) => {
       const user = test.createUser();
-      
+
       User.create(user, (err, doc) => {
         chai.request(app)
           .get(`${apiPath}/users/${doc._id}`)
@@ -166,6 +167,31 @@ describe('Users', () => {
     it('should return 204 and update the user', (done) => {
       const user = test.createUser();
 
+      chai.request(app)
+        .post(`${apiPath}/users/`)
+        .send(user)
+        .end((err, res) => {
+          user.email = 'put@users.com';
+          user.first_name = 'newTestFirstName';
+          user.last_name = 'newTestLastName';
+          user.age = 20;
+          user.location = 'A Coruña';
+          chai.request(app)
+            .put(`${apiPath}/users/${res.body.data.session._id}`)
+            .set('authorization', `Bearer ${res.body.data.session.token}`)
+            .send(user)
+            .end((err, res) => {
+              expect(res).to.be.json;
+              expect(res).to.have.status(204);
+              expect(res.body).to.be.empty;
+              done();
+            });
+        });
+    });
+
+    it('should return 401 if the token is not supplied', (done) => {
+      const user = test.createUser();
+
       User.create(user, (err, doc) => {
         user.email = 'put@users.com';
         user.first_name = 'newTestFirstName';
@@ -177,8 +203,32 @@ describe('Users', () => {
           .send(user)
           .end((err, res) => {
             expect(res).to.be.json;
-            expect(res).to.have.status(204);
-            expect(res.body).to.be.empty;
+            expect(res).to.have.status(401);
+            expect(res.body.error.status).to.be.equal(401);
+            expect(res.body.error.message).to.be.equal('you need to provide an authentication token');
+            done();
+          });
+      });
+    });
+
+    it('should return 401 if the token is not valid', (done) => {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        user.email = 'put@users.com';
+        user.first_name = 'newTestFirstName';
+        user.last_name = 'newTestLastName';
+        user.age = 20;
+        user.location = 'A Coruña';
+        chai.request(app)
+          .put(`${apiPath}/users/${doc._id}`)
+          .set('authorization', notValidToken)
+          .send(user)
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(401);
+            expect(res.body.error.status).to.be.equal(401);
+            expect(res.body.error.message).to.be.equal('authorization token not valid');
             done();
           });
       });

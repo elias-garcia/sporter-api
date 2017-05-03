@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const userSchema = mongoose.model('User').schema;
-const sportSchema = mongoose.model('Sport').schema;
 const eventStatus = require('./event-status.enum');
 const eventIntensity = require('./event-intensity.enum');
 
@@ -14,7 +12,8 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   sport: {
-    type: sportSchema,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Sport',
     required: true
   },
   start_date: {
@@ -44,10 +43,14 @@ const eventSchema = new mongoose.Schema({
     default: eventStatus.WAITING
   },
   host: {
-    type: userSchema,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
-  players: [ userSchema ],
+  players: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 const Event = mongoose.model('Event', eventSchema);

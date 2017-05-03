@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const appConfig = require('./../config/app.config');
+const appConfig = require('../config/app.config');
 const http = require('../util/http');
 
 const authenticate = (req, res, next) => {
@@ -8,13 +8,13 @@ const authenticate = (req, res, next) => {
   if (auth) {
     const token = auth.split(' ')[1];
     try {
-      jwt.verify(token, appConfig.jwt);
+      jwt.verify(token, appConfig.jwtSecret);
       return next();
     } catch (err) {
-      return http.sendError(401, 'authorization token not valid');
+      return http.sendError(res, 401, 'authorization token not valid');
     }
   }
-  return http.sendError(401, 'you need to provide an authentication token');
+  return http.sendError(res, 401, 'you need to provide an authentication token');
 };
 
 module.exports = authenticate;

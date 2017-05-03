@@ -25,12 +25,10 @@ const configure = (app, config) => {
   });
 
   /* Endpoints that requires authentication/authorization */
-  app.put('/users/*', middleware.authorize);
-  app.delete('/users/*', middleware.authorize);
-  app.post('/events', middleware.authenticate);
-  app.put('/events/*', middleware.authorize);
-  app.patch('/events/*', middleware.authenticate);
-  app.delete('/events/*', middleware.authorize);
+  app.post(`${appConfig.path}/events`, middleware.authenticate);
+  app.put(`${appConfig.path}/events/*`, middleware.authenticate);
+  app.patch(`${appConfig.path}/events/*`, middleware.authenticate);
+  app.delete(`${appConfig.path}/events/*`, middleware.authenticate);
 
   /* Routing configuration */
   app.use(appConfig.path, routes);
@@ -38,7 +36,7 @@ const configure = (app, config) => {
   /* Error handler for non existing routes */
   app.use(error.handle404);
 
-  /* Error handler for unexpected errors */
+  /* Error handler for runtime and API errors */
   app.use(error.handle500);
 
 };

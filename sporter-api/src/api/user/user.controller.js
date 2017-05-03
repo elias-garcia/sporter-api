@@ -1,6 +1,7 @@
 const User = require('../user/user.model');
 const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
+const auth = require('../../util/auth');
 const http = require('../../util/http');
 const rest = require('../../util/rest');
 const ApiError = require('../api-error');
@@ -12,8 +13,7 @@ const register = (req, res, next) => {
     }
     return User.create(req.body);
   }).then(user => {
-    const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret,
-      { expiresIn: appConfig.jwtMaxAge });
+    const token = auth.signToken(user._id);
     return http.sendData(res, 'session', { _id: user._id, token: token });
   }).catch(err => {
     return next(err);
@@ -36,6 +36,7 @@ const update = (req, res, next) => {
       if (!user) {
         throw new ApiError(404, 'user not found');
       }
+      auth.authorize(req.params.userId, req.get('Authorization'));
       return user.update(req.body);
     }).then(user => {
       return http.sendEmpty(res);
@@ -49,6 +50,7 @@ const remove = (req, res, next) => {
     if (!user) {
       throw new ApiError(404, 'user not found');
     }
+    auth.authorize(req.params.userId, req.get('Authorization'));
     return user.remove();
   }).then(user => {
     return http.sendEmpty(res);
