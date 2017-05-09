@@ -1,6 +1,6 @@
 const User = require('../user/user.model');
-const crypto = require('../../util/crypto');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const appConfig = require('../../config/app.config');
 const http = require('../../util/http');
 const ApiError = require('../api-error');
@@ -10,7 +10,7 @@ const logIn = (req, res, next) => {
     if (!user) {
       throw new ApiError(401, 'invalid email');
     }
-    if (crypto.decrypt(user.password) !== req.body.password) {
+    if (!bcrypt.compareSync(req.body.password, user.password)) {
       throw new ApiError(401, 'invalid password');
     }
     const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret,

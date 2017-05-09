@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const crypto = require('../../util/crypto');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -36,7 +36,7 @@ userSchema.pre('save', function(next) {
   }
 
   try {
-    this.password = crypto.encrypt(user.password);
+    this.password = bcrypt.hashSync(user.password, 10);
   } catch (err) {
     return next(err);
   }
