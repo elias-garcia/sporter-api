@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
 const http = require('../../util/http');
 const ApiError = require('../api-error');
-const auth = require('../../util/auth');
+
 
 const register = (req, res, next) => {
   User.findOne({ email: req.body.email }).exec().then(user => {
@@ -32,10 +32,8 @@ const find = (req, res, next) => {
 };
 
 const update = (req, res, next) => {
-  try {
-    auth.authorize(req);
-  } catch(err) {
-    return next(err);
+  if (!req.payload || req.payload.sub !== req.params.userId) {
+    return next(new ApiError(403, 'you are not allowed to access this resource'));
   }
   User.findById(req.params.userId).exec().then(user => {
     if (!user) {
@@ -50,10 +48,8 @@ const update = (req, res, next) => {
 };
 
 const remove = (req, res, next) => {
-  try {
-    auth.authorize(req);
-  } catch(err) {
-    return next(err);
+  if (!req.payload || req.payload.sub !== req.params.userId) {
+    return next(new ApiError(403, 'you are not allowed to access this resource'));
   }
   User.findById(req.params.userId).exec().then(user => {
     if (!user) {
