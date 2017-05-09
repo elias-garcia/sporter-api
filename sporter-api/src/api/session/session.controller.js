@@ -3,7 +3,6 @@ const crypto = require('../../util/crypto');
 const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
 const http = require('../../util/http');
-const rest = require('../../util/rest');
 const ApiError = require('../api-error');
 
 const logIn = (req, res, next) => {
@@ -22,12 +21,6 @@ const logIn = (req, res, next) => {
   });
 };
 
-const session = (req, res, next) => {
-  rest.restful(req, res, next, {
-    post: logIn
-  });
-};
-
 module.exports = {
-  session
+  logIn
 };

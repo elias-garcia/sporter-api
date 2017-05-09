@@ -1,17 +1,18 @@
 const mongoose = require('mongoose');
 const dbScript = require('../scripts/db-prod');
+const appConfig = require('../config/app.config');
 
-const configure = (config) => {
+const configure = () => {
 
   mongoose.Promise = global.Promise;
   
-  mongoose.connect(config.mongo, () => {
+  mongoose.connect(appConfig.mongo, () => {
     mongoose.connection.db.dropDatabase();
     dbScript.init();
   });
 
   mongoose.connection.on('connected', () => {
-    console.log(`Mongoose default connection open to ${config.mongo}`);
+    console.log(`Mongoose default connection open to ${appConfig.mongo}`);
   });
 
   mongoose.connection.on('error', (err) => {

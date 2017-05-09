@@ -12,49 +12,46 @@ const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
-let sport;
-let user;
+let sport, user, event;
 const nonExistingEventId = '58ffc747a0033611f1f783a7';
 
 describe('Events', () => {
 
-  before((done) => {
+  beforeEach((done) => {
     sport = test.createSport();
     user = test.createUser();
 
-    Sport.create(sport, (err, doc) => {
-      User.create(user, (err, doc) => {
-        chai.request(app)
-          .get(`${apiPath}/users`)
-          .set('content-type', 'application/json')
-          .end((err, res) => {
-            expect(res).to.be.json;
-            expect(res).to.have.status(405);
-            expect(res.body.error.status).to.be.equal(405);
-            expect(res.body.error.message).to.be.equal('method not allowed');
-            done();
-          });
+    Event.remove({ }, () => {
+      User.remove({ }, () => {
+        Sport.remove({ });
       });
     });
-  });
 
-  afterEach((done) => {
-    Event.remove({ }, () => {
-      done();
+    Sport.create(sport, (err, sport) => {
+      User.create(user, (err, user) => {
+        event = test.createEvent('New Event', 'Av. Felipe II, S/N, 28009 Madrid',
+          '2017-05-28T18:00:00Z', '2017-05-28T19:00:00Z', 'New event description',
+          user._id, sport._id);
+        Event.create(event);
+        done();
+      });
     });
   });
 
   describe('GET /events', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 200 when searching all events', (done) => {
       chai.request(app)
         .get(`${apiPath}/events`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(200);
+          expect(res.body.data.events.length).to.be.equal(1);
+          expect(res.body.data.events[0]).to.have.all.keys(
+            ['_id', 'name', 'location', 'sport', 'start_date', 'ending_date',
+            'description', 'intensity', 'paid', 'status', 'host', 'players',
+            'created_at', 'updated_at']);
           done();
         });
     });

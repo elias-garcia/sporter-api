@@ -18,14 +18,14 @@ const createUser = () => {
   };
 };
 
-const createEvent = (host, sport) => {
+const createEvent = (name, location, sport, start_date, ending_date, description, host) => {
   return {
-    name: 'New event',
-    location: 'Av. Felipe II, S/N, 28009 Madrid',
+    name,
+    location,
     sport: sport,
-    start_date: '2017-05-28T18:00:00Z',
-    ending_date: '2017-05-28T19:00:00Z',
-    description: 'New event description',
+    start_date,
+    ending_date,
+    description,
     intensity: eventIntensity.LOW ,
     paid: false,
     host: host

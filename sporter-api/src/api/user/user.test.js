@@ -35,15 +35,15 @@ describe('Users', () => {
 
   describe('GET /users', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .get(`${apiPath}/users`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -89,15 +89,15 @@ describe('Users', () => {
 
   describe('PUT /users', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .put(`${apiPath}/users`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -106,15 +106,15 @@ describe('Users', () => {
 
   describe('PATCH /users', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .patch(`${apiPath}/users`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -123,15 +123,15 @@ describe('Users', () => {
 
   describe('DELETE /users', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .get(`${apiPath}/users`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -243,15 +243,15 @@ describe('Users', () => {
 
   describe('PATCH /users/:userId', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .patch(`${apiPath}/users`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });

@@ -2,7 +2,6 @@ const User = require('../user/user.model');
 const jwt = require('jsonwebtoken');
 const appConfig = require('../../config/app.config');
 const http = require('../../util/http');
-const rest = require('../../util/rest');
 const ApiError = require('../api-error');
 const auth = require('../../util/auth');
 
@@ -68,21 +67,9 @@ const remove = (req, res, next) => {
   });
 };
 
-const users = (req, res, next) => {
-  rest.restful(req, res, next, {
-    post: register
-  });
-};
-
-const user = (req, res, next) => {
-  rest.restful(req, res, next, {
-    get: find,
-    put: update,
-    delete: remove
-  });
-};
-
 module.exports = {
-  users,
-  user
+  register,
+  find,
+  update,
+  remove
 };

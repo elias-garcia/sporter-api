@@ -3,5 +3,6 @@ const contentType = require('./content-type');
 
 module.exports = {
   authenticate,
-  contentType
+  acceptJson: contentType.acceptJson,
+  setJson: contentType.setJson
 };

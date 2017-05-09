@@ -1,8 +1,12 @@
 const router = require('express').Router();
 const routerController = require('./event.controller');
 
-router.all('/events', routerController.events);
+router.get('/', routerController.findAll);
+router.post('/', routerController.create);
 
-router.all('/event', routerController.event);
+router.get('/:eventId', routerController.find);
+router.put('/:eventId', routerController.update);
+router.patch('/:eventId', routerController.join);
+router.delete('/:eventId', routerController.remove);
 
 module.exports = router;

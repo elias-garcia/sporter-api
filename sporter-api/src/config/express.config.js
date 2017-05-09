@@ -5,24 +5,22 @@ const middleware = require('../middleware/index');
 const routes = require('../api/index');
 const error = require('../util/error');
 const appConfig = require('./app.config');
+const ApiError = require('../api/api-error');
 
 const configure = (app, config) => {
 
   /* Server configuration */
-  app.set('port', config.port);
+  app.set('port', appConfig.port);
   
   /* Utilities configuration */
   app.use(bodyParser.json());
   app.use(morgan('dev'));
 
   /* Accept only Content Type application/json */
-  app.use(middleware.contentType);
+  app.use(middleware.acceptJson);
 
   /* Set the application/json Content Type on all responses */
-  app.use((req, res, next) => {
-    res.set('Content-Type', 'application/json');
-    return next();
-  });
+  app.use(middleware.setJson);
 
   /* Endpoints that requires authentication/authorization */
   app.put(`${appConfig.path}/users/*`, middleware.authenticate);
@@ -32,10 +30,12 @@ const configure = (app, config) => {
   app.use(appConfig.path, routes);
 
   /* Error handler for non existing routes */
-  app.use(error.handle404);
+  app.use((req, res, next) => {
+    next(new ApiError(501, 'not implemented'));
+  });
 
   /* Error handler for runtime and API errors */
-  app.use(error.handle500);
+  app.use(error.handler);
 
 };
 

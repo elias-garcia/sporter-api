@@ -13,15 +13,15 @@ describe('Sessions', () => {
 
   describe('GET /sessions', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .get(`${apiPath}/sessions`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -30,7 +30,7 @@ describe('Sessions', () => {
 
   describe('POST /sessions', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 405, not implemented', (done) => {
       const user = test.createUser();
 
       User.create(user, (err, doc) => {
@@ -51,15 +51,15 @@ describe('Sessions', () => {
 
   describe('PUT /sessions', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .put(`${apiPath}/sessions`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -68,15 +68,15 @@ describe('Sessions', () => {
 
   describe('PATCH /sessions', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .patch(`${apiPath}/sessions`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });
@@ -85,15 +85,15 @@ describe('Sessions', () => {
 
   describe('DELETE /sessions', () => {
 
-    it('should return 405, method not allowed', (done) => {
+    it('should return 501, not implemented', (done) => {
       chai.request(app)
         .delete(`${apiPath}/sessions`)
         .set('content-type', 'application/json')
         .end((err, res) => {
           expect(res).to.be.json;
-          expect(res).to.have.status(405);
-          expect(res.body.error.status).to.be.equal(405);
-          expect(res.body.error.message).to.be.equal('method not allowed');
+          expect(res).to.have.status(501);
+          expect(res.body.error.status).to.be.equal(501);
+          expect(res.body.error.message).to.be.equal('not implemented');
           done();
         });
     });

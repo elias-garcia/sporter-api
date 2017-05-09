@@ -2,7 +2,6 @@ const appConfig = require('../../config/app.config');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
-const rest = require('../../util/rest');
 const http = require('../../util/http');
 const date = require('../../util/date');
 const ApiError = require('../api-error');
@@ -39,15 +38,20 @@ const findAll = (req, res, next) => {
     query = Event.find({ }, '-__v');
   }
 
+  if (req.params.user_id) {
+    query.where('host').equals(req.params.user_id);
+  }
+
   if (req.params.sport) {
-    query.where('sport._id').equals(req.params.sport);
+    query.where('sport').equals(req.params.sport_id);
   }
 
   if (req.params.date) {
-    query.where('start_date').gt(date.startDate(req.params.date)).lt(date.endDate(req.params.date));
+    query.where('start_date').gt(date.startDate(req.params.start_date));
   }
 
   query.sort().skip(skip).limit(limit).exec().then(events => {
+    console.log(events);
     return http.sendData(res, 'events', events);
   }).catch(err => {
     return next(err);
@@ -113,23 +117,11 @@ const remove = (req, res, next) => {
   });
 };
 
-const events = (req, res, next) => {
-  rest.restful(req, res, next, {
-    get: findAll,
-    post: create
-  });
-};
-
-const event = (req, res, next) => {
-  rest.restful(req, res, next, {
-    get: find,
-    put: update,
-    patch: join,
-    delete: remove
-  });
-};
-
 module.exports = {
-  events,
-  event
+  findAll,
+  create,
+  find,
+  update,
+  join,
+  remove
 };
