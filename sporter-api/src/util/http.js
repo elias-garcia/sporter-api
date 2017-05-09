@@ -4,7 +4,7 @@ const sendData = (res, title, data) => {
   };
 
   content.data[title] = data;
-
+  
   return res.status(200).json(content);
 };
 

@@ -30,7 +30,7 @@ describe('Sessions', () => {
 
   describe('POST /sessions', () => {
 
-    it('should return 405, not implemented', (done) => {
+    it('should return 200, the userId and a token', (done) => {
       const user = test.createUser();
 
       User.create(user, (err, doc) => {
@@ -42,6 +42,64 @@ describe('Sessions', () => {
             expect(res).to.be.json;
             expect(res).to.have.status(200);
             expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
+            done();
+          });
+      });
+    });
+
+    it('should return 400, bad request', (done) => {
+      let user = test.createUser();
+      user.email = 9;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(`${apiPath}/sessions`)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password })
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400, bad request', (done) => {
+      let user = test.createUser();
+      user.password = 9;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(`${apiPath}/sessions`)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password })
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400, bad request', (done) => {
+      let user = test.createUser();
+      user.email = 9;
+      user.password = 9;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(`${apiPath}/sessions`)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password })
+          .end((err, res) => {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
             done();
           });
       });
