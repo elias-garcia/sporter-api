@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const appConfig = require('../config/app.config');
-const http = require('../util/http');
 const ApiError = require('../api/api-error');
 
 const authenticate = (req, res, next) => {

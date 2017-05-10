@@ -24,6 +24,7 @@ const logIn = async (email, password) => {
   const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret, { expiresIn: appConfig.jwtMaxAge });
 
   return { _id: user._id, token: token };
+  
 };
 
 const register = async (reqUser) => {

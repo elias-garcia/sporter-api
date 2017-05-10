@@ -2,7 +2,7 @@ const appConfig = require('../../config/app.config');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
-const http = require('../../util/http');
+const json = require('../../util/json');
 const date = require('../../util/date');
 const ApiError = require('../api-error');
 
