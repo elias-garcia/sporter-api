@@ -3,6 +3,7 @@ const appConfig = require('../config/app.config');
 const ApiError = require('../api/api-error');
 
 const authenticate = (req, res, next) => {
+
   const auth = req.get('Authorization');
 
   if (auth && auth.split(' ')[0] === 'Bearer') {
@@ -15,7 +16,9 @@ const authenticate = (req, res, next) => {
     }
     return next();
   }
+  
   return next(new ApiError(401, 'you need to provide an authentication token'));
+
 };
 
 module.exports = authenticate;
