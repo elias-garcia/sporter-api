@@ -1,5 +1,5 @@
 class ApiError extends Error {
-  constructor (status, message) {
+  constructor(status, message) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;

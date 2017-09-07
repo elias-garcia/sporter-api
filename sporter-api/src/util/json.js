@@ -1,17 +1,14 @@
 const createData = (title, data) => {
-
   const content = {
     data: {}
   };
 
   content.data[title] = data;
-  
-  return content;
 
+  return content;
 };
 
 const createError = (status, message) => {
-
   const content = {
     error: {
       status,
@@ -20,7 +17,6 @@ const createError = (status, message) => {
   };
 
   return content;
-
 };
 
 module.exports = {

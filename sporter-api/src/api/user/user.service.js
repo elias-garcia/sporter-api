@@ -1,93 +1,104 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const validator = require('validator');
 const appConfig = require('../../config/app.config');
 const User = require('../user/user.model');
 const ApiError = require('../api-error');
 
-const logIn = async (email, password) => {
-
-  if (!(validator.isString(email) && validator.isString(password))) {
-    throw new ApiError(400, 'bad request');
-  }
-
-  const user = await User.findOne({ email }).exec();
-
-  if (!user) {
-    throw new ApiError(401, 'invalid email');
-  }
-
-  if (!bcrypt.compareSync(password, user.password)) {
-    throw new ApiError(401, 'invalid password');
-  }
-
-  const token = jwt.sign({ sub: user._id }, appConfig.jwtSecret, { expiresIn: appConfig.jwtMaxAge });
-
-  return { _id: user._id, token: token };
-
-};
-
-const register = async (reqUser) => {
-
-  const oldUser = await User.findOne({ email: reqUser.email }).exec();
-
+/**
+ * Registers a new user into the application and log he in.
+ * @param {*} email - Email of the new user
+ * @param {*} password - Password of the new user
+ * @param {*} first_name - First name of the new user
+ * @param {*} last_name - Lasr name of the new user
+ * @param {*} age - Age of the new user
+ * @param {*} location - Location of the new user
+ * @returns {Object} Session object containing the logged in user userId and a JWT token
+ */
+const register = async (email, password, first_name, last_name, age, location) => {
+  /**
+   * Check if the user already exists in the db
+   */
+  const oldUser = await User.findOne({ email }).exec();
   if (oldUser) {
     throw new ApiError(409, 'user already exists');
   }
 
-  const newUser = await User.create(reqUser);
+  /**
+   * Create the user in the db
+   */
+  const newUser = await User.create({ email, password, first_name, last_name, age, location });
+
+  /**
+   * Sign a JWT token
+   */
   const token = jwt.sign({ sub: newUser._id }, appConfig.jwtSecret, { expiresIn: appConfig.jwtMaxAge });;
 
   return { _id: newUser._id, token: token };
-
 };
 
+/**
+ * Finds the specified user in db
+ * @param {*} userId - The userId of the user to be found
+ * @returns {Object} User object containing the user information
+ */
 const findById = async (userId) => {
-
+  /**
+   * Find the user in db and check if it exists
+   */
   const user = await User.findById(userId, ('-password -__v')).exec();
-
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
 
   return user;
-
 };
 
-const update = async (userId, newUser, reqPayload) => {
+/**
+ * Updates the specified user information
+ * @param {*} userId - The userId of the user to be updated
+ * @param {*} email - The new email of the user
+ * @param {*} password - The new password of the user
+ * @param {*} first_name - The new first name of the user
+ * @param {*} last_name - The new last name of the user
+ * @param {*} age - The new age of the user
+ * @param {*} location - The new location of the user
+ */
+const update = async (userId, email, password, first_name, last_name, age, location) => {
 
-  if (!reqPayload || reqPayload.sub !== userId) {
-    throw new ApiError(403, 'you are not allowed to access this resource');
+  /**
+   * Check if the user exists in the database
+   */
+  const user = await User.findById(userId).exec();
+  if (!user) {
+    throw new ApiError(404, 'bad request');
   }
 
-  const user = await User.findById(userId).exec();
+  /**
+   * Update the user information
+   */
+  return await user.update({ email, password, first_name, last_name, age, location });
+};
 
+/**
+ * Removes the specified user from db
+ * @param {*} userId - The userId of the user to be removed
+ */
+const remove = async (userId) => {
+
+  /**
+   * Find the user to be removed to check if it exists
+   */
+  const user = await User.findById(userId).exec();
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
 
-  return await user.update(newUser);
-
-};
-
-const remove = async (userId, reqPayload) => {
-
-  if (!reqPayload || reqPayload.sub !== userId) {
-    throw new ApiError(403, 'you are not allowed to access this resource');
-  }
-
-  const user = await User.findById(userId).exec();
-
-  if (!user) {
-    throw new ApiError(404, 'user not found');
-  }
-
+  /**
+   * Remove the user
+   */
   return await user.remove();
-
 }
 
 module.exports = {
-  logIn,
   register,
   findById,
   update,
