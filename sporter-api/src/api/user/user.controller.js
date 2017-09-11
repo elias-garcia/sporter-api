@@ -11,6 +11,7 @@ const create = async (req, res, next) => {
      */
     if (typeof (req.body.email) !== 'string' ||
       !validator.isEmail(req.body.email) ||
+      !req.body.password ||
       typeof (req.body.first_name) !== 'string' ||
       typeof (req.body.last_name) !== 'string' ||
       typeof (req.body.age) !== 'number' ||
@@ -72,6 +73,7 @@ const update = async (req, res, next) => {
       !validator.isMongoId(req.params.userId)
       || typeof (req.body.email) !== 'string' ||
       !validator.isEmail(req.body.email) ||
+      !req.body.password ||
       typeof (req.body.first_name) !== 'string' ||
       typeof (req.body.last_name) !== 'string' ||
       typeof (req.body.age) !== 'number' ||

@@ -93,6 +93,44 @@ describe('Session', function () {
       });
     });
 
+    it('should return 401, unauthorized when the email does not match', function (done) {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        user.email = 'new@email.com';
+        chai.request(app)
+          .post(sessionPath)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password })
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(401);
+            expect(res.body.error.status).to.be.equal(401);
+            expect(res.body.error.message).to.be.equal('email does not exist');
+            done();
+          });
+      });
+    });
+
+    it('should return 401, unauthorized when the password does not match', function (done) {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        user.password = 'newpass';
+        chai.request(app)
+          .post(sessionPath)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password })
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(401);
+            expect(res.body.error.status).to.be.equal(401);
+            expect(res.body.error.message).to.be.equal('password does not match');
+            done();
+          });
+      });
+    });
+
   });
 
   describe('PUT /sessions', function () {

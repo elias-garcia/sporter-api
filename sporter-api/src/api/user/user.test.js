@@ -42,11 +42,12 @@ describe('User', function () {
   describe('POST /users', function () {
 
     it('should return 200, id and an auth token', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(userPath)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           expect(res).to.be.json;
           expect(res).to.have.status(200);
@@ -55,13 +56,154 @@ describe('User', function () {
         });
     });
 
-    it('should return 409 when posting a user with an existing email', function (done) {
-      const localUser = test.createUser();
+    it('should return 400 when the email is not a string', function (done) {
+      const user = test.createUser();
 
-      User.create(localUser, (err, doc) => {
+      user.email = 10;
+
+      User.create(user, (err, doc) => {
         chai.request(app)
           .post(userPath)
-          .send(localUser)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400 when the email is not valid', function (done) {
+      const user = test.createUser();
+
+      user.email = 'email';
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400 when password is not sent', function (done) {
+      const user = test.createUser();
+
+      delete user.password;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400 when the first name is not a string', function (done) {
+      const user = test.createUser();
+
+      user.first_name = true;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400 when the last name is not a string', function (done) {
+      const user = test.createUser();
+
+      user.last_name = 1;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400 when the age is not a number', function (done) {
+      const user = test.createUser();
+
+      user.age = '19';
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400 when the location is not a string', function (done) {
+      const user = test.createUser();
+
+      user.location = 10;
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 409 when posting a user with an existing email', function (done) {
+      const user = test.createUser();
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
             expect(res).to.have.status(409);
@@ -128,9 +270,9 @@ describe('User', function () {
   describe('GET /users/:userId', function () {
 
     it('should return 200 and a user when finding an existing user', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
-      User.create(localUser, (err, doc) => {
+      User.create(user, (err, doc) => {
         chai.request(app)
           .get(`${userPath}/${doc._id}`)
           .set('content-type', 'application/json')
@@ -147,10 +289,10 @@ describe('User', function () {
     });
 
     it('should return 400 if the userId is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
       const userId = 930;
 
-      User.create(localUser, (err, doc) => {
+      User.create(user, (err, doc) => {
         chai.request(app)
           .get(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
@@ -165,10 +307,10 @@ describe('User', function () {
     });
 
     it('should return 400 if the userId is not a MongoId', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
       const userId = '930';
 
-      User.create(localUser, (err, doc) => {
+      User.create(user, (err, doc) => {
         chai.request(app)
           .get(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
@@ -217,26 +359,27 @@ describe('User', function () {
   describe('PUT /users/:userId', function () {
 
     it('should return 204 and update the user', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.email = 'put@users.com';
-          localUser.password = 'newPassword';
-          localUser.first_name = 'newTestFirstName';
-          localUser.last_name = 'newTestLastName';
-          localUser.age = 20;
-          localUser.location = 'A Coruña';
+          user.email = 'put@users.com';
+          user.password = 'newPassword';
+          user.first_name = 'newTestFirstName';
+          user.last_name = 'newTestLastName';
+          user.age = 20;
+          user.location = 'A Coruña';
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(204);
@@ -247,11 +390,12 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the userId is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = 10;
           const token = res.body.data.session.token;
@@ -259,7 +403,7 @@ describe('User', function () {
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -271,11 +415,12 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the userId is not a MongoId', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = 'asd123a';
           const token = res.body.data.session.token;
@@ -283,7 +428,7 @@ describe('User', function () {
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -295,21 +440,22 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the email is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.email = false;
+          user.email = false;
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -321,21 +467,22 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the email is not a valid email', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.email = 'string';
+          user.email = 'string';
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -347,21 +494,22 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the first name is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.first_name = 20;
+          user.first_name = 20;
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -373,21 +521,22 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the last name is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.last_name = 021;
+          user.last_name = 021;
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -399,21 +548,22 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the age is not a number', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.age = '22';
+          user.age = '22';
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -425,21 +575,22 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the location is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
-          localUser.location = true;
+          user.location = true;
 
           chai.request(app)
             .put(`${userPath}/${userId}`)
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -451,11 +602,12 @@ describe('User', function () {
     });
 
     it('should return 401 if the token is not supplied', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
-        .put(`${apiPath}/users/${nonExistingUserId}`)
-        .send(localUser)
+        .put(`${userPath}/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           expect(res).to.be.json;
           expect(res).to.have.status(401);
@@ -466,12 +618,13 @@ describe('User', function () {
     });
 
     it('should return 401 if the token is not valid', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
-        .put(`${apiPath}/users/${nonExistingUserId}`)
-        .set('authorization', notValidToken)
-        .send(localUser)
+        .put(`${userPath}/${nonExistingUserId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${notValidToken}`)
+        .send(user)
         .end(function (err, res) {
           expect(res).to.be.json;
           expect(res).to.have.status(401);
@@ -481,24 +634,48 @@ describe('User', function () {
         });
     });
 
-    it('should return 404 if the userId does not exist', function (done) {
-      const localUser = test.createUser();
+    it('should return 403 if the user is not allowed', function (done) {
+      const user = test.createUser();
 
       chai.request(app)
         .post(userPath)
-        .send(localUser)
+        .send(user)
+        .end(function (err, res) {
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          chai.request(app)
+            .put(`${userPath}/${nonExistingUserId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(user)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(403);
+              expect(res.body.error.status).to.be.equal(403);
+              expect(res.body.error.message).to.be.equal('you are not allowed to access this resource');
+              done();
+            });
+        });
+    });
+
+    it('should return 404 if the userId does not exist', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(userPath)
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
           User.remove({}, function () {
             chai.request(app)
-              .put(`${apiPath}/users/${userId}`)
+              .put(`${userPath}/${userId}`)
               .set('content-type', 'application/json')
               .set('authorization', `Bearer ${token}`)
-              .send(localUser)
+              .send(user)
               .end(function (err, res) {
-                console.log(res.body);
                 expect(res).to.be.json;
                 expect(res).to.have.status(404);
                 expect(res.body.error.status).to.be.equal(404);
@@ -531,17 +708,18 @@ describe('User', function () {
   describe('DELETE /users/:userId', function () {
 
     it('should return 204 and delete the existing user', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
           chai.request(app)
-            .delete(`${apiPath}/users/${userId}`)
+            .delete(`${userPath}/${userId}`)
             .set('content-type', 'application/json')
             .set('authorization', `Bearer ${token}`)
             .end(function (err, res) {
@@ -554,19 +732,21 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the userId is not a string', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = 5;
           const token = res.body.data.session.token;
 
           chai.request(app)
             .delete(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -578,19 +758,21 @@ describe('User', function () {
     });
 
     it('should return 400, bad request if the userId is not a MongoId', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(`${userPath}`)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = 'string';
           const token = res.body.data.session.token;
 
           chai.request(app)
             .delete(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
             .set('authorization', `Bearer ${token}`)
-            .send(localUser)
+            .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
               expect(res).to.have.status(400);
@@ -603,7 +785,7 @@ describe('User', function () {
 
     it('should return 401 if the token is not supplied', function (done) {
       chai.request(app)
-        .delete(`${apiPath}/users/${nonExistingUserId}`)
+        .delete(`${userPath}/${nonExistingUserId}`)
         .set('content-type', 'application/json')
         .end(function (err, res) {
           expect(res).to.be.json;
@@ -629,17 +811,18 @@ describe('User', function () {
     });
 
     it('should return 403 if the token is valid but the user is not authorized', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(userPath)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
           chai.request(app)
-            .delete(`${apiPath}/users/${nonExistingUserId}`)
+            .delete(`${userPath}/${nonExistingUserId}`)
             .set('content-type', 'application/json')
             .set('authorization', `Bearer ${token}`)
             .end(function (err, res) {
@@ -653,18 +836,19 @@ describe('User', function () {
     });
 
     it('should return 404 if the userId does not exist', function (done) {
-      const localUser = test.createUser();
+      const user = test.createUser();
 
       chai.request(app)
         .post(userPath)
-        .send(localUser)
+        .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
           const userId = res.body.data.session._id;
           const token = res.body.data.session.token;
 
           User.remove({}, function () {
             chai.request(app)
-              .delete(`${apiPath}/users/${userId}`)
+              .delete(`${userPath}/${userId}`)
               .set('content-type', 'application/json')
               .set('authorization', `Bearer ${token}`)
               .end(function (err, res) {
