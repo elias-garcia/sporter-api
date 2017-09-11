@@ -5,8 +5,8 @@ const appConfig = require('../config/app.config');
 const configure = () => {
 
   mongoose.Promise = global.Promise;
-  
-  mongoose.connect(appConfig.mongo, () => {
+
+  mongoose.connect(appConfig.mongo, { useMongoClient: true }, () => {
     mongoose.connection.db.dropDatabase();
     dbScript.init();
   });
@@ -25,7 +25,7 @@ const configure = () => {
       process.exit(0);
     });
   });
-  
+
 };
 
 module.exports = configure;

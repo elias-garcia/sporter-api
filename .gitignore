@@ -34,6 +34,11 @@
 **/testem.log
 **/typings
 
+# 3. NODE.JS
+
+# Coverage files
+sporter-api/coverage
+
 # 2. ANGULAR
 
 # Compiled output
