@@ -26,7 +26,7 @@ const createEvent = (name, location, sport, start_date, ending_date, description
     start_date,
     ending_date,
     description,
-    intensity: eventIntensity.LOW ,
+    intensity: eventIntensity.LOW,
     paid: false,
     host: host
   };

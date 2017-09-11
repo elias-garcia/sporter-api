@@ -69,7 +69,13 @@ const update = async (req, res, next) => {
      * Validate the input data
      */
     if (typeof (req.params.userId) !== 'string' ||
-      !validator.isMongoId(req.params.userId)) {
+      !validator.isMongoId(req.params.userId)
+      || typeof (req.body.email) !== 'string' ||
+      !validator.isEmail(req.body.email) ||
+      typeof (req.body.first_name) !== 'string' ||
+      typeof (req.body.last_name) !== 'string' ||
+      typeof (req.body.age) !== 'number' ||
+      typeof (req.body.location) !== 'string') {
       throw new ApiError(400, 'bad request');
     }
 
@@ -78,18 +84,6 @@ const update = async (req, res, next) => {
      */
     if (!req.payload || req.payload.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
-    }
-
-    /**
-     * Validate the input data
-     */
-    if (typeof (req.body.email) !== 'string' ||
-      !validator.isEmail(req.body.email) ||
-      typeof (req.body.first_name) !== 'string' ||
-      typeof (req.body.last_name) !== 'string' ||
-      typeof (req.body.age) !== 'number' ||
-      typeof (req.body.location) !== 'string') {
-      throw new ApiError(400, 'bad request');
     }
 
     /**

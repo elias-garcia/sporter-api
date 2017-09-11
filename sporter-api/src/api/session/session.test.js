@@ -9,13 +9,21 @@ const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
-describe('Sessions', function () {
+describe('Session', function () {
+
+  const sessionPath = `${apiPath}/sessions`;
+
+  beforeEach(function (done) {
+    User.remove({}, () => {
+      done();
+    });
+  });
 
   describe('GET /sessions', function () {
 
     it('should return 501, not implemented', function (done) {
       chai.request(app)
-        .get(`${apiPath}/sessions`)
+        .get(sessionPath)
         .set('content-type', 'application/json')
         .end(function (err, res) {
           expect(res).to.be.json;
@@ -35,7 +43,7 @@ describe('Sessions', function () {
 
       User.create(user, (err, doc) => {
         chai.request(app)
-          .post(`${apiPath}/sessions`)
+          .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: user.password })
           .end(function (err, res) {
@@ -47,14 +55,32 @@ describe('Sessions', function () {
       });
     });
 
-    it('should return 400, bad request', function (done) {
+    it('should return 400, bad request when email is not a string', function (done) {
       let user = test.createUser();
       user.email = 9;
-      user.password = 9;
 
       User.create(user, (err, doc) => {
         chai.request(app)
-          .post(`${apiPath}/sessions`)
+          .post(sessionPath)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password })
+          .end(function (err, res) {
+            expect(res).to.be.json;
+            expect(res).to.have.status(400);
+            expect(res.body.error.status).to.be.equal(400);
+            expect(res.body.error.message).to.be.equal('bad request');
+            done();
+          });
+      });
+    });
+
+    it('should return 400, bad request when email is not a valid email', function (done) {
+      let user = test.createUser();
+      user.email = 'email';
+
+      User.create(user, (err, doc) => {
+        chai.request(app)
+          .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: user.password })
           .end(function (err, res) {
@@ -73,7 +99,7 @@ describe('Sessions', function () {
 
     it('should return 501, not implemented', function (done) {
       chai.request(app)
-        .put(`${apiPath}/sessions`)
+        .put(sessionPath)
         .set('content-type', 'application/json')
         .end(function (err, res) {
           expect(res).to.be.json;
@@ -90,7 +116,7 @@ describe('Sessions', function () {
 
     it('should return 501, not implemented', function (done) {
       chai.request(app)
-        .patch(`${apiPath}/sessions`)
+        .patch(sessionPath)
         .set('content-type', 'application/json')
         .end(function (err, res) {
           expect(res).to.be.json;
@@ -107,7 +133,7 @@ describe('Sessions', function () {
 
     it('should return 501, not implemented', function (done) {
       chai.request(app)
-        .delete(`${apiPath}/sessions`)
+        .delete(sessionPath)
         .set('content-type', 'application/json')
         .end(function (err, res) {
           expect(res).to.be.json;

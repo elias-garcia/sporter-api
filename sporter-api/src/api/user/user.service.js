@@ -69,7 +69,7 @@ const update = async (userId, email, password, first_name, last_name, age, locat
    */
   const user = await User.findById(userId).exec();
   if (!user) {
-    throw new ApiError(404, 'bad request');
+    throw new ApiError(404, 'user not found');
   }
 
   /**

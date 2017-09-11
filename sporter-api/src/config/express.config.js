@@ -11,7 +11,7 @@ const configure = (app, config) => {
 
   /* Server configuration */
   app.set('port', appConfig.port);
-  
+
   /* Utilities configuration */
   app.use(bodyParser.json());
   app.use(morgan('dev'));
@@ -23,8 +23,8 @@ const configure = (app, config) => {
   app.use(middleware.setJson);
 
   /* Endpoints that requires authentication/authorization */
-  app.put(`${appConfig.path}/users/*`, middleware.authenticate);
-  app.delete(`${appConfig.path}/users/*`, middleware.authenticate);
+  app.put(`${appConfig.path}/users/:userId`, middleware.authenticate);
+  app.delete(`${appConfig.path}/users/:userId`, middleware.authenticate);
 
   /* Routing configuration */
   app.use(appConfig.path, routes);
