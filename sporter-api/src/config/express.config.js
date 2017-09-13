@@ -24,6 +24,7 @@ const configure = (app, config) => {
 
   /* Endpoints that requires authentication/authorization */
   app.put(`${appConfig.path}/users/:userId`, middleware.authenticate);
+  app.patch(`${appConfig.path}/users/:userId`, middleware.authenticate);
   app.delete(`${appConfig.path}/users/:userId`, middleware.authenticate);
 
   /* Routing configuration */

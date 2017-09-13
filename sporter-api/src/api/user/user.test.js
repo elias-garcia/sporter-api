@@ -56,7 +56,7 @@ describe('User', function () {
         });
     });
 
-    it('should return 400 when the email is not a string', function (done) {
+    it('should return 422 when the email is not a string', function (done) {
       const user = test.createUser();
 
       user.email = 10;
@@ -68,15 +68,15 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 when the email is not valid', function (done) {
+    it('should return 422 when the email is not valid', function (done) {
       const user = test.createUser();
 
       user.email = 'email';
@@ -88,15 +88,15 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 when password is not sent', function (done) {
+    it('should return 422 when password is not sent', function (done) {
       const user = test.createUser();
 
       delete user.password;
@@ -108,15 +108,15 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 when the first name is not a string', function (done) {
+    it('should return 422 when the first name is not a string', function (done) {
       const user = test.createUser();
 
       user.first_name = true;
@@ -128,15 +128,15 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 when the last name is not a string', function (done) {
+    it('should return 422 when the last name is not a string', function (done) {
       const user = test.createUser();
 
       user.last_name = 1;
@@ -148,15 +148,15 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 when the age is not a number', function (done) {
+    it('should return 422 when the age is not a number', function (done) {
       const user = test.createUser();
 
       user.age = '19';
@@ -168,15 +168,15 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 when the location is not a string', function (done) {
+    it('should return 422 when the location is not a string', function (done) {
       const user = test.createUser();
 
       user.location = 10;
@@ -188,9 +188,9 @@ describe('User', function () {
           .send(user)
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
@@ -288,7 +288,7 @@ describe('User', function () {
       });
     });
 
-    it('should return 400 if the userId is not a string', function (done) {
+    it('should return 422 if the userId is not a string', function (done) {
       const user = test.createUser();
       const userId = 930;
 
@@ -298,15 +298,15 @@ describe('User', function () {
           .set('content-type', 'application/json')
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400 if the userId is not a MongoId', function (done) {
+    it('should return 422 if the userId is not a MongoId', function (done) {
       const user = test.createUser();
       const userId = '930';
 
@@ -316,9 +316,9 @@ describe('User', function () {
           .set('content-type', 'application/json')
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
@@ -389,7 +389,7 @@ describe('User', function () {
         });
     });
 
-    it('should return 400, bad request if the userId is not a string', function (done) {
+    it('should return 422, unprocessable entity if the userId is not a string', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -406,15 +406,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the userId is not a MongoId', function (done) {
+    it('should return 422, unprocessable entity if the userId is not a MongoId', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -431,15 +431,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the email is not a string', function (done) {
+    it('should return 422, unprocessable entity if the email is not a string', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -458,15 +458,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the email is not a valid email', function (done) {
+    it('should return 422, unprocessable entity if the email is not a valid email', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -485,15 +485,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the first name is not a string', function (done) {
+    it('should return 422, unprocessable entity if the first name is not a string', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -512,15 +512,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the last name is not a string', function (done) {
+    it('should return 422, unprocessable entity if the last name is not a string', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -539,15 +539,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the age is not a number', function (done) {
+    it('should return 422, unprocessable entity if the age is not a number', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -566,15 +566,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the location is not a string', function (done) {
+    it('should return 422, unprocessable entity if the location is not a string', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -593,9 +593,9 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
@@ -690,16 +690,250 @@ describe('User', function () {
 
   describe('PATCH /users/:userId', function () {
 
-    it('should return 501, not implemented', function (done) {
+    it('should return 204 and change the user password', function (done) {
+      const user = test.createUser();
+
       chai.request(app)
-        .patch(userPath)
+        .post(`${userPath}`)
         .set('content-type', 'application/json')
+        .send(user)
         .end(function (err, res) {
-          expect(res).to.be.json;
-          expect(res).to.have.status(501);
-          expect(res.body.error.status).to.be.equal(501);
-          expect(res.body.error.message).to.be.equal('not implemented');
-          done();
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': user.password,
+            'new_password': 'new_password'
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(204);
+              expect(res.body).to.be.empty;
+              done();
+            });
+        });
+    });
+
+    it('should return 422, unprocessable entity when the userId is not a string', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = 20;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': user.password,
+            'new_password': 'new_password'
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
+              done();
+            });
+        });
+    });
+
+    it('should return 422, unprocessable entity when the userId is not a MongoId', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = 'userId';
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': user.password,
+            'new_password': 'new_password'
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
+              done();
+            });
+        });
+    });
+
+    it('should return 422, unprocessable entity when the old password is not sent', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'new_password': 'new_password'
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
+              done();
+            });
+        });
+    });
+
+    it('should return 422, unprocessable entity when the new password is not sent', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': user.password
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
+              done();
+            });
+        });
+    });
+
+    it('should return 422, unprocessable entity when the old password sent is wrong', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': 'old_password',
+            'new_password': 'new_password'
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${userId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
+              done();
+            });
+        });
+    });
+
+    it('should return 403, forbidden when the user is not allowed to change the password', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': user.password,
+            'new_password': 'new_password'
+          };
+
+          chai.request(app)
+            .patch(`${userPath}/${nonExistingUserId}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${token}`)
+            .send(body)
+            .end(function (err, res) {
+              expect(res).to.be.json;
+              expect(res).to.have.status(403);
+              expect(res.body.error.status).to.be.equal(403);
+              expect(res.body.error.message).to.be.equal('you are not allowed to access this resource');
+              done();
+            });
+        });
+    });
+
+    it('should return 404, not found when the user to be updated does not exist', function (done) {
+      const user = test.createUser();
+
+      chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user)
+        .end(function (err, res) {
+          const userId = res.body.data.session._id;
+          const token = res.body.data.session.token;
+
+          const body = {
+            'old_password': user.password,
+            'new_password': 'new_password'
+          };
+
+          User.remove({}, function () {
+            chai.request(app)
+              .patch(`${userPath}/${userId}`)
+              .set('content-type', 'application/json')
+              .set('authorization', `Bearer ${token}`)
+              .send(body)
+              .end(function (err, res) {
+                expect(res).to.be.json;
+                expect(res).to.have.status(404);
+                expect(res.body.error.status).to.be.equal(404);
+                expect(res.body.error.message).to.be.equal('user not found');
+                done();
+              });
+          });
         });
     });
 
@@ -731,7 +965,7 @@ describe('User', function () {
         });
     });
 
-    it('should return 400, bad request if the userId is not a string', function (done) {
+    it('should return 422, unprocessable entity if the userId is not a string', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -749,15 +983,15 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });
     });
 
-    it('should return 400, bad request if the userId is not a MongoId', function (done) {
+    it('should return 422, unprocessable entity if the userId is not a MongoId', function (done) {
       const user = test.createUser();
 
       chai.request(app)
@@ -775,9 +1009,9 @@ describe('User', function () {
             .send(user)
             .end(function (err, res) {
               expect(res).to.be.json;
-              expect(res).to.have.status(400);
-              expect(res.body.error.status).to.be.equal(400);
-              expect(res.body.error.message).to.be.equal('bad request');
+              expect(res).to.have.status(422);
+              expect(res.body.error.status).to.be.equal(422);
+              expect(res.body.error.message).to.be.equal('unprocessable entity');
               done();
             });
         });

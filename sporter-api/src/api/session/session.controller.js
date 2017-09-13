@@ -11,7 +11,7 @@ const logIn = async (req, res, next) => {
      */
     if (typeof (req.body.email) !== 'string' ||
       !validator.isEmail(req.body.email)) {
-      throw new ApiError(400, 'bad request');
+      throw new ApiError(422, 'unprocessable entity');
     }
 
     /**

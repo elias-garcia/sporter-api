@@ -55,7 +55,7 @@ describe('Session', function () {
       });
     });
 
-    it('should return 400, bad request when email is not a string', function (done) {
+    it('should return 422, unprocessable entity when email is not a string', function (done) {
       let user = test.createUser();
       user.email = 9;
 
@@ -66,15 +66,15 @@ describe('Session', function () {
           .send({ email: user.email, password: user.password })
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });
     });
 
-    it('should return 400, bad request when email is not a valid email', function (done) {
+    it('should return 422, unprocessable entity when email is not a valid email', function (done) {
       let user = test.createUser();
       user.email = 'email';
 
@@ -85,9 +85,9 @@ describe('Session', function () {
           .send({ email: user.email, password: user.password })
           .end(function (err, res) {
             expect(res).to.be.json;
-            expect(res).to.have.status(400);
-            expect(res.body.error.status).to.be.equal(400);
-            expect(res.body.error.message).to.be.equal('bad request');
+            expect(res).to.have.status(422);
+            expect(res.body.error.status).to.be.equal(422);
+            expect(res.body.error.message).to.be.equal('unprocessable entity');
             done();
           });
       });

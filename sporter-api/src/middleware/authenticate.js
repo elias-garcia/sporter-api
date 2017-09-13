@@ -8,7 +8,9 @@ const authenticate = (req, res, next) => {
   if (auth && auth.split(' ')[0] === 'Bearer') {
     const token = auth.split(' ')[1];
     try {
-      const decoded = jwt.verify(token, appConfig.jwtSecret, { maxAge: appConfig.jwtMaxAge });
+      const decoded = jwt.verify(
+        token, appConfig.jwtSecret, { maxAge: appConfig.jwtMaxAge });
+
       req.payload = decoded;
     } catch (err) {
       return next(new ApiError(401, 'authorization token not valid'));

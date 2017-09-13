@@ -16,7 +16,7 @@ const create = async (req, res, next) => {
       typeof (req.body.last_name) !== 'string' ||
       typeof (req.body.age) !== 'number' ||
       typeof (req.body.location) !== 'string') {
-      throw new ApiError(400, 'bad request');
+      throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
@@ -47,7 +47,7 @@ const find = async (req, res, next) => {
      */
     if (typeof (req.params.userId) !== 'string' ||
       !validator.isMongoId(req.params.userId)) {
-      throw new ApiError(400, 'bad request');
+      throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
@@ -70,15 +70,14 @@ const update = async (req, res, next) => {
      * Validate the input data
      */
     if (typeof (req.params.userId) !== 'string' ||
-      !validator.isMongoId(req.params.userId)
-      || typeof (req.body.email) !== 'string' ||
+      !validator.isMongoId(req.params.userId) ||
+      typeof (req.body.email) !== 'string' ||
       !validator.isEmail(req.body.email) ||
-      !req.body.password ||
       typeof (req.body.first_name) !== 'string' ||
       typeof (req.body.last_name) !== 'string' ||
       typeof (req.body.age) !== 'number' ||
       typeof (req.body.location) !== 'string') {
-      throw new ApiError(400, 'bad request');
+      throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
@@ -94,11 +93,47 @@ const update = async (req, res, next) => {
     const user = await userService.update(
       req.params.userId,
       req.body.email,
-      String(req.body.password),
       req.body.first_name,
       req.body.last_name,
       req.body.age,
       req.body.location);
+
+    /**
+     * Return no content
+     */
+    return res.status(204).end();
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const changePassword = async (req, res, next) => {
+
+  try {
+    /**
+     * Validate the input data
+     */
+    if (typeof (req.params.userId) !== 'string' ||
+      !validator.isMongoId(req.params.userId) ||
+      !req.body.old_password ||
+      !req.body.new_password) {
+      throw new ApiError(422, 'unprocessable entity');
+    }
+
+    /**
+     * Check if the user to be updated is the same who performs the request
+     */
+    if (!req.payload || req.payload.sub !== req.params.userId) {
+      throw new ApiError(403, 'you are not allowed to access this resource');
+    }
+
+    /**
+     * Try to update the user password
+     */
+    const user = await userService.changePassword(
+      req.params.userId,
+      String(req.body.old_password),
+      String(req.body.new_password));
 
     /**
      * Return no content
@@ -116,7 +151,7 @@ const remove = async (req, res, next) => {
      */
     if (typeof (req.params.userId) !== 'string' ||
       !validator.isMongoId(req.params.userId)) {
-      throw new ApiError(400, 'bad request');
+      throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
@@ -144,5 +179,6 @@ module.exports = {
   create,
   find,
   update,
+  changePassword,
   remove
 };

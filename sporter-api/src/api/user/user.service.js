@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const appConfig = require('../../config/app.config');
 const User = require('../user/user.model');
 const ApiError = require('../api-error');
@@ -62,7 +63,7 @@ const findById = async (userId) => {
  * @param {*} age - The new age of the user
  * @param {*} location - The new location of the user
  */
-const update = async (userId, email, password, first_name, last_name, age, location) => {
+const update = async (userId, email, first_name, last_name, age, location) => {
 
   /**
    * Check if the user exists in the database
@@ -75,7 +76,36 @@ const update = async (userId, email, password, first_name, last_name, age, locat
   /**
    * Update the user information
    */
-  return await user.update({ email, password, first_name, last_name, age, location });
+  return await user.update({ email, first_name, last_name, age, location });
+};
+
+/**
+ * Updates only the user password
+ * @param {*} userId - The userId of the user to be updated
+ * @param {*} oldPassword - The current password of the user
+ * @param {*} email - The new password of the user
+ */
+const changePassword = async (userId, oldPassword, newPassword) => {
+
+  /**
+   * Find the user to be updated to check if it exists
+   */
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, 'user not found');
+  }
+
+  /**
+   * Check if the old password sent by the user is correct
+   */
+  if (!bcrypt.compareSync(oldPassword, user.password)) {
+    throw new ApiError(422, 'unprocessable entity');
+  }
+
+  /**
+   * Update the user password
+   */
+  return await user.update({ password: newPassword });
 };
 
 /**
@@ -102,5 +132,6 @@ module.exports = {
   register,
   findById,
   update,
+  changePassword,
   remove
 }
