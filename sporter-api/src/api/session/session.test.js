@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const bcrypt = require('bcryptjs');
 const app = require('../../app');
 const appConfig = require('../../config/app.config');
 const test = require('../../util/test');
@@ -40,12 +41,15 @@ describe('Session', function () {
 
     it('should return 200, the userId and a token', function (done) {
       const user = test.createUser();
+      const plainPassword = user.password;
+
+      user.password = bcrypt.hashSync(user.password, 10)
 
       User.create(user, (err, doc) => {
         chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
-          .send({ email: user.email, password: user.password })
+          .send({ email: user.email, password: plainPassword })
           .end(function (err, res) {
             expect(res).to.be.json;
             expect(res).to.have.status(200);

@@ -28,22 +28,6 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
-userSchema.pre('save', function(next) {
-  const user = this;
-  
-  if (!user.isModified('password')) {
-    return next();
-  }
-
-  try {
-    this.password = bcrypt.hashSync(user.password, 10);
-  } catch (err) {
-    return next(err);
-  }
-
-  return next();
-});
-
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

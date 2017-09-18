@@ -1,28 +1,55 @@
+const validator = require('validator');
 const appConfig = require('../../config/app.config');
-const Event = require('./event.model');
-const User = require('../user/user.model');
-const Sport = require('../sport/sport.model');
+const EventStatus = require('./event-status.enum');
+const EventIntensity = require('./event-intensity.enum');
+const eventService = require('./event.service');
 const json = require('../../util/json');
-const date = require('../../util/date');
 const ApiError = require('../api-error');
 
 const create = async (req, res, next) => {
-
   try {
-    const sport = await Sport.findById(req.body.sportId);
-    if (!sport) {
-      throw new ApiError(404, 'sport not found');
+    /**
+     * Validate the input data
+     */
+    if (typeof (req.body.sportId) !== 'string' ||
+      !validator.isMongoId(req.body.sportId) ||
+      typeof (req.body.name) !== 'string' ||
+      typeof (req.body.location) !== 'string' ||
+      typeof (req.body.start_date) !== 'string' ||
+      !validator.isISO8601(start_date) ||
+      typeof (req.body.ending) !== 'string' ||
+      !validator.isISO8601(ending_date) ||
+      typeof (req.body.description) !== 'string' ||
+      !Object.values(EventIntensity.includes(req.body.intensity)) ||
+      typeof (req.body.paid) !== 'boolean' ||
+      !Object.values(EventStatus).includes(req.body.status)
+    ) {
+      throw new ApiError(422, 'unprocessable entity');
     }
-    const user = await User.findById(req.body.userId);
-    if (!user) {
-      throw new ApiError(404, 'user not found');
-    }
-    const event = await Event.create(req.body);
-    return http.sendData(res, 'event', event);
-  } catch(err) {
+
+    /**
+     * Create the event
+     */
+    const event = await eventService.create(
+      req.payload.sub,
+      req.body.sportId,
+      req.body.name,
+      req.body.location,
+      req.body.start_date,
+      req.body.ending_date,
+      req.body.description,
+      req.body.intensity,
+      req.body.paid,
+      req.body.status
+    );
+
+    /**
+     * Return the created event
+     */
+    return res.status(200).json(json.createData('event', event));
+  } catch (err) {
     return next(err);
   }
-
 };
 
 const findAll = async (req, res, next) => {
@@ -32,9 +59,9 @@ const findAll = async (req, res, next) => {
   let query;
 
   if (req.params.location) {
-    query = Event.find({ 'location': { $regex : '/' + req.params.location + '/i' } }, '-__v');
+    query = Event.find({ 'location': { $regex: '/' + req.params.location + '/i' } }, '-__v');
   } else {
-    query = Event.find({ }, '-__v');
+    query = Event.find({}, '-__v');
   }
   if (req.params.user_id) {
     query.where('host').equals(req.params.user_id);
@@ -56,21 +83,27 @@ const findAll = async (req, res, next) => {
 };
 
 const find = async (req, res, next) => {
-  
   try {
-    const event = await Event.findById(req.eventId, '-__v').populate('sport', 'host', 'players').exec(); 
-    if (!event) {
-      throw new ApiError(404, 'event not found');
+    /**
+     * Validate the input data
+     */
+    if (typeof (req.params.eventId) !== 'string' ||
+      !validator.isMongoId(req.params.eventId)) {
+      throw new ApiError(422, 'unprocessable entity');
     }
-    return http.sendData(res, 'event', event);
+
+    const event = await eventService.find(req.params.eventId);
+    /**
+     * Return the requested event
+     */
+    return res.status(200).json(json.createData('event', event));
   } catch (err) {
     return next(err);
   }
-
 };
 
 const update = async (req, res, next) => {
-  
+
   try {
     const event = await Event.findById(req.params.eventId).exec();
     if (!event) {
@@ -85,41 +118,54 @@ const update = async (req, res, next) => {
 };
 
 const join = async (req, res, next) => {
-
   try {
-    const event = await Event.findById(req.params.eventId);
-    if (!event) {
-      throw new ApiError(404, 'event not found');
+    /**
+     * Validate the input data
+     */
+    if (typeof (req.params.eventId) !== 'string' ||
+      !validator.isMongoId(req.params.eventId)) {
+      throw new ApiError(422, 'unprocessable entity');
     }
-    const sport = await Sport.findById(req.body.sportId);
-    if (!sport) {
-      throw new ApiError(404, 'sport not found');
-    }
-    const user = await User.findById(req.body.userId);
-    if (!user) {
-      throw new ApiError(404, 'user not found');
-    }
-    // values[0].players.push(req.body);
-    return http.sendData(res, 'event', event);
+
+    /**
+     * Join the event
+     */
+    const event = await eventService.join(
+      req.payload.sub,
+      req.body.eventId
+    );
+
+    /**
+     * Return no content
+     */
+    return res.status(204).end();
   } catch (err) {
     return next(err);
   }
-
 };
 
 const remove = async (req, res, next) => {
-
   try {
-    const event = await Event.findById(req.params.eventId).exec();
-    if (!event) {
-      throw new ApiError(404, 'event not found');
+    /**
+     * Validate the input data
+     */
+    if (typeof (req.params.eventId) !== 'string' ||
+      !validator.isMongoId(req.params.eventId)) {
+      throw new ApiError(422, 'unprocessable entity');
     }
-    await event.remove();
-    return http.sendEmpty(res);
+
+    /**
+     * Remove the event from db
+     */
+    await eventService.remove(req.payload.sub, eventId);
+
+    /**
+     * Return no content
+     */
+    return res.status(204).end();
   } catch (err) {
     return next(err);
   }
-
 };
 
 module.exports = {

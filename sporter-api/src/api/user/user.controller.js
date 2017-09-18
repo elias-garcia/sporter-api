@@ -83,7 +83,7 @@ const update = async (req, res, next) => {
     /**
      * Check if the user to be updated is the same who performs the request
      */
-    if (!req.payload || req.payload.sub !== req.params.userId) {
+    if (req.payload.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 
@@ -96,7 +96,8 @@ const update = async (req, res, next) => {
       req.body.first_name,
       req.body.last_name,
       req.body.age,
-      req.body.location);
+      req.body.location
+    );
 
     /**
      * Return no content
@@ -123,7 +124,7 @@ const changePassword = async (req, res, next) => {
     /**
      * Check if the user to be updated is the same who performs the request
      */
-    if (!req.payload || req.payload.sub !== req.params.userId) {
+    if (req.payload.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 
@@ -133,7 +134,8 @@ const changePassword = async (req, res, next) => {
     const user = await userService.changePassword(
       req.params.userId,
       String(req.body.old_password),
-      String(req.body.new_password));
+      String(req.body.new_password)
+    );
 
     /**
      * Return no content
@@ -157,7 +159,7 @@ const remove = async (req, res, next) => {
     /**
      * Check if the user to be removed is the same who performs the request
      */
-    if (!req.payload || req.payload.sub !== req.params.userId) {
+    if (req.payload.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 

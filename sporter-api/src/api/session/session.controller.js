@@ -17,7 +17,10 @@ const logIn = async (req, res, next) => {
     /**
      * Log in the user into the application
      */
-    const session = await sessionService.logIn(req.body.email, String(req.body.password));
+    const session = await sessionService.logIn(
+      req.body.email,
+      String(req.body.password)
+    );
 
     /**
      * Return the session object

@@ -53,12 +53,6 @@ const eventSchema = new mongoose.Schema({
   }],
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
-eventSchema.pre('save', function(next) {
-  const event = this;
-
-  event.players.push(event.host);
-});
-
 const Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;

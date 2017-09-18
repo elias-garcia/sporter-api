@@ -26,7 +26,7 @@ const register = async (email, password, first_name, last_name, age, location) =
   /**
    * Create the user in the db
    */
-  const newUser = await User.create({ email, password, first_name, last_name, age, location });
+  const newUser = await User.create({ email, password: bcrypt.hashSync(password, 10), first_name, last_name, age, location });
 
   /**
    * Sign a JWT token
@@ -45,7 +45,7 @@ const findById = async (userId) => {
   /**
    * Find the user in db and check if it exists
    */
-  const user = await User.findById(userId, ('-password -__v')).exec();
+  const user = await User.findById(userId, '-password -__v').exec();
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
@@ -64,7 +64,6 @@ const findById = async (userId) => {
  * @param {*} location - The new location of the user
  */
 const update = async (userId, email, first_name, last_name, age, location) => {
-
   /**
    * Check if the user exists in the database
    */
@@ -86,7 +85,6 @@ const update = async (userId, email, first_name, last_name, age, location) => {
  * @param {*} email - The new password of the user
  */
 const changePassword = async (userId, oldPassword, newPassword) => {
-
   /**
    * Find the user to be updated to check if it exists
    */
@@ -105,7 +103,7 @@ const changePassword = async (userId, oldPassword, newPassword) => {
   /**
    * Update the user password
    */
-  return await user.update({ password: newPassword });
+  return await user.update({ password: bcrypt.hashSync(newPassword, 10) });
 };
 
 /**
@@ -113,7 +111,6 @@ const changePassword = async (userId, oldPassword, newPassword) => {
  * @param {*} userId - The userId of the user to be removed
  */
 const remove = async (userId) => {
-
   /**
    * Find the user to be removed to check if it exists
    */
