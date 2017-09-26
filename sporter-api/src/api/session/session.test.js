@@ -1,6 +1,5 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const bcrypt = require('bcryptjs');
 const app = require('../../app');
 const appConfig = require('../../config/app.config');
 const test = require('../../util/test');
@@ -14,176 +13,194 @@ describe('Session', function () {
 
   const sessionPath = `${apiPath}/sessions`;
 
-  beforeEach(function (done) {
-    User.remove({}, () => {
-      done();
-    });
+  beforeEach(async function () {
+    await User.remove({});
   });
 
   describe('GET /sessions', function () {
 
-    it('should return 501, not implemented', function (done) {
-      chai.request(app)
-        .get(sessionPath)
-        .set('content-type', 'application/json')
-        .end(function (err, res) {
-          expect(res).to.be.json;
-          expect(res).to.have.status(501);
-          expect(res.body.error.status).to.be.equal(501);
-          expect(res.body.error.message).to.be.equal('not implemented');
-          done();
-        });
+    it('should return 501, not implemented', async function () {
+      try {
+        await chai.request(app)
+          .get(sessionPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
     });
 
   });
 
   describe('POST /sessions', function () {
 
-    it('should return 200, the userId and a token', function (done) {
-      const user = test.createUser();
+    it('should return 200, the userId and a token', async function () {
+      let user = test.createUser('user@test.com');
       const plainPassword = user.password;
 
-      user.password = bcrypt.hashSync(user.password, 10)
+      user = await User.create(user);
 
-      User.create(user, (err, doc) => {
-        chai.request(app)
+      try {
+        const res = await chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: plainPassword })
-          .end(function (err, res) {
-            expect(res).to.be.json;
-            expect(res).to.have.status(200);
-            expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
-            done();
-          });
-      });
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(200);
+        expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
+      } catch (e) {
+        throw new Error(e);
+      }
     });
 
-    it('should return 422, unprocessable entity when email is not a string', function (done) {
-      let user = test.createUser();
+    it('should return 422, unprocessable entity when email is not a string', async function () {
+      let user = test.createUser('user@test.com');
+
       user.email = 9;
 
-      User.create(user, (err, doc) => {
-        chai.request(app)
+      user = await User.create(user);
+
+      try {
+        await chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
-          .send({ email: user.email, password: user.password })
-          .end(function (err, res) {
-            expect(res).to.be.json;
-            expect(res).to.have.status(422);
-            expect(res.body.error.status).to.be.equal(422);
-            expect(res.body.error.message).to.be.equal('unprocessable entity');
-            done();
-          });
-      });
+          .send({ email: user.email, password: user.password });
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
     });
 
-    it('should return 422, unprocessable entity when email is not a valid email', function (done) {
-      let user = test.createUser();
+    it('should return 422, unprocessable entity when email is not a valid email', async function () {
+      let user = test.createUser('user@test.com');
+
       user.email = 'email';
 
-      User.create(user, (err, doc) => {
-        chai.request(app)
+      user = await User.create(user);
+
+      try {
+        await chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
-          .send({ email: user.email, password: user.password })
-          .end(function (err, res) {
-            expect(res).to.be.json;
-            expect(res).to.have.status(422);
-            expect(res.body.error.status).to.be.equal(422);
-            expect(res.body.error.message).to.be.equal('unprocessable entity');
-            done();
-          });
-      });
+          .send({ email: user.email, password: user.password });
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
     });
 
-    it('should return 401, unauthorized when the email does not match', function (done) {
-      const user = test.createUser();
+    it('should return 401, unauthorized when the email does not match', async function () {
+      let user = test.createUser('user@test.com');
 
-      User.create(user, (err, doc) => {
-        user.email = 'new@email.com';
-        chai.request(app)
+      user = await User.create(user);
+
+      user.email = 'new@email.com';
+
+      try {
+        await chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
-          .send({ email: user.email, password: user.password })
-          .end(function (err, res) {
-            expect(res).to.be.json;
-            expect(res).to.have.status(401);
-            expect(res.body.error.status).to.be.equal(401);
-            expect(res.body.error.message).to.be.equal('email does not exist');
-            done();
-          });
-      });
+          .send({ email: user.email, password: user.password });
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(401);
+        expect(res.body.error.status).to.be.equal(401);
+        expect(res.body.error.message).to.be.equal('email does not exist');
+      }
     });
 
-    it('should return 401, unauthorized when the password does not match', function (done) {
-      const user = test.createUser();
+    it('should return 401, unauthorized when the password does not match', async function () {
+      let user = test.createUser('user@test.com');
 
-      User.create(user, (err, doc) => {
-        user.password = 'newpass';
-        chai.request(app)
+      user = await User.create(user);
+
+      user.password = 'newpass';
+
+      try {
+        await chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
-          .send({ email: user.email, password: user.password })
-          .end(function (err, res) {
-            expect(res).to.be.json;
-            expect(res).to.have.status(401);
-            expect(res.body.error.status).to.be.equal(401);
-            expect(res.body.error.message).to.be.equal('password does not match');
-            done();
-          });
-      });
+          .send({ email: user.email, password: user.password });
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(401);
+        expect(res.body.error.status).to.be.equal(401);
+        expect(res.body.error.message).to.be.equal('password does not match');
+      }
     });
 
   });
 
   describe('PUT /sessions', function () {
 
-    it('should return 501, not implemented', function (done) {
-      chai.request(app)
-        .put(sessionPath)
-        .set('content-type', 'application/json')
-        .end(function (err, res) {
-          expect(res).to.be.json;
-          expect(res).to.have.status(501);
-          expect(res.body.error.status).to.be.equal(501);
-          expect(res.body.error.message).to.be.equal('not implemented');
-          done();
-        });
+    it('should return 501, not implemented', async function () {
+      try {
+        const res = chai.request(app)
+          .put(sessionPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
     });
 
   });
 
   describe('PATCH /sessions', function () {
 
-    it('should return 501, not implemented', function (done) {
-      chai.request(app)
-        .patch(sessionPath)
-        .set('content-type', 'application/json')
-        .end(function (err, res) {
-          expect(res).to.be.json;
-          expect(res).to.have.status(501);
-          expect(res.body.error.status).to.be.equal(501);
-          expect(res.body.error.message).to.be.equal('not implemented');
-          done();
-        });
+    it('should return 501, not implemented', async function () {
+      try {
+        const res = await chai.request(app)
+          .patch(sessionPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
     });
 
   });
 
   describe('DELETE /sessions', function () {
 
-    it('should return 501, not implemented', function (done) {
-      chai.request(app)
-        .delete(sessionPath)
-        .set('content-type', 'application/json')
-        .end(function (err, res) {
-          expect(res).to.be.json;
-          expect(res).to.have.status(501);
-          expect(res.body.error.status).to.be.equal(501);
-          expect(res.body.error.message).to.be.equal('not implemented');
-          done();
-        });
+    it('should return 501, not implemented', async function () {
+      try {
+        await chai.request(app)
+          .delete(sessionPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
     });
 
   });

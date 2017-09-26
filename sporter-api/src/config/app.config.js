@@ -6,4 +6,5 @@ module.exports = {
   jwtMaxAge: '604800', // One week
   aesSecret: 'sporter-aes-secret',
   defaultLimit: 10,
+  defaultMaxDistance: 10
 };

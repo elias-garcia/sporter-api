@@ -8,8 +8,8 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    type: String,
-    required: true
+    type: { type: String, default: 'Point', required: true },
+    coordinates: { type: [Number], required: true, index: '2dsphere' },
   },
   sport: {
     type: mongoose.Schema.Types.ObjectId,

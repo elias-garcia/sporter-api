@@ -1,7 +1,7 @@
-const validator = require('validator');
 const User = require('../user/user.model');
 const userService = require('./user.service');
 const json = require('../../util/json');
+const validator = require('../../util/validator');
 const ApiError = require('../api-error');
 
 const create = async (req, res, next) => {
@@ -9,13 +9,12 @@ const create = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.body.email) !== 'string' ||
-      !validator.isEmail(req.body.email) ||
+    if (!validator.isEmail(req.body.email) ||
       !req.body.password ||
-      typeof (req.body.first_name) !== 'string' ||
-      typeof (req.body.last_name) !== 'string' ||
-      typeof (req.body.age) !== 'number' ||
-      typeof (req.body.location) !== 'string') {
+      !validator.isString(req.body.first_name) ||
+      !validator.isString(req.body.last_name) ||
+      !validator.isNumber(req.body.age) ||
+      !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
@@ -45,8 +44,7 @@ const find = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.userId) !== 'string' ||
-      !validator.isMongoId(req.params.userId)) {
+    if (!validator.isMongoId(req.params.userId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
@@ -69,21 +67,19 @@ const update = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.userId) !== 'string' ||
-      !validator.isMongoId(req.params.userId) ||
-      typeof (req.body.email) !== 'string' ||
+    if (!validator.isMongoId(req.params.userId) ||
       !validator.isEmail(req.body.email) ||
-      typeof (req.body.first_name) !== 'string' ||
-      typeof (req.body.last_name) !== 'string' ||
-      typeof (req.body.age) !== 'number' ||
-      typeof (req.body.location) !== 'string') {
+      !validator.isString(req.body.first_name) ||
+      !validator.isString(req.body.last_name) ||
+      !validator.isNumber(req.body.age) ||
+      !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
      * Check if the user to be updated is the same who performs the request
      */
-    if (req.payload.sub !== req.params.userId) {
+    if (req.claim.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 
@@ -114,8 +110,7 @@ const changePassword = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.userId) !== 'string' ||
-      !validator.isMongoId(req.params.userId) ||
+    if (!validator.isMongoId(req.params.userId) ||
       !req.body.old_password ||
       !req.body.new_password) {
       throw new ApiError(422, 'unprocessable entity');
@@ -124,7 +119,7 @@ const changePassword = async (req, res, next) => {
     /**
      * Check if the user to be updated is the same who performs the request
      */
-    if (req.payload.sub !== req.params.userId) {
+    if (req.claim.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 
@@ -151,15 +146,14 @@ const remove = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.userId) !== 'string' ||
-      !validator.isMongoId(req.params.userId)) {
+    if (!validator.isMongoId(req.params.userId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
      * Check if the user to be removed is the same who performs the request
      */
-    if (req.payload.sub !== req.params.userId) {
+    if (req.claim.sub !== req.params.userId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 

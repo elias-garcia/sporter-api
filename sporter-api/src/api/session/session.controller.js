@@ -1,4 +1,4 @@
-const validator = require('validator');
+const validator = require('../../util/validator');
 const User = require('../user/user.model');
 const sessionService = require('./session.service');
 const ApiError = require('../api-error');
@@ -9,8 +9,7 @@ const logIn = async (req, res, next) => {
     /**
      * Validate the body params
      */
-    if (typeof (req.body.email) !== 'string' ||
-      !validator.isEmail(req.body.email)) {
+    if (!validator.isEmail(req.body.email)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 

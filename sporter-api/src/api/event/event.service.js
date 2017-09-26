@@ -1,4 +1,5 @@
 const appConfig = require('../../config/app.config');
+const EventStatus = require('./event-status.enum');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
@@ -6,7 +7,9 @@ const json = require('../../util/json');
 const date = require('../../util/date');
 const ApiError = require('../api-error');
 
-const create = async (userId, sportId, name, location, start_date, ending_date, description, intensity, paid, status) => {
+const MILE_TO_KM = 1.60934;
+
+const create = async (userId, sportId, name, latitude, longitude, startDate, endingDate, description, intensity, paid) => {
   /**
    * Check if the sport exists in the db
    */
@@ -28,14 +31,16 @@ const create = async (userId, sportId, name, location, start_date, ending_date, 
    */
   const event = await Event.create({
     name,
-    location,
+    location: {
+      coordinates: [longitude, latitude]
+    },
     sport,
-    start_date,
-    ending_date,
+    start_date: startDate,
+    ending_date: endingDate,
     description,
     intensity,
     paid,
-    status,
+    status: EventStatus.WAITING,
     host: user,
     players: [user._id]
   });
@@ -45,6 +50,55 @@ const create = async (userId, sportId, name, location, start_date, ending_date, 
    */
   return event;
 };
+
+const findAll = async (userId, sportId, startDate, latitude, longitude, maxDistance, total, page) => {
+  const limit = total || appConfig.defaultLimit;
+  const offset = page || 1;
+  const skip = limit * (offset - 1);
+  let query;
+
+  /**
+   * Filter the events by user
+   */
+  if (userId) {
+    query = Event.find({ host: userId }, '-__v');
+  } else {
+    query = Event.find({}, '-__v');
+  }
+
+  /**
+   * Filter the events by sport
+   */
+  if (sportId) {
+    query.where('sport').equals(sportId);
+  }
+
+  /**
+   * Filter the events by day
+   */
+  if (startDate) {
+    query.where('start_date').gte(date.startDate(startDate)).lte(date.endDate(startDate));
+  }
+
+  /**
+   * Filter the events by proximity. If maxDistance is not specified it will query by the default maxDistance
+   */
+  if (latitude && longitude) {
+    const distance = maxDistance | appConfig.defaultMaxDistance;
+
+    query = query.where('location').near({ center: [longitude, latitude], maxDistance: distance * MILE_TO_KM, spherical: true });
+  }
+
+  /**
+   * Find the events matching the query params
+   */
+  const events = await query.skip(skip).limit(limit).exec();
+
+  /**
+   * Return the matched events
+   */
+  return events;
+}
 
 const find = async (eventId) => {
   /**
@@ -66,6 +120,35 @@ const find = async (eventId) => {
    */
   return event;
 };
+
+const update = async (eventId, sportId, name, latitude, longitude, startDate, endingDate, description, intensity, paid, status) => {
+  /**
+   * Check if the event exists
+   */
+  const event = await Event.findById(eventId);
+  if (!event) {
+    throw new ApiError(404, 'event not found');
+  }
+
+  await event.update({
+    name,
+    location: {
+      coordinates: [longitude, latitude]
+    },
+    sport: sportId,
+    start_date: startDate,
+    ending_date: endingDate,
+    description,
+    intensity,
+    paid,
+    status
+  });
+
+  /**
+   * Return the updated event
+   */
+  return event;
+}
 
 const join = async (userId, eventId) => {
   /**
@@ -129,7 +212,9 @@ const remove = async (userId, eventId) => {
 
 module.exports = {
   create,
+  findAll,
   find,
+  update,
   join,
   remove
 }

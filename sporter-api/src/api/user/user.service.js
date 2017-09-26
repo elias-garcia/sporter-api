@@ -26,7 +26,7 @@ const register = async (email, password, first_name, last_name, age, location) =
   /**
    * Create the user in the db
    */
-  const newUser = await User.create({ email, password: bcrypt.hashSync(password, 10), first_name, last_name, age, location });
+  const newUser = await User.create({ email, password, first_name, last_name, age, location });
 
   /**
    * Sign a JWT token
@@ -103,7 +103,7 @@ const changePassword = async (userId, oldPassword, newPassword) => {
   /**
    * Update the user password
    */
-  return await user.update({ password: bcrypt.hashSync(newPassword, 10) });
+  return await user.update({ password: newPassword });
 };
 
 /**

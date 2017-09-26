@@ -1,8 +1,7 @@
-const validator = require('validator');
 const appConfig = require('../../config/app.config');
-const EventStatus = require('./event-status.enum');
 const EventIntensity = require('./event-intensity.enum');
 const eventService = require('./event.service');
+const validator = require('../../util/validator');
 const json = require('../../util/json');
 const ApiError = require('../api-error');
 
@@ -11,18 +10,15 @@ const create = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.body.sportId) !== 'string' ||
-      !validator.isMongoId(req.body.sportId) ||
-      typeof (req.body.name) !== 'string' ||
-      typeof (req.body.location) !== 'string' ||
-      typeof (req.body.start_date) !== 'string' ||
-      !validator.isISO8601(start_date) ||
-      typeof (req.body.ending) !== 'string' ||
-      !validator.isISO8601(ending_date) ||
-      typeof (req.body.description) !== 'string' ||
-      !Object.values(EventIntensity.includes(req.body.intensity)) ||
-      typeof (req.body.paid) !== 'boolean' ||
-      !Object.values(EventStatus).includes(req.body.status)
+    if (!validator.isMongoId(req.body.sportId) ||
+      !validator.isString(req.body.name) ||
+      !validator.isLatLongArray(req.body.coordinates) ||
+      !validator.isDateAfterNow(req.body.start_date) ||
+      !validator.isDateAfterNow(req.body.ending_date) ||
+      !validator.isDateAfter(req.body.ending_date, req.body.start_date) ||
+      !validator.isString(req.body.description) ||
+      !Object.values(EventIntensity).includes(req.body.intensity) ||
+      !validator.isBoolean(req.body.paid)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -31,16 +27,16 @@ const create = async (req, res, next) => {
      * Create the event
      */
     const event = await eventService.create(
-      req.payload.sub,
+      req.claim.sub,
       req.body.sportId,
       req.body.name,
-      req.body.location,
-      req.body.start_date,
-      req.body.ending_date,
+      req.body.coordinates[0],
+      req.query.coordinates[1],
+      new Date(req.body.start_date),
+      new Date(req.body.ending_date),
       req.body.description,
       req.body.intensity,
-      req.body.paid,
-      req.body.status
+      req.body.paid
     );
 
     /**
@@ -53,29 +49,71 @@ const create = async (req, res, next) => {
 };
 
 const findAll = async (req, res, next) => {
-  const limit = req.params.limit || appConfig.defaultLimit;
-  const offset = req.params.offset || 1;
-  const skip = limit * (offset - 1);
-  let query;
-
-  if (req.params.location) {
-    query = Event.find({ 'location': { $regex: '/' + req.params.location + '/i' } }, '-__v');
-  } else {
-    query = Event.find({}, '-__v');
-  }
-  if (req.params.user_id) {
-    query.where('host').equals(req.params.user_id);
-  }
-  if (req.params.sport) {
-    query.where('sport').equals(req.params.sport_id);
-  }
-  if (req.params.date) {
-    query.where('start_date').gt(date.startDate(req.params.start_date));
-  }
+  let latitude, longitude;
 
   try {
-    const events = await query.sort().skip(skip).limit(limit).exec();
-    return http.sendData(res, 'events', events);
+    /**
+     * Validate the input data
+     */
+    if (req.query.userId) {
+      if (!validator.isMongoId(req.query.userId)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+    }
+
+    if (req.query.sportId) {
+      if (!validator.isMongoId(req.query.sportId)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+    }
+
+    if (req.query.coordinates) {
+      if (!validator.isLatLong(req.query.coordinates)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+      /**
+       * Split the validated coordinates
+       */
+      latitude = Number(req.query.coordinates.split(',')[0]);
+      longitude = Number(req.query.coordinates.split(',')[1]);
+    }
+
+    if (req.query.maxDistance) {
+      if (!validator.isInt(req.query.maxDistance)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+    }
+
+    if (req.query.limit) {
+      if (!validator.isInt(req.query.limit)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+    }
+
+    if (req.query.offset) {
+      if (!validator.isInt(req.query.limit)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+    }
+
+    /**
+     * Find the events matching the criteria
+     */
+    const events = await eventService.findAll(
+      req.query.userId,
+      req.query.sportId,
+      latitude,
+      longitude,
+      new Date(req.query.startDate),
+      req.query.maxDistance,
+      req.query.limit,
+      req.query.offset
+    );
+
+    /**
+     * Return the matching events
+     */
+    return res.status(200).json(json.createData('events', events));
   } catch (err) {
     return next(err);
   }
@@ -92,7 +130,11 @@ const find = async (req, res, next) => {
       throw new ApiError(422, 'unprocessable entity');
     }
 
+    /**
+     * Find the requested event
+     */
     const event = await eventService.find(req.params.eventId);
+
     /**
      * Return the requested event
      */
@@ -103,13 +145,42 @@ const find = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-
   try {
-    const event = await Event.findById(req.params.eventId).exec();
-    if (!event) {
-      throw new ApiError(404, 'event not found');
+    /**
+     * Validate the input data
+     */
+    if (!validator.isMongoId(req.body.sportId) ||
+      !validator.isString(req.body.name) ||
+      !validator.isLatLongArray(req.body.coordinates) ||
+      !validator.isDateAfterNow(req.body.start_date) ||
+      !validator.isDateAfterNow(req.body.ending_date) ||
+      !validator.isDateAfter(req.body.ending_date, req.body.start_date) ||
+      !validator.isString(req.body.description) ||
+      !Object.values(EventIntensity).includes(req.body.intensity) ||
+      !validator.isBoolean(req.body.paid)
+    ) {
+      throw new ApiError(422, 'unprocessable entity');
     }
-    await event.update(req.body);
+
+    /**
+     * Update the event
+     */
+    const event = await eventService.update(
+      req.params.eventId,
+      req.body.sportId,
+      req.body.name,
+      req.body.coordinates[0],
+      req.body.coordinates[1],
+      new Date(req.body.start_date),
+      new Date(req.body.ending_date),
+      req.body.description,
+      req.body.intensity,
+      req.body.paid,
+      req.body.status);
+
+    /**
+     * Return no content
+     */
     return http.sendEmpty(res);
   } catch (err) {
     return next(err);
@@ -128,10 +199,10 @@ const join = async (req, res, next) => {
     }
 
     /**
-     * Join the event
+     * Join the user to the event
      */
     const event = await eventService.join(
-      req.payload.sub,
+      req.claim.sub,
       req.body.eventId
     );
 
@@ -157,7 +228,7 @@ const remove = async (req, res, next) => {
     /**
      * Remove the event from db
      */
-    await eventService.remove(req.payload.sub, eventId);
+    await eventService.remove(req.claim.sub, eventId);
 
     /**
      * Return no content

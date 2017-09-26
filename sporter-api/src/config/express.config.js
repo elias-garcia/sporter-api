@@ -26,7 +26,7 @@ const configure = (app, config) => {
   app.put(`${appConfig.path}/users/:userId`, middleware.authenticate);
   app.patch(`${appConfig.path}/users/:userId`, middleware.authenticate);
   app.delete(`${appConfig.path}/users/:userId`, middleware.authenticate);
-  app.post(`${appConfig.path}/events/:eventId`, middleware.authenticate);
+  app.post(`${appConfig.path}/events`, middleware.authenticate);
   app.put(`${appConfig.path}/events/:eventId`, middleware.authenticate);
   app.patch(`${appConfig.path}/events/:eventId`, middleware.authenticate);
   app.delete(`${appConfig.path}/events/:eventId`, middleware.authenticate);

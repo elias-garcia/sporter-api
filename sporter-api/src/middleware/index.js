@@ -1,4 +1,4 @@
-const authenticate = require('./authenticate');
+const authenticate = require('./auth');
 const contentType = require('./content-type');
 
 module.exports = {

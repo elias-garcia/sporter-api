@@ -11,7 +11,7 @@ const authenticate = (req, res, next) => {
       const decoded = jwt.verify(
         token, appConfig.jwtSecret, { maxAge: appConfig.jwtMaxAge });
 
-      req.payload = decoded;
+      req.claim = decoded;
     } catch (err) {
       return next(new ApiError(401, 'authorization token not valid'));
     }
