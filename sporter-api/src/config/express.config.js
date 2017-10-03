@@ -1,4 +1,3 @@
-const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const middleware = require('../middleware/index');
@@ -7,8 +6,7 @@ const error = require('../util/error');
 const appConfig = require('./app.config');
 const ApiError = require('../api/api-error');
 
-const configure = (app, config) => {
-
+const configure = (app) => {
   /* Server configuration */
   app.set('port', appConfig.port);
 
@@ -41,7 +39,6 @@ const configure = (app, config) => {
 
   /* Error handler for runtime and API errors */
   app.use(error.handler);
-
 };
 
 module.exports = configure;

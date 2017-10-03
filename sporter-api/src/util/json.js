@@ -1,6 +1,6 @@
 const createData = (title, data) => {
   const content = {
-    data: {}
+    data: {},
   };
 
   content.data[title] = data;
@@ -12,8 +12,8 @@ const createError = (status, message) => {
   const content = {
     error: {
       status,
-      message
-    }
+      message,
+    },
   };
 
   return content;
@@ -21,5 +21,5 @@ const createError = (status, message) => {
 
 module.exports = {
   createData,
-  createError
+  createError,
 };

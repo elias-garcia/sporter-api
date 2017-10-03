@@ -26,14 +26,20 @@ const register = async (email, password, first_name, last_name, age, location) =
   /**
    * Create the user in the db
    */
-  const newUser = await User.create({ email, password, first_name, last_name, age, location });
+  const newUser = await User.create({
+    email, password, first_name, last_name, age, location,
+  });
 
   /**
    * Sign a JWT token
    */
-  const token = jwt.sign({ sub: newUser._id }, appConfig.jwtSecret, { expiresIn: appConfig.jwtMaxAge });;
+  const token = jwt.sign(
+    { sub: newUser._id },
+    appConfig.jwtSecret,
+    { expiresIn: appConfig.jwtMaxAge },
+  );
 
-  return { _id: newUser._id, token: token };
+  return { _id: newUser._id, token };
 };
 
 /**
@@ -75,7 +81,9 @@ const update = async (userId, email, first_name, last_name, age, location) => {
   /**
    * Update the user information
    */
-  return await user.update({ email, first_name, last_name, age, location });
+  await user.update({
+    email, first_name, last_name, age, location,
+  });
 };
 
 /**
@@ -103,7 +111,7 @@ const changePassword = async (userId, oldPassword, newPassword) => {
   /**
    * Update the user password
    */
-  return await user.update({ password: newPassword });
+  await user.update({ password: newPassword });
 };
 
 /**
@@ -122,13 +130,13 @@ const remove = async (userId) => {
   /**
    * Remove the user
    */
-  return await user.remove();
-}
+  await user.remove();
+};
 
 module.exports = {
   register,
   findById,
   update,
   changePassword,
-  remove
-}
+  remove,
+};

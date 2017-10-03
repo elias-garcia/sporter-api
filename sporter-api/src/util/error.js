@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const json = require('../util/json');
 const ApiError = require('../api/api-error');
 
@@ -10,5 +11,5 @@ const handler = (err, req, res, next) => {
 };
 
 module.exports = {
-  handler
+  handler,
 };

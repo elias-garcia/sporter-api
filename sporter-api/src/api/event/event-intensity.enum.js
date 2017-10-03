@@ -1,7 +1,7 @@
 const eventIntensity = {
   LOW: 'LOW',
   MEDIUM: 'MEDIUM',
-  HIGH: 'HIGH'
+  HIGH: 'HIGH',
 };
 
 module.exports = eventIntensity;

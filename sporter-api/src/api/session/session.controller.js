@@ -1,5 +1,4 @@
 const validator = require('../../util/validator');
-const User = require('../user/user.model');
 const sessionService = require('./session.service');
 const ApiError = require('../api-error');
 const json = require('../../util/json');
@@ -18,7 +17,7 @@ const logIn = async (req, res, next) => {
      */
     const session = await sessionService.logIn(
       req.body.email,
-      String(req.body.password)
+      String(req.body.password),
     );
 
     /**
@@ -31,5 +30,5 @@ const logIn = async (req, res, next) => {
 };
 
 module.exports = {
-  logIn
+  logIn,
 };

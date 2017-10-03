@@ -6,23 +6,29 @@ const appConfig = require('../../config/app.config');
 const Sport = require('../sport/sport.model');
 const User = require('../user/user.model');
 const Event = require('./event.model');
-const expect = chai.expect;
+
+const { expect } = chai;
 const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
-describe('Events', function () {
-
-  let sport1, sport2;
-  let user1, user2;
-  let user1Token;
-  let event1, event2, event3, event4;
+describe('Events', () => {
   const eventPath = `${apiPath}/events`;
   const nonExistingEventId = '58ffc747a0033611f1f783a7';
 
-  beforeEach(async function () {
+  let sport1;
+  let sport2;
+  let user1;
+  let user2;
+  let user1Token;
+  let event1;
+  let event2;
+  let event3;
+  let event4;
+
+  beforeEach(async () => {
     const preUser1 = test.createUser('user1@test.com');
-    const preUser2 = test.createUser('user2@test.com')
+    const preUser2 = test.createUser('user2@test.com');
 
     sport1 = await Sport.create(test.createSport('Tenis'));
     sport2 = await Sport.create(test.createSport('Baloncesto'));
@@ -40,34 +46,33 @@ describe('Events', function () {
 
     user1Token = res.body.data.session.token;
   });
-  /*
-    describe('POST /events', function () {
-  
-      it('should return 200, id and event info', async function () {
-        const event = test.createEventPost(sport1._id);
-  
-        try {
-          const res = await chai.request(app)
-            .post(`${eventPath}`)
-            .set('content-type', 'application/json')
-            .set('authorization', `Bearer ${user1Token}`)
-            .send(event);
-  
-          expect(res).to.be.json;
-          expect(res).to.have.status(200);
-          expect(res.body.data.events[0]).to.have.all.keys(
-            ['name', 'location', 'sport', 'start_date', 'ending_date',
-              'description', 'intensity', 'paid', 'status', 'host', 'players']);
-        } catch (e) {
-          throw new Error(e);
-        }
-      });
-  
+/*
+  describe('POST /events', function () {
+
+    it('should return 200, id and event info', async function () {
+      const event = test.createEventPost(sport1._id);
+
+      try {
+        const res = await chai.request(app)
+          .post(`${eventPath}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(200);
+        expect(res.body.data.event).to.have.all.keys(
+          ['name', 'location', 'sport', 'start_date', 'ending_date',
+            'description', 'intensity', 'paid', 'status', 'host', 'players']);
+      } catch (e) {
+        throw new Error(e);
+      }
     });
-  */
-  /**
+
+  });
+
     describe('GET /events', () => {
-  
+
       it('should return 200 when searching all events', (done) => {
         chai.request(app)
           .get(`${eventPath}`)
@@ -84,7 +89,7 @@ describe('Events', function () {
             done();
           });
       });
-  
+
     });
   */
 });

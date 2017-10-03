@@ -5,7 +5,7 @@ const eventIntensity = require('./event-intensity.enum');
 const eventSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   location: {
     type: { type: String, default: 'Point', required: true },
@@ -14,7 +14,7 @@ const eventSchema = new mongoose.Schema({
   sport: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Sport',
-    required: true
+    required: true,
   },
   start_date: {
     type: Date,
@@ -22,34 +22,34 @@ const eventSchema = new mongoose.Schema({
   },
   ending_date: {
     type: Date,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   intensity: {
     type: String,
     enum: Object.keys(eventIntensity).map(key => eventIntensity[key]),
-    required: true
+    required: true,
   },
   paid: {
     type: Boolean,
-    required: true
+    required: true,
   },
   status: {
     type: String,
     enum: Object.keys(eventStatus).map(key => eventStatus[key]),
-    default: eventStatus.WAITING
+    default: eventStatus.WAITING,
   },
   host: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   players: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
   }],
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 

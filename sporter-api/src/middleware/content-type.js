@@ -3,7 +3,7 @@ const json = require('../util/json');
 const acceptJson = (req, res, next) => {
   const contentType = req.get('Content-Type');
 
-  if (!contentType || contentType != 'application/json') {
+  if (!contentType || contentType !== 'application/json') {
     return res.status(415).json(json.createError(415, 'unsupported media type'));
   }
 
@@ -18,5 +18,5 @@ const setJson = (req, res, next) => {
 
 module.exports = {
   acceptJson,
-  setJson
+  setJson,
 };

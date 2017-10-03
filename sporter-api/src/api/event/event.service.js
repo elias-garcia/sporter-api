@@ -3,13 +3,13 @@ const EventStatus = require('./event-status.enum');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
-const json = require('../../util/json');
 const date = require('../../util/date');
 const ApiError = require('../api-error');
 
 const MILE_TO_KM = 1.60934;
 
-const create = async (userId, sportId, name, latitude, longitude, startDate, endingDate, description, intensity, paid) => {
+const create = async (userId, sportId, name, latitude, longitude,
+  startDate, endingDate, description, intensity, paid) => {
   /**
    * Check if the sport exists in the db
    */
@@ -21,7 +21,7 @@ const create = async (userId, sportId, name, latitude, longitude, startDate, end
   /**
    * Check if the user exists in the db
    */
-  const user = await User.findById(req.body.userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
@@ -32,17 +32,17 @@ const create = async (userId, sportId, name, latitude, longitude, startDate, end
   const event = await Event.create({
     name,
     location: {
-      coordinates: [longitude, latitude]
+      coordinates: [longitude, latitude],
     },
-    sport,
+    sport: sportId,
     start_date: startDate,
     ending_date: endingDate,
     description,
     intensity,
     paid,
     status: EventStatus.WAITING,
-    host: user,
-    players: [user._id]
+    host: userId,
+    players: [user._id],
   });
 
   /**
@@ -51,7 +51,8 @@ const create = async (userId, sportId, name, latitude, longitude, startDate, end
   return event;
 };
 
-const findAll = async (userId, sportId, startDate, latitude, longitude, maxDistance, total, page) => {
+const findAll = async (userId, sportId, startDate,
+  latitude, longitude, maxDistance, total, page) => {
   const limit = total || appConfig.defaultLimit;
   const offset = page || 1;
   const skip = limit * (offset - 1);
@@ -81,12 +82,15 @@ const findAll = async (userId, sportId, startDate, latitude, longitude, maxDista
   }
 
   /**
-   * Filter the events by proximity. If maxDistance is not specified it will query by the default maxDistance
+   * Filter the events by proximity.
+   * If maxDistance is not specified it will query by the default maxDistance.
    */
   if (latitude && longitude) {
-    const distance = maxDistance | appConfig.defaultMaxDistance;
+    const distance = maxDistance || appConfig.defaultMaxDistance;
 
-    query = query.where('location').near({ center: [longitude, latitude], maxDistance: distance * MILE_TO_KM, spherical: true });
+    query = query.where('location').near({
+      center: [longitude, latitude], maxDistance: distance * MILE_TO_KM, spherical: true,
+    });
   }
 
   /**
@@ -98,7 +102,7 @@ const findAll = async (userId, sportId, startDate, latitude, longitude, maxDista
    * Return the matched events
    */
   return events;
-}
+};
 
 const find = async (eventId) => {
   /**
@@ -121,7 +125,8 @@ const find = async (eventId) => {
   return event;
 };
 
-const update = async (eventId, sportId, name, latitude, longitude, startDate, endingDate, description, intensity, paid, status) => {
+const update = async (eventId, sportId, name, latitude, longitude,
+  startDate, endingDate, description, intensity, paid, status) => {
   /**
    * Check if the event exists
    */
@@ -133,7 +138,7 @@ const update = async (eventId, sportId, name, latitude, longitude, startDate, en
   await event.update({
     name,
     location: {
-      coordinates: [longitude, latitude]
+      coordinates: [longitude, latitude],
     },
     sport: sportId,
     start_date: startDate,
@@ -141,14 +146,14 @@ const update = async (eventId, sportId, name, latitude, longitude, startDate, en
     description,
     intensity,
     paid,
-    status
+    status,
   });
 
   /**
    * Return the updated event
    */
   return event;
-}
+};
 
 const join = async (userId, eventId) => {
   /**
@@ -208,7 +213,7 @@ const remove = async (userId, eventId) => {
    * Return the event
    */
   return event;
-}
+};
 
 module.exports = {
   create,
@@ -216,5 +221,5 @@ module.exports = {
   find,
   update,
   join,
-  remove
-}
+  remove,
+};

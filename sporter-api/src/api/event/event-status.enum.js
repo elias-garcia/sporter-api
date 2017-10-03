@@ -2,7 +2,7 @@ const eventStatus = {
   WAITING: 'WAITING',
   CANCELLED: 'CANCELLED',
   DISPUTING: 'DISPUTING',
-  FINISHED: 'FINISHED'
+  FINISHED: 'FINISHED',
 };
 
 module.exports = eventStatus;

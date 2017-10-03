@@ -1,4 +1,3 @@
-const appConfig = require('../../config/app.config');
 const EventIntensity = require('./event-intensity.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
@@ -31,12 +30,12 @@ const create = async (req, res, next) => {
       req.body.sportId,
       req.body.name,
       req.body.coordinates[0],
-      req.query.coordinates[1],
+      req.body.coordinates[1],
       new Date(req.body.start_date),
       new Date(req.body.ending_date),
       req.body.description,
       req.body.intensity,
-      req.body.paid
+      req.body.paid,
     );
 
     /**
@@ -49,7 +48,8 @@ const create = async (req, res, next) => {
 };
 
 const findAll = async (req, res, next) => {
-  let latitude, longitude;
+  let latitude;
+  let longitude;
 
   try {
     /**
@@ -107,7 +107,7 @@ const findAll = async (req, res, next) => {
       new Date(req.query.startDate),
       req.query.maxDistance,
       req.query.limit,
-      req.query.offset
+      req.query.offset,
     );
 
     /**
@@ -117,7 +117,6 @@ const findAll = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-
 };
 
 const find = async (req, res, next) => {
@@ -165,7 +164,7 @@ const update = async (req, res, next) => {
     /**
      * Update the event
      */
-    const event = await eventService.update(
+    await eventService.update(
       req.params.eventId,
       req.body.sportId,
       req.body.name,
@@ -176,16 +175,16 @@ const update = async (req, res, next) => {
       req.body.description,
       req.body.intensity,
       req.body.paid,
-      req.body.status);
+      req.body.status,
+    );
 
     /**
      * Return no content
      */
-    return http.sendEmpty(res);
+    return res.status(204).end();
   } catch (err) {
     return next(err);
   }
-
 };
 
 const join = async (req, res, next) => {
@@ -201,9 +200,9 @@ const join = async (req, res, next) => {
     /**
      * Join the user to the event
      */
-    const event = await eventService.join(
+    await eventService.join(
       req.claim.sub,
-      req.body.eventId
+      req.body.eventId,
     );
 
     /**
@@ -228,7 +227,7 @@ const remove = async (req, res, next) => {
     /**
      * Remove the event from db
      */
-    await eventService.remove(req.claim.sub, eventId);
+    await eventService.remove(req.claim.sub, req.params.eventId);
 
     /**
      * Return no content
@@ -245,5 +244,5 @@ module.exports = {
   find,
   update,
   join,
-  remove
+  remove,
 };

@@ -3,7 +3,6 @@ const dbScript = require('../scripts/db-prod');
 const appConfig = require('../config/app.config');
 
 const configure = () => {
-
   mongoose.Promise = global.Promise;
 
   mongoose.connect(appConfig.mongo, { useMongoClient: true }, () => {
@@ -25,7 +24,6 @@ const configure = () => {
       process.exit(0);
     });
   });
-
 };
 
 module.exports = configure;

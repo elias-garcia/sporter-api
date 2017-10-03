@@ -3,5 +3,5 @@ const mongooseConfig = require('./mongoose.config');
 
 module.exports = {
   express: expressConfig,
-  mongoose: mongooseConfig
+  mongoose: mongooseConfig,
 };

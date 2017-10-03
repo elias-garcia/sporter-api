@@ -4,28 +4,27 @@ const app = require('../../app');
 const test = require('../../util/test');
 const appConfig = require('../../config/app.config');
 const User = require('./user.model');
-const expect = chai.expect;
+
+const { expect } = chai;
 const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
-describe('User', function () {
-
+describe('User', () => {
   const userPath = `${apiPath}/users`;
   const nonExistingUserId = '59afcfa6f8e7020004e5765d';
   const notValidToken = 'Bearer I1NiIsI6Ie.yJhbGciOiJIUz.eyJzdWkpXVCJ9';
 
-  beforeEach(async function () {
+  beforeEach(async () => {
     await User.remove({});
   });
 
-  describe('GET /users', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('GET /users', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .get(userPath)
-          .set('content-type', 'application/json')
+          .set('content-type', 'application/json');
       } catch (e) {
         const res = e.response;
 
@@ -35,12 +34,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('POST /users', function () {
-
-    it('should return 200, id and an auth token', async function () {
+  describe('POST /users', () => {
+    it('should return 200, id and an auth token', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -57,8 +54,8 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 when the email is not a string', async function () {
-      user = test.createUser('user@test.com');
+    it('should return 422 when the email is not a string', async () => {
+      const user = test.createUser('user@test.com');
 
       user.email = 10;
 
@@ -68,7 +65,7 @@ describe('User', function () {
         await chai.request(app)
           .post(userPath)
           .set('content-type', 'application/json')
-          .send(user)
+          .send(user);
       } catch (e) {
         const res = e.response;
 
@@ -79,7 +76,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 when the email is not valid', async function () {
+    it('should return 422 when the email is not valid', async () => {
       const user = test.createUser('user@test.com');
 
       user.email = 'email';
@@ -101,13 +98,13 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 when password is not sent', async function () {
+    it('should return 422 when password is not sent', async () => {
       const user = test.createUser('user@test.com');
 
       delete user.password;
 
       try {
-        const res = await chai.request(app)
+        await chai.request(app)
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
@@ -121,7 +118,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 when the first name is not a string', async function () {
+    it('should return 422 when the first name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       user.first_name = true;
@@ -139,10 +136,9 @@ describe('User', function () {
         expect(res.body.error.status).to.be.equal(422);
         expect(res.body.error.message).to.be.equal('unprocessable entity');
       }
-
     });
 
-    it('should return 422 when the last name is not a string', async function () {
+    it('should return 422 when the last name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       user.last_name = 1;
@@ -164,7 +160,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 when the age is not a number', async function () {
+    it('should return 422 when the age is not a number', async () => {
       const user = test.createUser('user@test.com');
 
       user.age = '19';
@@ -186,7 +182,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 when the location is not a string', async function () {
+    it('should return 422 when the location is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       user.location = 10;
@@ -208,7 +204,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 409 when posting a user with an existing email', async function () {
+    it('should return 409 when posting a user with an existing email', async () => {
       const user = test.createUser('user@test.com');
 
       await User.create();
@@ -227,12 +223,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('user already exists');
       }
     });
-
   });
 
-  describe('PUT /users', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('PUT /users', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .put(userPath)
@@ -246,12 +240,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('PATCH /users', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('PATCH /users', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .patch(userPath)
@@ -265,12 +257,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('DELETE /users', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('DELETE /users', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .get(userPath)
@@ -284,12 +274,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('GET /users/:userId', function () {
-
-    it('should return 200 and a user when finding an existing user', async function () {
+  describe('GET /users/:userId', () => {
+    it('should return 200 and a user when finding an existing user', async () => {
       let user = test.createUser('user@test.com');
 
       user = await User.create(user);
@@ -306,12 +294,11 @@ describe('User', function () {
         expect(res.body.data.user.lastName).to.be.equal(user.lastName);
         expect(res.body.data.user.location).to.be.equal(user.location);
       } catch (e) {
-        console.log(e.response);
         throw new Error(e);
       }
     });
 
-    it('should return 422 if the userId is not a string', async function () {
+    it('should return 422 if the userId is not a string', async () => {
       const user = test.createUser('user@test.com');
       const userId = 930;
 
@@ -320,7 +307,7 @@ describe('User', function () {
       try {
         await chai.request(app)
           .get(`${userPath}/${userId}`)
-          .set('content-type', 'application/json');;
+          .set('content-type', 'application/json');
       } catch (e) {
         const res = e.response;
 
@@ -331,7 +318,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422 if the userId is not a MongoId', async function () {
+    it('should return 422 if the userId is not a MongoId', async () => {
       const user = test.createUser('user@test.com');
       const userId = '930';
 
@@ -351,7 +338,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 404 if the userId doesn\'t exist', async function () {
+    it('should return 404 if the userId doesn\'t exist', async () => {
       try {
         await chai.request(app)
           .get(`${userPath}/${nonExistingUserId}`)
@@ -365,12 +352,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('user not found');
       }
     });
-
   });
 
-  describe('POST /users/:userId', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('POST /users/:userId', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .post(`${userPath}/${nonExistingUserId}`)
@@ -384,12 +369,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('PUT /users/:userId', function () {
-
-    it('should return 204 and update the user', async function () {
+  describe('PUT /users/:userId', () => {
+    it('should return 204 and update the user', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -399,7 +382,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res1.body.data.session._id;
-        const token = res1.body.data.session.token;
+        const { token } = res1.body.data.session;
 
         user.email = 'put@users.com';
         user.password = 'newPassword';
@@ -422,7 +405,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the userId is not a string', async function () {
+    it('should return 422, unprocessable entity if the userId is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -432,14 +415,13 @@ describe('User', function () {
           .send(user);
 
         const userId = 10;
-        const token = res1.body.data.session.token;
+        const { token } = res1.body.data.session;
 
         await chai.request(app)
           .put(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
-
       } catch (e) {
         const res = e.response;
 
@@ -450,7 +432,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the userId is not a MongoId', async function () {
+    it('should return 422, unprocessable entity if the userId is not a MongoId', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -460,7 +442,7 @@ describe('User', function () {
           .send(user);
 
         const userId = 'asd123a';
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         await chai.request(app)
           .put(`${userPath}/${userId}`)
@@ -477,7 +459,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the email is not a string', async function () {
+    it('should return 422, unprocessable entity if the email is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -487,7 +469,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         user.email = false;
 
@@ -506,7 +488,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the email is not a valid email', async function () {
+    it('should return 422, unprocessable entity if the email is not a valid email', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -516,7 +498,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         user.email = 'string';
 
@@ -524,7 +506,7 @@ describe('User', function () {
           .put(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
-          .send(user)
+          .send(user);
       } catch (e) {
         const res = e.response;
 
@@ -535,7 +517,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the first name is not a string', async function () {
+    it('should return 422, unprocessable entity if the first name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -545,7 +527,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         user.first_name = 20;
 
@@ -564,7 +546,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the last name is not a string', async function () {
+    it('should return 422, unprocessable entity if the last name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -574,15 +556,15 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
-        user.last_name = 021;
+        user.last_name = 231;
 
         chai.request(app)
           .put(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
-          .send(user)
+          .send(user);
       } catch (e) {
         const res = e.response;
 
@@ -593,7 +575,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the age is not a number', async function () {
+    it('should return 422, unprocessable entity if the age is not a number', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -603,7 +585,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         user.age = '22';
 
@@ -622,7 +604,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the location is not a string', async function () {
+    it('should return 422, unprocessable entity if the location is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -632,7 +614,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         user.location = true;
 
@@ -651,7 +633,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 401 if the token is not supplied', async function () {
+    it('should return 401 if the token is not supplied', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -669,7 +651,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 401 if the token is not valid', async function () {
+    it('should return 401 if the token is not valid', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -688,7 +670,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 403 if the user is not allowed', async function () {
+    it('should return 403 if the user is not allowed', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -696,8 +678,7 @@ describe('User', function () {
           .post(userPath)
           .send(user);
 
-        const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         chai.request(app)
           .put(`${userPath}/${nonExistingUserId}`)
@@ -714,7 +695,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 404 if the userId does not exist', async function () {
+    it('should return 404 if the userId does not exist', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -723,7 +704,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         await User.remove({});
 
@@ -741,12 +722,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('user not found');
       }
     });
-
   });
 
-  describe('PATCH /users/:userId', function () {
-
-    it('should return 204 and change the user password', async function () {
+  describe('PATCH /users/:userId', () => {
+    it('should return 204 and change the user password', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -756,11 +735,11 @@ describe('User', function () {
           .send(user);
 
         const userId = res1.body.data.session._id;
-        const token = res1.body.data.session.token;
+        const { token } = res1.body.data.session;
 
         const body = {
-          'old_password': user.password,
-          'new_password': 'new_password'
+          old_password: user.password,
+          new_password: 'new_password',
         };
 
         const res2 = await chai.request(app)
@@ -777,7 +756,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity when the userId is not a string', async function () {
+    it('should return 422, unprocessable entity when the userId is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -787,11 +766,11 @@ describe('User', function () {
           .send(user);
 
         const userId = 20;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         const body = {
-          'old_password': user.password,
-          'new_password': 'new_password'
+          old_password: user.password,
+          new_password: 'new_password',
         };
 
         chai.request(app)
@@ -809,7 +788,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity when the userId is not a MongoId', async function () {
+    it('should return 422, unprocessable entity when the userId is not a MongoId', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -819,73 +798,11 @@ describe('User', function () {
           .send(user);
 
         const userId = 'userId';
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         const body = {
-          'old_password': user.password,
-          'new_password': 'new_password'
-        };
-
-        chai.request(app)
-          .patch(`${userPath}/${userId}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${token}`)
-          .send(body)
-      } catch (e) {
-        const res = e.response;
-
-        expect(res).to.be.json;
-        expect(res).to.have.status(422);
-        expect(res.body.error.status).to.be.equal(422);
-        expect(res.body.error.message).to.be.equal('unprocessable entity');
-      }
-    });
-
-    it('should return 422, unprocessable entity when the old password is not sent', async function () {
-      const user = test.createUser('user@test.com');
-
-      try {
-        const res = await chai.request(app)
-          .post(`${userPath}`)
-          .set('content-type', 'application/json')
-          .send(user);
-
-        const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
-
-        const body = {
-          'new_password': 'new_password'
-        };
-
-        chai.request(app)
-          .patch(`${userPath}/${userId}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${token}`)
-          .send(body)
-      } catch (e) {
-        const res = e.response;
-
-        expect(res).to.be.json;
-        expect(res).to.have.status(422);
-        expect(res.body.error.status).to.be.equal(422);
-        expect(res.body.error.message).to.be.equal('unprocessable entity');
-      }
-    });
-
-    it('should return 422, unprocessable entity when the new password is not sent', async function () {
-      const user = test.createUser('user@test.com');
-
-      try {
-        const res = await chai.request(app)
-          .post(`${userPath}`)
-          .set('content-type', 'application/json')
-          .send(user);
-
-        const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
-
-        const body = {
-          'old_password': user.password
+          old_password: user.password,
+          new_password: 'new_password',
         };
 
         chai.request(app)
@@ -903,7 +820,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity when the old password sent is wrong', async function () {
+    it('should return 422, unprocessable entity when the old password is not sent', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -913,18 +830,17 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         const body = {
-          'old_password': 'old_password',
-          'new_password': 'new_password'
+          new_password: 'new_password',
         };
 
         chai.request(app)
           .patch(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
-          .send(body)
+          .send(body);
       } catch (e) {
         const res = e.response;
 
@@ -935,7 +851,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 403, forbidden when the user is not allowed to change the password', async function () {
+    it('should return 422, unprocessable entity when the new password is not sent', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -945,11 +861,73 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         const body = {
-          'old_password': user.password,
-          'new_password': 'new_password'
+          old_password: user.password,
+        };
+
+        chai.request(app)
+          .patch(`${userPath}/${userId}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${token}`)
+          .send(body);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422, unprocessable entity when the old password sent is wrong', async () => {
+      const user = test.createUser('user@test.com');
+
+      try {
+        const res = await chai.request(app)
+          .post(`${userPath}`)
+          .set('content-type', 'application/json')
+          .send(user);
+
+        const userId = res.body.data.session._id;
+        const { token } = res.body.data.session;
+
+        const body = {
+          old_password: 'old_password',
+          new_password: 'new_password',
+        };
+
+        chai.request(app)
+          .patch(`${userPath}/${userId}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${token}`)
+          .send(body);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 403, forbidden when the user is not allowed to change the password', async () => {
+      const user = test.createUser('user@test.com');
+
+      try {
+        const res = await chai.request(app)
+          .post(`${userPath}`)
+          .set('content-type', 'application/json')
+          .send(user);
+
+        const { token } = res.body.data.session;
+
+        const body = {
+          old_password: user.password,
+          new_password: 'new_password',
         };
 
         chai.request(app)
@@ -967,7 +945,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 404, not found when the user to be updated does not exist', async function () {
+    it('should return 404, not found when the user to be updated does not exist', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -977,11 +955,11 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         const body = {
-          'old_password': user.password,
-          'new_password': 'new_password'
+          old_password: user.password,
+          new_password: 'new_password',
         };
 
         await User.remove({});
@@ -1000,12 +978,10 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('user not found');
       }
     });
-
   });
 
-  describe('DELETE /users/:userId', function () {
-
-    it('should return 204 and delete the existing user', async function () {
+  describe('DELETE /users/:userId', () => {
+    it('should return 204 and delete the existing user', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1015,7 +991,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res1.body.data.session._id;
-        const token = res1.body.data.session.token;
+        const { token } = res1.body.data.session;
 
         const res2 = await chai.request(app)
           .delete(`${userPath}/${userId}`)
@@ -1030,7 +1006,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the userId is not a string', async function () {
+    it('should return 422, unprocessable entity if the userId is not a string', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1040,7 +1016,7 @@ describe('User', function () {
           .send(user);
 
         const userId = 5;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         chai.request(app)
           .delete(`${userPath}/${userId}`)
@@ -1057,7 +1033,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 422, unprocessable entity if the userId is not a MongoId', async function () {
+    it('should return 422, unprocessable entity if the userId is not a MongoId', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1067,7 +1043,7 @@ describe('User', function () {
           .send(user);
 
         const userId = 'string';
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         chai.request(app)
           .delete(`${userPath}/${userId}`)
@@ -1084,7 +1060,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 401 if the token is not supplied', async function () {
+    it('should return 401 if the token is not supplied', async () => {
       try {
         await chai.request(app)
           .delete(`${userPath}/${nonExistingUserId}`)
@@ -1099,12 +1075,12 @@ describe('User', function () {
       }
     });
 
-    it('should return 401 if the token is not valid', async function () {
+    it('should return 401 if the token is not valid', async () => {
       try {
         await chai.request(app)
           .delete(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json')
-          .set('authorization', notValidToken)
+          .set('authorization', notValidToken);
       } catch (e) {
         const res = e.response;
 
@@ -1115,7 +1091,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 403 if the token is valid but the user is not authorized', async function () {
+    it('should return 403 if the token is valid but the user is not authorized', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1124,8 +1100,7 @@ describe('User', function () {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         chai.request(app)
           .delete(`${userPath}/${nonExistingUserId}`)
@@ -1141,7 +1116,7 @@ describe('User', function () {
       }
     });
 
-    it('should return 404 if the userId does not exist', async function () {
+    it('should return 404 if the userId does not exist', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1151,7 +1126,7 @@ describe('User', function () {
           .send(user);
 
         const userId = res.body.data.session._id;
-        const token = res.body.data.session.token;
+        const { token } = res.body.data.session;
 
         User.remove({});
 
@@ -1168,7 +1143,5 @@ describe('User', function () {
         expect(res.body.error.message).to.be.equal('user not found');
       }
     });
-
   });
-
 });

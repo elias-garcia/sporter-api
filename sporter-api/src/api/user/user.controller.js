@@ -1,4 +1,3 @@
-const User = require('../user/user.model');
 const userService = require('./user.service');
 const json = require('../../util/json');
 const validator = require('../../util/validator');
@@ -27,7 +26,7 @@ const create = async (req, res, next) => {
       req.body.first_name,
       req.body.last_name,
       req.body.age,
-      req.body.location
+      req.body.location,
     );
 
     /**
@@ -86,13 +85,13 @@ const update = async (req, res, next) => {
     /**
      * Update the user information
      */
-    const user = await userService.update(
+    await userService.update(
       req.params.userId,
       req.body.email,
       req.body.first_name,
       req.body.last_name,
       req.body.age,
-      req.body.location
+      req.body.location,
     );
 
     /**
@@ -105,7 +104,6 @@ const update = async (req, res, next) => {
 };
 
 const changePassword = async (req, res, next) => {
-
   try {
     /**
      * Validate the input data
@@ -126,10 +124,10 @@ const changePassword = async (req, res, next) => {
     /**
      * Try to update the user password
      */
-    const user = await userService.changePassword(
+    await userService.changePassword(
       req.params.userId,
       String(req.body.old_password),
-      String(req.body.new_password)
+      String(req.body.new_password),
     );
 
     /**
@@ -176,5 +174,5 @@ module.exports = {
   find,
   update,
   changePassword,
-  remove
+  remove,
 };

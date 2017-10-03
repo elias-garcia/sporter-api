@@ -4,22 +4,21 @@ const app = require('../../app');
 const appConfig = require('../../config/app.config');
 const test = require('../../util/test');
 const User = require('../user/user.model');
-const expect = chai.expect;
+
+const { expect } = chai;
 const apiPath = appConfig.path;
 
 chai.use(chaiHttp);
 
-describe('Session', function () {
-
+describe('Session', () => {
   const sessionPath = `${apiPath}/sessions`;
 
-  beforeEach(async function () {
+  beforeEach(async () => {
     await User.remove({});
   });
 
-  describe('GET /sessions', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('GET /sessions', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .get(sessionPath)
@@ -33,12 +32,10 @@ describe('Session', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('POST /sessions', function () {
-
-    it('should return 200, the userId and a token', async function () {
+  describe('POST /sessions', () => {
+    it('should return 200, the userId and a token', async () => {
       let user = test.createUser('user@test.com');
       const plainPassword = user.password;
 
@@ -48,7 +45,7 @@ describe('Session', function () {
         const res = await chai.request(app)
           .post(sessionPath)
           .set('content-type', 'application/json')
-          .send({ email: user.email, password: plainPassword })
+          .send({ email: user.email, password: plainPassword });
 
         expect(res).to.be.json;
         expect(res).to.have.status(200);
@@ -58,7 +55,7 @@ describe('Session', function () {
       }
     });
 
-    it('should return 422, unprocessable entity when email is not a string', async function () {
+    it('should return 422, unprocessable entity when email is not a string', async () => {
       let user = test.createUser('user@test.com');
 
       user.email = 9;
@@ -80,7 +77,7 @@ describe('Session', function () {
       }
     });
 
-    it('should return 422, unprocessable entity when email is not a valid email', async function () {
+    it('should return 422, unprocessable entity when email is not a valid email', async () => {
       let user = test.createUser('user@test.com');
 
       user.email = 'email';
@@ -102,7 +99,7 @@ describe('Session', function () {
       }
     });
 
-    it('should return 401, unauthorized when the email does not match', async function () {
+    it('should return 401, unauthorized when the email does not match', async () => {
       let user = test.createUser('user@test.com');
 
       user = await User.create(user);
@@ -124,7 +121,7 @@ describe('Session', function () {
       }
     });
 
-    it('should return 401, unauthorized when the password does not match', async function () {
+    it('should return 401, unauthorized when the password does not match', async () => {
       let user = test.createUser('user@test.com');
 
       user = await User.create(user);
@@ -145,14 +142,12 @@ describe('Session', function () {
         expect(res.body.error.message).to.be.equal('password does not match');
       }
     });
-
   });
 
-  describe('PUT /sessions', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('PUT /sessions', () => {
+    it('should return 501, not implemented', async () => {
       try {
-        const res = chai.request(app)
+        chai.request(app)
           .put(sessionPath)
           .set('content-type', 'application/json');
       } catch (e) {
@@ -164,14 +159,12 @@ describe('Session', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('PATCH /sessions', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('PATCH /sessions', () => {
+    it('should return 501, not implemented', async () => {
       try {
-        const res = await chai.request(app)
+        await chai.request(app)
           .patch(sessionPath)
           .set('content-type', 'application/json');
       } catch (e) {
@@ -183,12 +176,10 @@ describe('Session', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
 
-  describe('DELETE /sessions', function () {
-
-    it('should return 501, not implemented', async function () {
+  describe('DELETE /sessions', () => {
+    it('should return 501, not implemented', async () => {
       try {
         await chai.request(app)
           .delete(sessionPath)
@@ -202,7 +193,5 @@ describe('Session', function () {
         expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
-
   });
-
 });

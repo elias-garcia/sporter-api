@@ -1,7 +1,7 @@
 const express = require('express');
 const config = require('./config/index');
 
-app = express();
+const app = express();
 
 config.express(app);
 config.mongoose();

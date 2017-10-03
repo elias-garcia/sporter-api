@@ -1,55 +1,34 @@
 const validator = require('validator');
 
-const isBoolean = (value) => {
-  return typeof (value) === 'boolean';
-}
+const isBoolean = value => typeof (value) === 'boolean';
 
-const isDateAfter = (date1, date2) => {
-  return isISO8601(date1) && isISO8601(date2) && validator.isAfter(date1, date2);
-}
+const isInt = value => value && validator.isInt(value.toString());
 
-const isDateAfterNow = (date) => {
-  return isISO8601(date) && validator.isAfter(date);
-}
+const isNumber = value => typeof (value) === 'number';
 
-const isEmail = (email) => {
-  return isString(email) && validator.isEmail(email);
-}
+const isString = value => typeof (value) === 'string';
 
-const isInt = (value) => {
-  return value && validator.isInt(value.toString());
-}
+const isISO8601 = value => isString(value) && validator.isISO8601(value);
 
-const isISO8601 = (value) => {
-  return isString(value) && validator.isISO8601(value);
-}
+const isDateAfter = (date1, date2) =>
+  isISO8601(date1) && isISO8601(date2) && validator.isAfter(date1, date2);
 
-const isLatLong = (value) => {
-  return typeof (value) === string
+const isDateAfterNow = date => isISO8601(date) && validator.isAfter(date);
+
+const isEmail = email => isString(email) && validator.isEmail(email);
+
+const isLatLong = value => isString(value)
     && validator.isLatLong(value)
-    && typeof (Number(value.split(',')[0])) === 'Number'
-    && typeof (Number(value.split(',')[1])) === 'Number'
-}
+    && isNumber(Number(value.split(',')[0]))
+    && isNumber(Number(value.split(',')[1]));
 
-const isLatLongArray = (arr) => {
-  return arr
+const isLatLongArray = arr => arr
     && arr.length === 2
     && isNumber(arr[0])
     && isNumber(arr[1])
     && validator.isLatLong(arr.toString());
-}
 
-const isMongoId = (value) => {
-  return isString(value) && validator.isMongoId(value);
-}
-
-const isNumber = (value) => {
-  return typeof (value) === 'number';
-}
-
-const isString = (value) => {
-  return typeof (value) === 'string';
-}
+const isMongoId = value => isString(value) && validator.isMongoId(value);
 
 module.exports = {
   isBoolean,
@@ -62,5 +41,5 @@ module.exports = {
   isLatLongArray,
   isMongoId,
   isNumber,
-  isString
-}
+  isString,
+};
