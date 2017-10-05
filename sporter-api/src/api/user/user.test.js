@@ -48,7 +48,7 @@ describe('User', () => {
 
         expect(res).to.be.json;
         expect(res).to.have.status(200);
-        expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
+        expect(res.body.data.session).to.have.all.keys(['id', 'token']);
       } catch (e) {
         throw new Error(e);
       }
@@ -121,7 +121,7 @@ describe('User', () => {
     it('should return 422 when the first name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
-      user.first_name = true;
+      user.firstName = true;
 
       try {
         await chai.request(app)
@@ -141,7 +141,7 @@ describe('User', () => {
     it('should return 422 when the last name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
-      user.last_name = 1;
+      user.lastName = 1;
 
       await User.create(user);
 
@@ -284,7 +284,7 @@ describe('User', () => {
 
       try {
         const res = await chai.request(app)
-          .get(`${userPath}/${user._id}`)
+          .get(`${userPath}/${user.id}`)
           .set('content-type', 'application/json');
 
         expect(res).to.be.json;
@@ -381,13 +381,13 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res1.body.data.session._id;
+        const userId = res1.body.data.session.id;
         const { token } = res1.body.data.session;
 
         user.email = 'put@users.com';
         user.password = 'newPassword';
-        user.first_name = 'newTestFirstName';
-        user.last_name = 'newTestLastName';
+        user.firstName = 'newTestFirstName';
+        user.lastName = 'newTestLastName';
         user.age = 20;
         user.location = 'A Coruña';
 
@@ -468,7 +468,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         user.email = false;
@@ -497,7 +497,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         user.email = 'string';
@@ -526,10 +526,10 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
-        user.first_name = 20;
+        user.firstName = 20;
 
         await chai.request(app)
           .put(`${userPath}/${userId}`)
@@ -555,10 +555,10 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
-        user.last_name = 231;
+        user.lastName = 231;
 
         chai.request(app)
           .put(`${userPath}/${userId}`)
@@ -584,7 +584,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         user.age = '22';
@@ -613,7 +613,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         user.location = true;
@@ -703,7 +703,7 @@ describe('User', () => {
           .post(userPath)
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         await User.remove({});
@@ -734,7 +734,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res1.body.data.session._id;
+        const userId = res1.body.data.session.id;
         const { token } = res1.body.data.session;
 
         const body = {
@@ -829,7 +829,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         const body = {
@@ -860,7 +860,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         const body = {
@@ -891,7 +891,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         const body = {
@@ -954,7 +954,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         const body = {
@@ -990,7 +990,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res1.body.data.session._id;
+        const userId = res1.body.data.session.id;
         const { token } = res1.body.data.session;
 
         const res2 = await chai.request(app)
@@ -1125,7 +1125,7 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .send(user);
 
-        const userId = res.body.data.session._id;
+        const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
         User.remove({});

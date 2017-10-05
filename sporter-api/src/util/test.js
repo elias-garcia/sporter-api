@@ -5,8 +5,8 @@ const createSport = name => ({ name });
 const createUser = email => ({
   email,
   password: 'testpassword',
-  first_name: 'User',
-  last_name: 'Test',
+  firstName: 'User',
+  lastName: 'Test',
   age: 30,
   location: 'Madrid, Spain',
 });

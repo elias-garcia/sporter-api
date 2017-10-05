@@ -34,10 +34,10 @@ describe('Events', () => {
     sport2 = await Sport.create(test.createSport('Baloncesto'));
     user1 = await User.create(preUser1);
     user2 = await User.create(preUser2);
-    event1 = await Event.create(test.createEventDb(user1._id, sport1._id));
-    event2 = await Event.create(test.createEventDb(user1._id, sport2._id));
-    event3 = await Event.create(test.createEventDb(user2._id, sport1._id));
-    event4 = await Event.create(test.createEventDb(user2._id, sport2._id));
+    event1 = await Event.create(test.createEventDb(user1.id, sport1.id));
+    event2 = await Event.create(test.createEventDb(user1.id, sport2.id));
+    event3 = await Event.create(test.createEventDb(user2.id, sport1.id));
+    event4 = await Event.create(test.createEventDb(user2.id, sport2.id));
 
     const res = await chai.request(app)
       .post(`${apiPath}/sessions`)
@@ -46,50 +46,50 @@ describe('Events', () => {
 
     user1Token = res.body.data.session.token;
   });
-/*
-  describe('POST /events', function () {
+  /*
+    describe('POST /events', function () {
 
-    it('should return 200, id and event info', async function () {
-      const event = test.createEventPost(sport1._id);
+      it('should return 200, id and event info', async function () {
+        const event = test.createEventPost(sport1.id);
 
-      try {
-        const res = await chai.request(app)
-          .post(`${eventPath}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${user1Token}`)
-          .send(event);
+        try {
+          const res = await chai.request(app)
+            .post(`${eventPath}`)
+            .set('content-type', 'application/json')
+            .set('authorization', `Bearer ${user1Token}`)
+            .send(event);
 
-        expect(res).to.be.json;
-        expect(res).to.have.status(200);
-        expect(res.body.data.event).to.have.all.keys(
-          ['name', 'location', 'sport', 'start_date', 'ending_date',
-            'description', 'intensity', 'paid', 'status', 'host', 'players']);
-      } catch (e) {
-        throw new Error(e);
-      }
-    });
-
-  });
-
-    describe('GET /events', () => {
-
-      it('should return 200 when searching all events', (done) => {
-        chai.request(app)
-          .get(`${eventPath}`)
-          .set('content-type', 'application/json')
-          .end((err, res) => {
-            expect(res).to.be.json;
-            expect(res).to.have.status(200);
-            expect(res.body.data.events.length).to.be.equal(1);
-            console.log(JSON.stringify(res.body.data));
-            expect(res.body.data.events[0]).to.have.all.keys(
-              ['_id', 'name', 'location', 'sport', 'start_date', 'ending_date',
-                'description', 'intensity', 'paid', 'status', 'host', 'players',
-                'created_at', 'updated_at']);
-            done();
-          });
+          expect(res).to.be.json;
+          expect(res).to.have.status(200);
+          expect(res.body.data.event).to.have.all.keys(
+            ['name', 'location', 'sport', 'start_date', 'ending_date',
+              'description', 'intensity', 'paid', 'status', 'host', 'players']);
+        } catch (e) {
+          throw new Error(e);
+        }
       });
 
     });
-  */
+
+      describe('GET /events', () => {
+
+        it('should return 200 when searching all events', (done) => {
+          chai.request(app)
+            .get(`${eventPath}`)
+            .set('content-type', 'application/json')
+            .end((err, res) => {
+              expect(res).to.be.json;
+              expect(res).to.have.status(200);
+              expect(res.body.data.events.length).to.be.equal(1);
+              console.log(JSON.stringify(res.body.data));
+              expect(res.body.data.events[0]).to.have.all.keys(
+                ['id', 'name', 'location', 'sport', 'start_date', 'ending_date',
+                  'description', 'intensity', 'paid', 'status', 'host', 'players',
+                  'createdAt', 'updatedAt']);
+              done();
+            });
+        });
+
+      });
+    */
 });

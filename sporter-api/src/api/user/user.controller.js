@@ -10,8 +10,8 @@ const create = async (req, res, next) => {
      */
     if (!validator.isEmail(req.body.email) ||
       !req.body.password ||
-      !validator.isString(req.body.first_name) ||
-      !validator.isString(req.body.last_name) ||
+      !validator.isString(req.body.firstName) ||
+      !validator.isString(req.body.lastName) ||
       !validator.isNumber(req.body.age) ||
       !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
@@ -23,8 +23,8 @@ const create = async (req, res, next) => {
     const session = await userService.register(
       req.body.email,
       String(req.body.password),
-      req.body.first_name,
-      req.body.last_name,
+      req.body.firstName,
+      req.body.lastName,
       req.body.age,
       req.body.location,
     );
@@ -68,8 +68,8 @@ const update = async (req, res, next) => {
      */
     if (!validator.isMongoId(req.params.userId) ||
       !validator.isEmail(req.body.email) ||
-      !validator.isString(req.body.first_name) ||
-      !validator.isString(req.body.last_name) ||
+      !validator.isString(req.body.firstName) ||
+      !validator.isString(req.body.lastName) ||
       !validator.isNumber(req.body.age) ||
       !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
@@ -88,8 +88,8 @@ const update = async (req, res, next) => {
     await userService.update(
       req.params.userId,
       req.body.email,
-      req.body.first_name,
-      req.body.last_name,
+      req.body.firstName,
+      req.body.lastName,
       req.body.age,
       req.body.location,
     );

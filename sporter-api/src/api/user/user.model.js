@@ -12,11 +12,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  first_name: {
+  firstName: {
     type: String,
     required: true,
   },
-  last_name: {
+  lastName: {
     type: String,
     required: true,
   },
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   location: {
     type: String,
   },
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+}, { timestamps: true });
 
 userSchema.pre('save', function (next) {
   const user = this;

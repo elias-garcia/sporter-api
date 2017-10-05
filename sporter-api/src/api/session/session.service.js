@@ -30,12 +30,12 @@ const logIn = async (email, password) => {
    * Sign a JWT token
    */
   const token = jwt.sign(
-    { sub: user._id },
+    { sub: user.id },
     appConfig.jwtSecret,
-    { expiresIn: appConfig.jwtMaxAge }
+    { expiresIn: appConfig.jwtMaxAge },
   );
 
-  return { _id: user._id, token };
+  return { id: user.id, token };
 };
 
 module.exports = {

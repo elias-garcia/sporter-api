@@ -8,13 +8,13 @@ const ApiError = require('../api-error');
  * Registers a new user into the application and log he in.
  * @param {*} email - Email of the new user
  * @param {*} password - Password of the new user
- * @param {*} first_name - First name of the new user
- * @param {*} last_name - Lasr name of the new user
+ * @param {*} firstName - First name of the new user
+ * @param {*} lastName - Lasr name of the new user
  * @param {*} age - Age of the new user
  * @param {*} location - Location of the new user
  * @returns {Object} Session object containing the logged in user userId and a JWT token
  */
-const register = async (email, password, first_name, last_name, age, location) => {
+const register = async (email, password, firstName, lastName, age, location) => {
   /**
    * Check if the user already exists in the db
    */
@@ -27,19 +27,19 @@ const register = async (email, password, first_name, last_name, age, location) =
    * Create the user in the db
    */
   const newUser = await User.create({
-    email, password, first_name, last_name, age, location,
+    email, password, firstName, lastName, age, location,
   });
 
   /**
    * Sign a JWT token
    */
   const token = jwt.sign(
-    { sub: newUser._id },
+    { sub: newUser.id },
     appConfig.jwtSecret,
     { expiresIn: appConfig.jwtMaxAge },
   );
 
-  return { _id: newUser._id, token };
+  return { id: newUser.id, token };
 };
 
 /**
@@ -64,12 +64,12 @@ const findById = async (userId) => {
  * @param {*} userId - The userId of the user to be updated
  * @param {*} email - The new email of the user
  * @param {*} password - The new password of the user
- * @param {*} first_name - The new first name of the user
- * @param {*} last_name - The new last name of the user
+ * @param {*} firstName - The new first name of the user
+ * @param {*} lastName - The new last name of the user
  * @param {*} age - The new age of the user
  * @param {*} location - The new location of the user
  */
-const update = async (userId, email, first_name, last_name, age, location) => {
+const update = async (userId, email, firstName, lastName, age, location) => {
   /**
    * Check if the user exists in the database
    */
@@ -82,7 +82,7 @@ const update = async (userId, email, first_name, last_name, age, location) => {
    * Update the user information
    */
   await user.update({
-    email, first_name, last_name, age, location,
+    email, firstName, lastName, age, location,
   });
 };
 

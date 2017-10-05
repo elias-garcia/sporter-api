@@ -49,7 +49,7 @@ describe('Session', () => {
 
         expect(res).to.be.json;
         expect(res).to.have.status(200);
-        expect(res.body.data.session).to.have.all.keys(['_id', 'token']);
+        expect(res.body.data.session).to.have.all.keys(['id', 'token']);
       } catch (e) {
         throw new Error(e);
       }

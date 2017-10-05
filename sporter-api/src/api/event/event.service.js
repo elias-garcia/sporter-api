@@ -42,7 +42,7 @@ const create = async (userId, sportId, name, latitude, longitude,
     paid,
     status: EventStatus.WAITING,
     host: userId,
-    players: [user._id],
+    players: [user.id],
   });
 
   /**
@@ -175,7 +175,7 @@ const join = async (userId, eventId) => {
   /**
    * Add the user to the event players list
    */
-  event.players.push(user._id);
+  event.players.push(user.id);
 
   /**
    * Save changes

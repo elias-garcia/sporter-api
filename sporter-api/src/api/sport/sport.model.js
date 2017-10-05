@@ -5,7 +5,7 @@ const sportSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updatedAt' } });
+}, { timestamps: true });
 
 const sportModel = mongoose.model('Sport', sportSchema);
 
