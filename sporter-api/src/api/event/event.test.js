@@ -15,8 +15,8 @@ chai.use(chaiHttp);
 describe('Events', () => {
   const eventPath = `${apiPath}/events`;
   const nonExistingId = '58ffc747a0033611f1f783a7';
-  const farCoordinates = '-8.544844,42.878213';
-  const nearCoordinates = '-8.4149298,43.3683169';
+  const farCoordinates = '42.878213,-8.544844';
+  const nearCoordinates = '43.3683169,-8.4149298';
   const longDistance = 100;
 
   let sport1;

@@ -85,9 +85,8 @@ const findAll = async (userId, sportId, startDate,
    */
   if (latitude && longitude) {
     const distance = maxDistance || appConfig.defaultMaxDistance;
-
     query = query.where('location').near({
-      center: { coordinates: [latitude, longitude], type: 'Point' }, maxDistance: distance * 1000, spherical: true,
+      center: { coordinates: [longitude, latitude], type: 'Point' }, maxDistance: distance * 1000, spherical: true,
     });
   }
 
