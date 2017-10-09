@@ -9,7 +9,7 @@ const eventSchema = new mongoose.Schema({
   },
   location: {
     type: { type: String, default: 'Point', required: true },
-    coordinates: { type: [Number], required: true, index: '2dsphere' },
+    coordinates: { type: [Number], required: true },
   },
   sport: {
     type: mongoose.Schema.Types.ObjectId,
@@ -52,6 +52,8 @@ const eventSchema = new mongoose.Schema({
     ref: 'User',
   }],
 }, { timestamps: true });
+
+eventSchema.index({ location: '2dsphere' });
 
 const Event = mongoose.model('Event', eventSchema);
 

@@ -15,7 +15,7 @@ describe('User', () => {
   const nonExistingUserId = '59afcfa6f8e7020004e5765d';
   const notValidToken = 'Bearer I1NiIsI6Ie.yJhbGciOiJIUz.eyJzdWkpXVCJ9';
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await User.remove({});
   });
 

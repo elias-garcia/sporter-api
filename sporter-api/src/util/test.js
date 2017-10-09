@@ -11,15 +11,24 @@ const createUser = email => ({
   location: 'Madrid, Spain',
 });
 
-const createEventDb = (userId, sportId) => {
+const createEventDb = (userId, sportId, offsetDays) => {
+  let now = new Date();
+  let after;
+
+  now.setDate(now.getDate() + offsetDays);
+  after = now;
+  now = now.toISOString();
+  after.setHours(after.getHours() + 2);
+  after = after.toISOString();
+
   const event = {
     name: 'Test Event',
     location: {
-      coordinates: [40.714224, -73.961452],
+      coordinates: [-8.407628, 43.367373],
     },
     sport: sportId,
-    startDate: '2017-10-28T18:00:00Z',
-    endingDate: '2017-10-28T19:00:00Z',
+    startDate: now,
+    endingDate: after,
     description: 'Event description',
     intensity: eventIntensity.LOW,
     paid: false,
@@ -30,12 +39,18 @@ const createEventDb = (userId, sportId) => {
 };
 
 const createEventPost = (sportId) => {
+  const now = new Date().toISOString();
+  let after = new Date();
+
+  after.setHours(after.getHours() + 2);
+  after = after.toISOString();
+
   const event = {
     name: 'Test Event',
-    coordinates: [40.714224, -73.961452],
+    coordinates: [-8.407628, 43.367373],
     sportId,
-    startDate: '2017-10-28T18:00:00Z',
-    endingDate: '2017-10-28T19:00:00Z',
+    startDate: now,
+    endingDate: after,
     description: 'Event description',
     intensity: eventIntensity.LOW,
     paid: false,

@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
-const dbScript = require('../scripts/db-prod');
 const appConfig = require('../config/app.config');
 
 const configure = () => {
   mongoose.Promise = global.Promise;
 
   mongoose.connect(appConfig.mongo, { useMongoClient: true }, () => {
-    mongoose.connection.db.dropDatabase();
-    dbScript.init();
+    // Initialization code
+    mongoose.set('debug', true);
   });
 
   mongoose.connection.on('connected', () => {

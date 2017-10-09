@@ -49,6 +49,7 @@ const create = async (req, res, next) => {
 };
 
 const findAll = async (req, res, next) => {
+  let startDate;
   let latitude;
   let longitude;
 
@@ -66,6 +67,16 @@ const findAll = async (req, res, next) => {
       if (!validator.isMongoId(req.query.sportId)) {
         throw new ApiError(422, 'unprocessable entity');
       }
+    }
+
+    if (req.query.startDate) {
+      if (!validator.isISO8601(req.query.startDate)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+      /**
+       * Convert the string to a valid JS Date
+       */
+      startDate = new Date(req.query.startDate);
     }
 
     if (req.query.coordinates) {
@@ -103,12 +114,12 @@ const findAll = async (req, res, next) => {
     const events = await eventService.findAll(
       req.query.userId,
       req.query.sportId,
+      startDate,
       latitude,
       longitude,
-      new Date(req.query.startDate),
       req.query.maxDistance,
-      req.query.limit,
-      req.query.offset,
+      Number(req.query.limit),
+      Number(req.query.offset),
     );
 
     /**

@@ -14,7 +14,10 @@ chai.use(chaiHttp);
 
 describe('Events', () => {
   const eventPath = `${apiPath}/events`;
-  const nonExistingEventId = '58ffc747a0033611f1f783a7';
+  const nonExistingId = '58ffc747a0033611f1f783a7';
+  const farCoordinates = '-8.544844,42.878213';
+  const nearCoordinates = '-8.4149298,43.3683169';
+  const longDistance = 100;
 
   let sport1;
   let sport2;
@@ -34,10 +37,10 @@ describe('Events', () => {
     sport2 = await Sport.create(test.createSport('Baloncesto'));
     user1 = await User.create(preUser1);
     user2 = await User.create(preUser2);
-    event1 = await Event.create(test.createEventDb(user1.id, sport1.id));
-    event2 = await Event.create(test.createEventDb(user1.id, sport2.id));
-    event3 = await Event.create(test.createEventDb(user2.id, sport1.id));
-    event4 = await Event.create(test.createEventDb(user2.id, sport2.id));
+    event1 = await Event.create(test.createEventDb(user1.id, sport1.id, 1));
+    event2 = await Event.create(test.createEventDb(user1.id, sport2.id, 1));
+    event3 = await Event.create(test.createEventDb(user2.id, sport1.id, 3));
+    event4 = await Event.create(test.createEventDb(user2.id, sport2.id, 5));
 
     const res = await chai.request(app)
       .post(`${apiPath}/sessions`)
@@ -45,6 +48,12 @@ describe('Events', () => {
       .send({ email: preUser1.email, password: preUser1.password });
 
     user1Token = res.body.data.session.token;
+  });
+
+  afterEach(async () => {
+    await Event.remove({});
+    await User.remove({});
+    await Sport.remove({});
   });
 
   describe('POST /events', () => {
@@ -68,25 +77,168 @@ describe('Events', () => {
       }
     });
   });
-});
 
-/*
   describe('GET /events', () => {
-    it('should return 200 when searching all events', (done) => {
-      chai.request(app)
+    it('should return 200 and all events sorted when searching without query params', async () => {
+      const res = await chai.request(app)
         .get(`${eventPath}`)
-        .set('content-type', 'application/json')
-        .end((err, res) => {
-          expect(res).to.be.json;
-          expect(res).to.have.status(200);
-          expect(res.body.data.events.length).to.be.equal(1);
-          console.log(JSON.stringify(res.body.data));
-          expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'location', 'sport', 'startDate', 'endingDate',
-              'description', 'intensity', 'paid', 'status', 'host', 'players',
-              'createdAt', 'updatedAt']);
-          done();
-        });
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(4);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+      });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[2].id).to.be.equal(event3.id);
+      expect(res.body.data.events[3].id).to.be.equal(event4.id);
+    });
+
+    it('should return 200 and 2 events sorted with limit 2 and offset 0', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ limit: 2, offset: 1 })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+      });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+    });
+
+    it('should return 200 and 1 event sorted with limit 3 and offset 1', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ limit: 3, offset: 2 })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].id).to.be.equal(event4.id);
+    });
+
+    it('should return 200 and 2 events sorted when finding by user1 id', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ userId: user1.id })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.host).to.be.equal(user1.id);
+        expect(event.players.length).to.be.equal(1);
+        expect(event.players[0]).to.be.equal(user1.id);
+        expect(res.body.data.events[0].id).to.be.equal(event1.id);
+        expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      });
+    });
+
+    it('should return 200 and 2 events when finding by sport1 id', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ sportId: sport1.id })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.be.equal(sport1.id);
+      });
+    });
+
+    it('should return 200 and 2 events sorted when finding by 1d away from today', async () => {
+      const startDate = new Date();
+
+      startDate.setDate(startDate.getDate() + 1);
+
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ startDate })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+      });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+    });
+
+    it('should return 200 and 1 event sorted when finding by 5d away from today', async () => {
+      const startDate = new Date();
+
+      startDate.setDate(startDate.getDate() + 5);
+
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ startDate })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0].id).to.be.equal(event4.id);
+    });
+
+    it('should return 200 and 0 events sorted when finding by a far away distance', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ coordinates: farCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(0);
+    });
+
+    it('should return 200 and 4 events sorted when finding by maxDistance', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ coordinates: farCoordinates, maxDistance: longDistance })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(4);
+    });
+
+    it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ coordinates: nearCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(4);
     });
   });
 });
-*/
+

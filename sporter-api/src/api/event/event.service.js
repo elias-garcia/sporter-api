@@ -6,8 +6,6 @@ const Sport = require('../sport/sport.model');
 const date = require('../../util/date');
 const ApiError = require('../api-error');
 
-const MILE_TO_KM = 1.60934;
-
 const create = async (userId, sportId, name, latitude, longitude,
   startDate, endingDate, description, intensity, paid) => {
   /**
@@ -52,9 +50,9 @@ const create = async (userId, sportId, name, latitude, longitude,
 };
 
 const findAll = async (userId, sportId, startDate,
-  latitude, longitude, maxDistance, total, page) => {
-  const limit = total || appConfig.defaultLimit;
-  const offset = page || 1;
+  latitude, longitude, maxDistance, pageSize, pageNumber) => {
+  const limit = pageSize || appConfig.defaultLimit;
+  const offset = pageNumber || 1;
   const skip = limit * (offset - 1);
   let query;
 
@@ -89,14 +87,14 @@ const findAll = async (userId, sportId, startDate,
     const distance = maxDistance || appConfig.defaultMaxDistance;
 
     query = query.where('location').near({
-      center: [longitude, latitude], maxDistance: distance * MILE_TO_KM, spherical: true,
+      center: { coordinates: [latitude, longitude], type: 'Point' }, maxDistance: distance * 1000, spherical: true,
     });
   }
 
   /**
    * Find the events matching the query params
    */
-  const events = await query.skip(skip).limit(limit).exec();
+  const events = await query.sort({ startDate: 'asc' }).skip(skip).limit(limit).exec();
 
   /**
    * Return the matched events

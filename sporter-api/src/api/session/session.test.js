@@ -13,7 +13,7 @@ chai.use(chaiHttp);
 describe('Session', () => {
   const sessionPath = `${apiPath}/sessions`;
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await User.remove({});
   });
 
