@@ -35,8 +35,8 @@ const create = async (userId, sportId, name, latitude, longitude,
       coordinates: [longitude, latitude],
     },
     sport: sportId,
-    start_date: startDate,
-    ending_date: endingDate,
+    startDate,
+    endingDate,
     description,
     intensity,
     paid,
@@ -62,9 +62,9 @@ const findAll = async (userId, sportId, startDate,
    * Filter the events by user
    */
   if (userId) {
-    query = Event.find({ host: userId }, '-__v');
+    query = Event.find({ host: userId });
   } else {
-    query = Event.find({}, '-__v');
+    query = Event.find({});
   }
 
   /**
@@ -78,7 +78,7 @@ const findAll = async (userId, sportId, startDate,
    * Filter the events by day
    */
   if (startDate) {
-    query.where('start_date').gte(date.startDate(startDate)).lte(date.endDate(startDate));
+    query.where('startDate').gte(date.startDate(startDate)).lte(date.endDate(startDate));
   }
 
   /**
@@ -108,7 +108,7 @@ const find = async (eventId) => {
   /**
    * Find the event in the db
    */
-  const event = await Event.findById(eventId, '-__v')
+  const event = await Event.findById(eventId)
     .populate('sport', 'host', 'players')
     .exec();
 
@@ -141,8 +141,8 @@ const update = async (eventId, sportId, name, latitude, longitude,
       coordinates: [longitude, latitude],
     },
     sport: sportId,
-    start_date: startDate,
-    ending_date: endingDate,
+    startDate,
+    endingDate,
     description,
     intensity,
     paid,

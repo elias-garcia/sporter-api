@@ -51,7 +51,7 @@ const findById = async (userId) => {
   /**
    * Find the user in db and check if it exists
    */
-  const user = await User.findById(userId, '-password -__v').exec();
+  const user = await User.findById(userId, '-password').exec();
   if (!user) {
     throw new ApiError(404, 'user not found');
   }

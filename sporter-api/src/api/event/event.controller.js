@@ -3,6 +3,7 @@ const eventService = require('./event.service');
 const validator = require('../../util/validator');
 const json = require('../../util/json');
 const ApiError = require('../api-error');
+const dto = require('../../util/dto');
 
 const create = async (req, res, next) => {
   try {
@@ -12,9 +13,9 @@ const create = async (req, res, next) => {
     if (!validator.isMongoId(req.body.sportId) ||
       !validator.isString(req.body.name) ||
       !validator.isLatLongArray(req.body.coordinates) ||
-      !validator.isDateAfterNow(req.body.start_date) ||
-      !validator.isDateAfterNow(req.body.ending_date) ||
-      !validator.isDateAfter(req.body.ending_date, req.body.start_date) ||
+      !validator.isDateAfterNow(req.body.startDate) ||
+      !validator.isDateAfterNow(req.body.endingDate) ||
+      !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(EventIntensity).includes(req.body.intensity) ||
       !validator.isBoolean(req.body.paid)
@@ -31,8 +32,8 @@ const create = async (req, res, next) => {
       req.body.name,
       req.body.coordinates[0],
       req.body.coordinates[1],
-      new Date(req.body.start_date),
-      new Date(req.body.ending_date),
+      new Date(req.body.startDate),
+      new Date(req.body.endingDate),
       req.body.description,
       req.body.intensity,
       req.body.paid,
@@ -41,7 +42,7 @@ const create = async (req, res, next) => {
     /**
      * Return the created event
      */
-    return res.status(200).json(json.createData('event', event));
+    return res.status(200).json(json.createData('event', dto.transform(event)));
   } catch (err) {
     return next(err);
   }
@@ -113,7 +114,7 @@ const findAll = async (req, res, next) => {
     /**
      * Return the matching events
      */
-    return res.status(200).json(json.createData('events', events));
+    return res.status(200).json(json.createData('events', dto.transform(events)));
   } catch (err) {
     return next(err);
   }
@@ -137,7 +138,7 @@ const find = async (req, res, next) => {
     /**
      * Return the requested event
      */
-    return res.status(200).json(json.createData('event', event));
+    return res.status(200).json(json.createData('event', dto.transform(event)));
   } catch (err) {
     return next(err);
   }
@@ -151,9 +152,9 @@ const update = async (req, res, next) => {
     if (!validator.isMongoId(req.body.sportId) ||
       !validator.isString(req.body.name) ||
       !validator.isLatLongArray(req.body.coordinates) ||
-      !validator.isDateAfterNow(req.body.start_date) ||
-      !validator.isDateAfterNow(req.body.ending_date) ||
-      !validator.isDateAfter(req.body.ending_date, req.body.start_date) ||
+      !validator.isDateAfterNow(req.body.startDate) ||
+      !validator.isDateAfterNow(req.body.endingDate) ||
+      !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(EventIntensity).includes(req.body.intensity) ||
       !validator.isBoolean(req.body.paid)
@@ -170,8 +171,8 @@ const update = async (req, res, next) => {
       req.body.name,
       req.body.coordinates[0],
       req.body.coordinates[1],
-      new Date(req.body.start_date),
-      new Date(req.body.ending_date),
+      new Date(req.body.startDate),
+      new Date(req.body.endingDate),
       req.body.description,
       req.body.intensity,
       req.body.paid,

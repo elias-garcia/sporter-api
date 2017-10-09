@@ -1,6 +1,7 @@
 const userService = require('./user.service');
 const json = require('../../util/json');
 const validator = require('../../util/validator');
+const dto = require('../../util/dto');
 const ApiError = require('../api-error');
 
 const create = async (req, res, next) => {
@@ -55,7 +56,7 @@ const find = async (req, res, next) => {
     /**
      * Return the created user object
      */
-    return res.status(200).json(json.createData('user', user));
+    return res.status(200).json(json.createData('user', dto.transform(user)));
   } catch (err) {
     return next(err);
   }

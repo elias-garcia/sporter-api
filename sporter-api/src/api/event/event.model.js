@@ -16,11 +16,11 @@ const eventSchema = new mongoose.Schema({
     ref: 'Sport',
     required: true,
   },
-  start_date: {
+  startDate: {
     type: Date,
     required: true,
   },
-  ending_date: {
+  endingDate: {
     type: Date,
     required: true,
   },

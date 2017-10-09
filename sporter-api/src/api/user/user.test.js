@@ -289,6 +289,8 @@ describe('User', () => {
 
         expect(res).to.be.json;
         expect(res).to.have.status(200);
+        expect(res.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
+          'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
         expect(res.body.data.user.email).to.be.equal(user.email);
         expect(res.body.data.user.firstName).to.be.equal(user.firstName);
         expect(res.body.data.user.lastName).to.be.equal(user.lastName);

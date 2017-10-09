@@ -46,50 +46,46 @@ describe('Events', () => {
 
     user1Token = res.body.data.session.token;
   });
-  /*
-    describe('POST /events', function () {
 
-      it('should return 200, id and event info', async function () {
-        const event = test.createEventPost(sport1.id);
+  describe('POST /events', () => {
+    it('should return 200, id and event info', async () => {
+      const event = test.createEventPost(sport1.id);
 
-        try {
-          const res = await chai.request(app)
-            .post(`${eventPath}`)
-            .set('content-type', 'application/json')
-            .set('authorization', `Bearer ${user1Token}`)
-            .send(event);
+      try {
+        const res = await chai.request(app)
+          .post(`${eventPath}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
 
+        expect(res).to.be.json;
+        expect(res).to.have.status(200);
+        expect(res.body.data.event).to.have.all.keys(['id', 'name', 'location', 'sport',
+          'startDate', 'endingDate', 'description', 'intensity', 'paid', 'status', 'host', 'players']);
+      } catch (e) {
+        throw new Error(e);
+      }
+    });
+  });
+});
+
+/*
+  describe('GET /events', () => {
+    it('should return 200 when searching all events', (done) => {
+      chai.request(app)
+        .get(`${eventPath}`)
+        .set('content-type', 'application/json')
+        .end((err, res) => {
           expect(res).to.be.json;
           expect(res).to.have.status(200);
-          expect(res.body.data.event).to.have.all.keys(
-            ['name', 'location', 'sport', 'start_date', 'ending_date',
-              'description', 'intensity', 'paid', 'status', 'host', 'players']);
-        } catch (e) {
-          throw new Error(e);
-        }
-      });
-
-    });
-
-      describe('GET /events', () => {
-
-        it('should return 200 when searching all events', (done) => {
-          chai.request(app)
-            .get(`${eventPath}`)
-            .set('content-type', 'application/json')
-            .end((err, res) => {
-              expect(res).to.be.json;
-              expect(res).to.have.status(200);
-              expect(res.body.data.events.length).to.be.equal(1);
-              console.log(JSON.stringify(res.body.data));
-              expect(res.body.data.events[0]).to.have.all.keys(
-                ['id', 'name', 'location', 'sport', 'start_date', 'ending_date',
-                  'description', 'intensity', 'paid', 'status', 'host', 'players',
-                  'createdAt', 'updatedAt']);
-              done();
-            });
+          expect(res.body.data.events.length).to.be.equal(1);
+          console.log(JSON.stringify(res.body.data));
+          expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'location', 'sport', 'startDate', 'endingDate',
+              'description', 'intensity', 'paid', 'status', 'host', 'players',
+              'createdAt', 'updatedAt']);
+          done();
         });
-
-      });
-    */
+    });
+  });
 });
+*/
