@@ -60,8 +60,9 @@ describe('Events', () => {
 
         expect(res).to.be.json;
         expect(res).to.have.status(200);
-        expect(res.body.data.event).to.have.all.keys(['id', 'name', 'location', 'sport',
-          'startDate', 'endingDate', 'description', 'intensity', 'paid', 'status', 'host', 'players']);
+        expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
       } catch (e) {
         throw new Error(e);
       }
