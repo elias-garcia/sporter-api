@@ -70,7 +70,7 @@ const findAll = async (req, res, next) => {
     }
 
     if (req.query.startDate) {
-      if (!validator.isISO8601(req.query.startDate)) {
+      if (!validator.isISO8601Date(req.query.startDate)) {
         throw new ApiError(422, 'unprocessable entity');
       }
       /**

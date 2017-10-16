@@ -170,9 +170,10 @@ describe('Events', () => {
     });
 
     it('should return 200 and 2 events sorted when finding by 1d away from today', async () => {
-      const startDate = new Date();
+      let startDate = new Date();
 
       startDate.setDate(startDate.getDate() + 1);
+      startDate = startDate.toISOString().slice(0, 10);
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
@@ -192,9 +193,10 @@ describe('Events', () => {
     });
 
     it('should return 200 and 1 event sorted when finding by 5d away from today', async () => {
-      const startDate = new Date();
+      let startDate = new Date();
 
       startDate.setDate(startDate.getDate() + 5);
+      startDate = startDate.toISOString().slice(0, 10);
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
@@ -238,6 +240,73 @@ describe('Events', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(4);
+    });
+
+    it('should return 200 and 1 event when finding by userId and sportId', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ userId: user1.id, sportId: sport1.id })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[0].sport).to.be.equal(sport1.id);
+    });
+
+    it('should return 200 and 1 event when finding by userId and startDate', async () => {
+      let startDate = new Date();
+
+      startDate.setDate(startDate.getDate() + 3);
+      startDate = startDate.toISOString().slice(0, 10);
+
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ userId: user2.id, startDate })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+      expect(res.body.data.events[0].startDate).to.be.equal(event3.startDate.toISOString());
+    });
+
+    it('should return 200 and 1 event when finding by userId and coordinates', async () => {
+      let startDate = new Date();
+
+      startDate.setDate(startDate.getDate() + 3);
+      startDate = startDate.toISOString().slice(0, 10);
+
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ userId: user1.id, coordinates: nearCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+    });
+
+    it('should return 200 and 1 event when finding by sportId and startDate', async () => {
+      let startDate = new Date();
+
+      startDate.setDate(startDate.getDate() + 3);
+      startDate = startDate.toISOString().slice(0, 10);
+
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ userId: user1.id, coordinates: nearCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
     });
   });
 });

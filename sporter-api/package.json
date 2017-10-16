@@ -8,6 +8,7 @@
     "dev": "nodemon ./src/app.js",
     "start": "node ./src/app.js",
     "test": "mocha ./src/**/*.test.js",
+    "test-event": "mocha ./src/api/event/*.test.js",
     "lint": "eslint ./src"
   },
   "author": "Elías García",

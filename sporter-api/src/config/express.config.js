@@ -14,6 +14,9 @@ const configure = (app) => {
   app.use(bodyParser.json());
   app.use(morgan('dev'));
 
+  /* Disable the X-Powered-By header */
+  app.disable('x-powered-by');
+
   /* Accept only Content Type application/json */
   app.use(middleware.acceptJson);
 

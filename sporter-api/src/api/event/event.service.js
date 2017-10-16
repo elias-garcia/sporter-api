@@ -76,7 +76,7 @@ const findAll = async (userId, sportId, startDate,
    * Filter the events by day
    */
   if (startDate) {
-    query.where('startDate').gte(date.startDate(startDate)).lte(date.endDate(startDate));
+    query.where('startDate').gte(date.getStartingDate(startDate)).lte(date.getEndingDate(startDate));
   }
 
   /**

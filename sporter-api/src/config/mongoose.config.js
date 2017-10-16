@@ -6,7 +6,7 @@ const configure = () => {
 
   mongoose.connect(appConfig.mongo, { useMongoClient: true }, () => {
     // Initialization code
-    mongoose.set('debug', true);
+    // mongoose.set('debug', true);
   });
 
   mongoose.connection.on('connected', () => {
