@@ -2,8 +2,8 @@ const EventIntensity = require('./event-intensity.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
 const json = require('../../util/json');
+const eventDto = require('./event.dto');
 const ApiError = require('../api-error');
-const dto = require('../../util/dto');
 
 const create = async (req, res, next) => {
   try {
@@ -42,7 +42,7 @@ const create = async (req, res, next) => {
     /**
      * Return the created event
      */
-    return res.status(200).json(json.createData('event', dto.transform(event)));
+    return res.status(200).json(json.createData('event', eventDto.toEventDto(event)));
   } catch (err) {
     return next(err);
   }
@@ -125,7 +125,7 @@ const findAll = async (req, res, next) => {
     /**
      * Return the matching events
      */
-    return res.status(200).json(json.createData('events', dto.transform(events)));
+    return res.status(200).json(json.createData('events', eventDto.toEventsDto(events)));
   } catch (err) {
     return next(err);
   }
@@ -149,7 +149,7 @@ const find = async (req, res, next) => {
     /**
      * Return the requested event
      */
-    return res.status(200).json(json.createData('event', dto.transform(event)));
+    return res.status(200).json(json.createData('event', eventDto.toEventDto(event)));
   } catch (err) {
     return next(err);
   }
@@ -176,7 +176,7 @@ const update = async (req, res, next) => {
     /**
      * Update the event
      */
-    await eventService.update(
+    const event = await eventService.update(
       req.params.eventId,
       req.body.sportId,
       req.body.name,
@@ -191,9 +191,9 @@ const update = async (req, res, next) => {
     );
 
     /**
-     * Return no content
+     * Return the updated event
      */
-    return res.status(204).end();
+    return res.status(200).send(json.createData('event', eventDto.toEventDto(event)));
   } catch (err) {
     return next(err);
   }
@@ -212,15 +212,15 @@ const join = async (req, res, next) => {
     /**
      * Join the user to the event
      */
-    await eventService.join(
+    const event = await eventService.join(
       req.claim.sub,
       req.body.eventId,
     );
 
     /**
-     * Return no content
+     * Return the updated event
      */
-    return res.status(204).end();
+    return res.status(200).send(json.createData('event', eventDto.toEventDto(event)));
   } catch (err) {
     return next(err);
   }

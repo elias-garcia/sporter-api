@@ -1,4 +1,5 @@
 const eventIntensity = require('../api/event/event-intensity.enum');
+const eventStatus = require('../api/event/event-status.enum');
 
 const createSport = name => ({ name });
 
@@ -12,14 +13,11 @@ const createUser = email => ({
 });
 
 const createEventDb = (userId, sportId, offsetDays) => {
-  let now = new Date();
-  let after;
-
+  const now = new Date();
   now.setDate(now.getDate() + offsetDays);
-  after = now;
-  now = now.toISOString();
+
+  const after = now;
   after.setHours(after.getHours() + 2);
-  after = after.toISOString();
 
   const event = {
     name: 'Test Event',
@@ -31,6 +29,7 @@ const createEventDb = (userId, sportId, offsetDays) => {
     endingDate: after,
     description: 'Event description',
     intensity: eventIntensity.LOW,
+    status: eventStatus.WAITING,
     paid: false,
     host: userId,
     players: [userId],
@@ -39,15 +38,17 @@ const createEventDb = (userId, sportId, offsetDays) => {
 };
 
 const createEventPost = (sportId) => {
-  const now = new Date().toISOString();
-  let after = new Date();
+  let now = new Date();
+  now.setHours(now.getHours() + 2);
+  now = now.toISOString();
 
+  let after = new Date(now);
   after.setHours(after.getHours() + 2);
   after = after.toISOString();
 
   const event = {
     name: 'Test Event',
-    coordinates: [-8.407628, 43.367373],
+    coordinates: [43.367373, -8.407628],
     sportId,
     startDate: now,
     endingDate: after,

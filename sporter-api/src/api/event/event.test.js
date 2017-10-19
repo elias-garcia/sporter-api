@@ -6,6 +6,8 @@ const appConfig = require('../../config/app.config');
 const Sport = require('../sport/sport.model');
 const User = require('../user/user.model');
 const Event = require('./event.model');
+const eventStatus = require('./event-status.enum');
+const eventIntensity = require('./event-intensity.enum');
 
 const { expect } = chai;
 const apiPath = appConfig.path;
@@ -72,6 +74,7 @@ describe('Events', () => {
         expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
+        expect(res.body.data.event.status).to.be.equal(eventStatus.WAITING);
       } catch (e) {
         throw new Error(e);
       }
@@ -144,9 +147,9 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
-        expect(event.host).to.be.equal(user1.id);
+        expect(event.host.id).to.be.equal(user1.id);
         expect(event.players.length).to.be.equal(1);
-        expect(event.players[0]).to.be.equal(user1.id);
+        expect(event.players[0].id).to.be.equal(user1.id);
         expect(res.body.data.events[0].id).to.be.equal(event1.id);
         expect(res.body.data.events[1].id).to.be.equal(event2.id);
       });
@@ -165,7 +168,7 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
-        expect(event.sport).to.be.equal(sport1.id);
+        expect(event.sport.id).to.be.equal(sport1.id);
       });
     });
 
@@ -252,7 +255,7 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[0].sport).to.be.equal(sport1.id);
+      expect(res.body.data.events[0].sport.id).to.be.equal(sport1.id);
     });
 
     it('should return 200 and 1 event when finding by userId and startDate', async () => {
@@ -299,15 +302,107 @@ describe('Events', () => {
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
-        .query({ userId: user1.id, coordinates: nearCoordinates })
+        .query({ sportId: sport1.id, startDate })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    });
+
+    it('should return 200 and 2 events when finding by sportId and coordinates', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ sportId: sport1.id, coordinates: nearCoordinates })
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(2);
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[1].id).to.be.equal(event3.id);
     });
+
+    it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
+      let startDate = new Date();
+
+      startDate.setDate(startDate.getDate() + 3);
+      startDate = startDate.toISOString().slice(0, 10);
+
+      const res = await chai.request(app)
+        .get(`${eventPath}`)
+        .query({ startDate, coordinates: nearCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    });
+  });
+
+  describe('GET /events/:eventId', () => {
+    it('should return 200 and the requested event', async () => {
+      const res = await chai.request(app)
+        .get(`${eventPath}/${event1.id}`)
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.event.id).to.be.equal(event1.id);
+      expect(res.body.data.event.name).to.be.equal(event1.name);
+      expect(res.body.data.event.description).to.be.equal(event1.description);
+      expect(res.body.data.event.intensity).to.be.equal(event1.intensity);
+      expect(res.body.data.event.paid).to.be.equal(event1.paid);
+      expect(res.body.data.event.status).to.be.equal(event1.status);
+      expect(res.body.data.event.location.coordinates[0])
+        .to.be.equal(event1.location.coordinates[1]);
+      expect(res.body.data.event.location.coordinates[1])
+        .to.be.equal(event1.location.coordinates[0]);
+      expect(res.body.data.event.startDate).to.be.equal(event1.startDate.toISOString());
+      expect(res.body.data.event.endingDate).to.be.equal(event1.endingDate.toISOString());
+      expect(res.body.data.event.createdAt).to.be.equal(event1.createdAt.toISOString());
+      expect(res.body.data.event.updatedAt).to.be.equal(event1.updatedAt.toISOString());
+    });
+  });
+
+  describe('PUT /events/:eventId', () => {
+    it('should return 204 and update the event', async () => {
+      const event = test.createEventPost(sport2.id);
+
+      event.name = 'Updated Event';
+      event.description = 'Updated event description';
+      event.intensity = eventIntensity.HIGH;
+      event.paid = true;
+      event.coordinates = [39.12319, -20.98342];
+      event.sportId = sport2.id;
+
+      const res = await chai.request(app)
+        .put(`${eventPath}/${event1.id}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${user1Token}`)
+        .send(event);
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.event.name).to.be.equal(event.name);
+      expect(res.body.data.event.description).to.be.equal(event.description);
+      expect(res.body.data.event.intensity).to.be.equal(event.intensity);
+      expect(res.body.data.event.paid).to.be.equal(event.paid);
+      expect(res.body.data.event.location.coordinates[0]).to.be.equal(event.coordinates[0]);
+      expect(res.body.data.event.location.coordinates[1]).to.be.equal(event.coordinates[1]);
+      expect(res.body.data.event.sport.id).to.be.equal(event.sportId);
+    });
+  });
+
+  describe('PATCH /events/:eventId', () => {
   });
 });
 

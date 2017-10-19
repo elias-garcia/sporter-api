@@ -40,8 +40,11 @@ const create = async (userId, sportId, name, latitude, longitude,
     paid,
     status: EventStatus.WAITING,
     host: userId,
-    players: [user.id],
   });
+
+  /* Store the user in the event players field */
+  event.players.push(user.id);
+  event.save();
 
   /**
    * Return the created event
@@ -93,7 +96,14 @@ const findAll = async (userId, sportId, startDate,
   /**
    * Find the events matching the query params
    */
-  const events = await query.sort({ startDate: 'asc' }).skip(skip).limit(limit).exec();
+  const events = await query
+    .populate('sport')
+    .populate('host')
+    .populate('players')
+    .sort({ startDate: 'asc' })
+    .skip(skip)
+    .limit(limit)
+    .exec();
 
   /**
    * Return the matched events
@@ -106,7 +116,9 @@ const find = async (eventId) => {
    * Find the event in the db
    */
   const event = await Event.findById(eventId)
-    .populate('sport', 'host', 'players')
+    .populate('sport')
+    .populate('host')
+    .populate('players')
     .exec();
 
   /**
@@ -125,29 +137,41 @@ const find = async (eventId) => {
 const update = async (eventId, sportId, name, latitude, longitude,
   startDate, endingDate, description, intensity, paid, status) => {
   /**
-   * Check if the event exists
+   * Find the event and update it
    */
-  const event = await Event.findById(eventId);
+  let event = await Event.findByIdAndUpdate(
+    eventId,
+    {
+      name,
+      location: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+      sport: sportId,
+      startDate,
+      endingDate,
+      description,
+      intensity,
+      paid,
+      status,
+    },
+    { new: true },
+  );
+
+  /**
+   * Check if the found event exist
+   */
   if (!event) {
     throw new ApiError(404, 'event not found');
   }
 
-  await event.update({
-    name,
-    location: {
-      coordinates: [longitude, latitude],
-    },
-    sport: sportId,
-    startDate,
-    endingDate,
-    description,
-    intensity,
-    paid,
-    status,
-  });
+  /**
+   * Populate the event
+   */
+  event = await event.populate('sport').populate('host').populate('players').execPopulate();
 
   /**
-   * Return the updated event
+   * Return the updated event populated
    */
   return event;
 };
