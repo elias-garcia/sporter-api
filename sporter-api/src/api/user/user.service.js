@@ -71,19 +71,31 @@ const findById = async (userId) => {
  */
 const update = async (userId, email, firstName, lastName, age, location) => {
   /**
-   * Check if the user exists in the database
+   * Find and update the user information
    */
-  const user = await User.findById(userId).exec();
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      email,
+      firstName,
+      lastName,
+      age,
+      location,
+    },
+    { new: true },
+  );
+
+  /**
+   * Check if the user to update exists
+   */
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
 
   /**
-   * Update the user information
+   * Return the updated user
    */
-  await user.update({
-    email, firstName, lastName, age, location,
-  });
+  return user;
 };
 
 /**

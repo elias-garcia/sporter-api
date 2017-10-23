@@ -1,3 +1,4 @@
+const moment = require('moment');
 const EventIntensity = require('./event-intensity.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
@@ -32,8 +33,8 @@ const create = async (req, res, next) => {
       req.body.name,
       req.body.coordinates[0],
       req.body.coordinates[1],
-      new Date(req.body.startDate),
-      new Date(req.body.endingDate),
+      req.body.startDate,
+      req.body.endingDate,
       req.body.description,
       req.body.intensity,
       req.body.paid,
@@ -42,14 +43,13 @@ const create = async (req, res, next) => {
     /**
      * Return the created event
      */
-    return res.status(200).json(json.createData('event', eventDto.toEventDto(event)));
+    return res.status(201).json(json.createData('event', eventDto.toEventDto(event)));
   } catch (err) {
     return next(err);
   }
 };
 
 const findAll = async (req, res, next) => {
-  let startDate;
   let latitude;
   let longitude;
 
@@ -70,13 +70,9 @@ const findAll = async (req, res, next) => {
     }
 
     if (req.query.startDate) {
-      if (!validator.isISO8601Date(req.query.startDate)) {
+      if (!validator.isISO8601(req.query.startDate)) {
         throw new ApiError(422, 'unprocessable entity');
       }
-      /**
-       * Convert the string to a valid JS Date
-       */
-      startDate = new Date(req.query.startDate);
     }
 
     if (req.query.coordinates) {
@@ -114,7 +110,7 @@ const findAll = async (req, res, next) => {
     const events = await eventService.findAll(
       req.query.userId,
       req.query.sportId,
-      startDate,
+      req.query.startDate,
       latitude,
       longitude,
       req.query.maxDistance,
@@ -182,8 +178,8 @@ const update = async (req, res, next) => {
       req.body.name,
       req.body.coordinates[0],
       req.body.coordinates[1],
-      new Date(req.body.startDate),
-      new Date(req.body.endingDate),
+      req.body.startDate,
+      req.body.endingDate,
       req.body.description,
       req.body.intensity,
       req.body.paid,

@@ -1,3 +1,4 @@
+const moment = require('moment');
 const eventIntensity = require('../api/event/event-intensity.enum');
 const eventStatus = require('../api/event/event-status.enum');
 
@@ -13,11 +14,11 @@ const createUser = email => ({
 });
 
 const createEventDb = (userId, sportId, offsetDays) => {
-  const now = new Date();
-  now.setDate(now.getDate() + offsetDays);
+  const now = moment();
+  now.add(offsetDays, 'days');
 
-  const after = now;
-  after.setHours(after.getHours() + 2);
+  const after = now.clone();
+  after.add(2, 'hours');
 
   const event = {
     name: 'Test Event',
@@ -25,8 +26,8 @@ const createEventDb = (userId, sportId, offsetDays) => {
       coordinates: [-8.407628, 43.367373],
     },
     sport: sportId,
-    startDate: now,
-    endingDate: after,
+    startDate: now.utc().toDate(),
+    endingDate: after.utc().toDate(),
     description: 'Event description',
     intensity: eventIntensity.LOW,
     status: eventStatus.WAITING,
@@ -38,20 +39,18 @@ const createEventDb = (userId, sportId, offsetDays) => {
 };
 
 const createEventPost = (sportId) => {
-  let now = new Date();
-  now.setHours(now.getHours() + 2);
-  now = now.toISOString();
+  const now = moment();
+  now.add(2, 'hours');
 
-  let after = new Date(now);
-  after.setHours(after.getHours() + 2);
-  after = after.toISOString();
+  const after = now.clone();
+  after.add(2, 'hours');
 
   const event = {
     name: 'Test Event',
     coordinates: [43.367373, -8.407628],
     sportId,
-    startDate: now,
-    endingDate: after,
+    startDate: now.format(),
+    endingDate: after.format(),
     description: 'Event description',
     intensity: eventIntensity.LOW,
     paid: false,

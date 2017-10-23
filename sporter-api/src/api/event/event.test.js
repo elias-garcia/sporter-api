@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const moment = require('moment');
 const app = require('../../app');
 const test = require('../../util/test');
 const appConfig = require('../../config/app.config');
@@ -59,7 +60,7 @@ describe('Events', () => {
   });
 
   describe('POST /events', () => {
-    it('should return 200, id and event info', async () => {
+    it('should return 201, id and event info', async () => {
       const event = test.createEventPost(sport1.id);
 
       try {
@@ -70,7 +71,7 @@ describe('Events', () => {
           .send(event);
 
         expect(res).to.be.json;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'paid', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
@@ -173,14 +174,13 @@ describe('Events', () => {
     });
 
     it('should return 200 and 2 events sorted when finding by 1d away from today', async () => {
-      let startDate = new Date();
+      const startDate = moment();
 
-      startDate.setDate(startDate.getDate() + 1);
-      startDate = startDate.toISOString().slice(0, 10);
+      startDate.add(1, 'day');
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
-        .query({ startDate })
+        .query({ startDate: startDate.format() })
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;
@@ -196,14 +196,13 @@ describe('Events', () => {
     });
 
     it('should return 200 and 1 event sorted when finding by 5d away from today', async () => {
-      let startDate = new Date();
+      const startDate = moment();
 
-      startDate.setDate(startDate.getDate() + 5);
-      startDate = startDate.toISOString().slice(0, 10);
+      startDate.add(5, 'days');
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
-        .query({ startDate })
+        .query({ startDate: startDate.format() })
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;
@@ -259,14 +258,13 @@ describe('Events', () => {
     });
 
     it('should return 200 and 1 event when finding by userId and startDate', async () => {
-      let startDate = new Date();
+      const startDate = moment();
 
-      startDate.setDate(startDate.getDate() + 3);
-      startDate = startDate.toISOString().slice(0, 10);
+      startDate.add(3, 'days').format();
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
-        .query({ userId: user2.id, startDate })
+        .query({ userId: user2.id, startDate: startDate.format() })
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;
@@ -277,11 +275,6 @@ describe('Events', () => {
     });
 
     it('should return 200 and 1 event when finding by userId and coordinates', async () => {
-      let startDate = new Date();
-
-      startDate.setDate(startDate.getDate() + 3);
-      startDate = startDate.toISOString().slice(0, 10);
-
       const res = await chai.request(app)
         .get(`${eventPath}`)
         .query({ userId: user1.id, coordinates: nearCoordinates })
@@ -295,14 +288,13 @@ describe('Events', () => {
     });
 
     it('should return 200 and 1 event when finding by sportId and startDate', async () => {
-      let startDate = new Date();
+      const startDate = moment();
 
-      startDate.setDate(startDate.getDate() + 3);
-      startDate = startDate.toISOString().slice(0, 10);
+      startDate.add(3, 'days').format();
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
-        .query({ sportId: sport1.id, startDate })
+        .query({ sportId: sport1.id, startDate: startDate.format() })
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;
@@ -325,14 +317,13 @@ describe('Events', () => {
     });
 
     it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
-      let startDate = new Date();
+      const startDate = moment();
 
-      startDate.setDate(startDate.getDate() + 3);
-      startDate = startDate.toISOString().slice(0, 10);
+      startDate.add(3, 'days');
 
       const res = await chai.request(app)
         .get(`${eventPath}`)
-        .query({ startDate, coordinates: nearCoordinates })
+        .query({ startDate: startDate.format(), coordinates: nearCoordinates })
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;

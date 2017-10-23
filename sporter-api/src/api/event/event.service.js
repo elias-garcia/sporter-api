@@ -1,9 +1,9 @@
+const moment = require('moment');
 const appConfig = require('../../config/app.config');
 const EventStatus = require('./event-status.enum');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
-const date = require('../../util/date');
 const ApiError = require('../api-error');
 
 const create = async (userId, sportId, name, latitude, longitude,
@@ -33,8 +33,8 @@ const create = async (userId, sportId, name, latitude, longitude,
       coordinates: [longitude, latitude],
     },
     sport: sportId,
-    startDate,
-    endingDate,
+    startDate: moment(startDate).utc().format(),
+    endingDate: moment(endingDate).utc().format(),
     description,
     intensity,
     paid,
@@ -79,7 +79,8 @@ const findAll = async (userId, sportId, startDate,
    * Filter the events by day
    */
   if (startDate) {
-    query.where('startDate').gte(date.getStartingDate(startDate)).lte(date.getEndingDate(startDate));
+    const date = moment(startDate).utc();
+    query.where('startDate').gte(date.startOf('day').format()).lte(date.endOf('day').format());
   }
 
   /**
@@ -148,8 +149,8 @@ const update = async (eventId, sportId, name, latitude, longitude,
         coordinates: [longitude, latitude],
       },
       sport: sportId,
-      startDate,
-      endingDate,
+      startDate: moment(startDate).utc().format(),
+      endingDate: moment(endingDate).utc().format(),
       description,
       intensity,
       paid,

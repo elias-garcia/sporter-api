@@ -1,8 +1,8 @@
 const userService = require('./user.service');
 const json = require('../../util/json');
 const validator = require('../../util/validator');
-const dto = require('../../util/dto');
 const ApiError = require('../api-error');
+const userDto = require('./user.dto');
 
 const create = async (req, res, next) => {
   try {
@@ -33,7 +33,7 @@ const create = async (req, res, next) => {
     /**
      * Return the session object
      */
-    return res.status(200).json(json.createData('session', session));
+    return res.status(201).json(json.createData('session', session));
   } catch (err) {
     return next(err);
   }
@@ -56,7 +56,7 @@ const find = async (req, res, next) => {
     /**
      * Return the created user object
      */
-    return res.status(200).json(json.createData('user', dto.transform(user)));
+    return res.status(200).json(json.createData('user', userDto.toUserDto(user)));
   } catch (err) {
     return next(err);
   }
@@ -86,7 +86,7 @@ const update = async (req, res, next) => {
     /**
      * Update the user information
      */
-    await userService.update(
+    const user = await userService.update(
       req.params.userId,
       req.body.email,
       req.body.firstName,
@@ -98,7 +98,7 @@ const update = async (req, res, next) => {
     /**
      * Return no content
      */
-    return res.status(204).end();
+    return res.status(200).json(json.createData('user', userDto.toUserDto(user)));
   } catch (err) {
     return next(err);
   }

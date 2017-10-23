@@ -1,4 +1,5 @@
 const validator = require('validator');
+const moment = require('moment');
 
 const isBoolean = value => typeof (value) === 'boolean';
 
@@ -8,38 +9,12 @@ const isNumber = value => typeof value === 'number' && !Number.isNaN(parseFloat(
 
 const isString = value => typeof (value) === 'string';
 
-const isISO8601 = value => isString(value) && validator.isISO8601(value);
-
-const isISO8601Date = (value) => {
-  const values = value.split('-');
-
-  return isISO8601(value)
-    && value.length === 10
-    && values
-    && values.length === 3
-    && values[0].length === 4
-    && values[1].length === 2
-    && values[2].length === 2;
-};
-
-const isISO8601UTCTime = (value) => {
-  const values = value.split(':');
-
-  return isISO8601(value)
-    && value.length === 8
-    && values[0].length === 2
-    && values[1].length === 2
-    && values[2].length === 2;
-};
-
-const isISO8601UTCDateTime = value => isISO8601(value)
-  && isISO8601Date(value.split('T')[0])
-  && isISO8601UTCTime(value.split('T')[1]);
+const isISO8601 = value => isString(value) && moment(value, 'YYYY-MM-DDTHH:mm:ssZZ', true).isValid();
 
 const isDateAfter = (date1, date2) =>
-  isISO8601(date1) && isISO8601(date2) && validator.isAfter(date1, date2);
+  isISO8601(date1) && isISO8601(date2) && moment(date1).isAfter(moment(date2));
 
-const isDateAfterNow = date => isISO8601(date) && validator.isAfter(date);
+const isDateAfterNow = date => isISO8601(date) && moment(date).isAfter();
 
 const isEmail = email => isString(email) && validator.isEmail(email);
 
@@ -63,9 +38,6 @@ module.exports = {
   isEmail,
   isInt,
   isISO8601,
-  isISO8601Date,
-  isISO8601UTCTime,
-  isISO8601UTCDateTime,
   isLatLong,
   isLatLongArray,
   isMongoId,

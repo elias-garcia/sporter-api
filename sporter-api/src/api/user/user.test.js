@@ -37,7 +37,7 @@ describe('User', () => {
   });
 
   describe('POST /users', () => {
-    it('should return 200, id and an auth token', async () => {
+    it('should return 201, id and an auth token', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -47,7 +47,7 @@ describe('User', () => {
           .send(user);
 
         expect(res).to.be.json;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         expect(res.body.data.session).to.have.all.keys(['id', 'token']);
       } catch (e) {
         throw new Error(e);
@@ -374,7 +374,7 @@ describe('User', () => {
   });
 
   describe('PUT /users/:userId', () => {
-    it('should return 204 and update the user', async () => {
+    it('should return 200 and update the user', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -400,8 +400,9 @@ describe('User', () => {
           .send(user);
 
         expect(res2).to.be.json;
-        expect(res2).to.have.status(204);
-        expect(res2.body).to.be.empty;
+        expect(res2).to.have.status(200);
+        expect(res2.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
+          'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
       } catch (e) {
         throw new Error(e);
       }
