@@ -114,6 +114,14 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+        expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -134,6 +142,14 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+        expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -151,6 +167,17 @@ describe('Events', () => {
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
         'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event4.id);
     });
 
@@ -167,12 +194,20 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+        expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
         expect(event.host.id).to.be.equal(user1.id);
         expect(event.players.length).to.be.equal(1);
         expect(event.players[0].id).to.be.equal(user1.id);
-        expect(res.body.data.events[0].id).to.be.equal(event1.id);
-        expect(res.body.data.events[1].id).to.be.equal(event2.id);
       });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
     });
 
     it('should return 200 and 2 events when finding by sport1 id', async () => {
@@ -188,6 +223,14 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+        expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
         expect(event.sport.id).to.be.equal(sport1.id);
       });
     });
@@ -209,6 +252,14 @@ describe('Events', () => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
           'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+        expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -227,6 +278,17 @@ describe('Events', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event4.id);
     });
 
@@ -250,106 +312,204 @@ describe('Events', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(4);
-    });
-
-    it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ coordinates: nearCoordinates })
-        .set('content-type', 'application/json');
-
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(4);
-    });
-
-    it('should return 200 and 1 event when finding by userId and sportId', async () => {
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ userId: user1.id, sportId: sport1.id })
-        .set('content-type', 'application/json');
-
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(1);
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[0].sport.id).to.be.equal(sport1.id);
-    });
-
-    it('should return 200 and 1 event when finding by userId and startDate', async () => {
-      const startDate = moment();
-
-      startDate.add(3, 'days').format();
-
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ userId: user2.id, startDate: startDate.format() })
-        .set('content-type', 'application/json');
-
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(1);
-      expect(res.body.data.events[0].id).to.be.equal(event3.id);
-      expect(res.body.data.events[0].startDate).to.be.equal(event3.startDate.toISOString());
-    });
-
-    it('should return 200 and 1 event when finding by userId and coordinates', async () => {
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ userId: user1.id, coordinates: nearCoordinates })
-        .set('content-type', 'application/json');
-
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+        expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+      });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
     });
+  });
 
-    it('should return 200 and 1 event when finding by sportId and startDate', async () => {
-      const startDate = moment();
+  it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ coordinates: nearCoordinates })
+      .set('content-type', 'application/json');
 
-      startDate.add(3, 'days').format();
-
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ sportId: sport1.id, startDate: startDate.format() })
-        .set('content-type', 'application/json');
-
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(1);
-      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(4);
+    res.body.data.events.forEach((event) => {
+      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
     });
+  });
 
-    it('should return 200 and 2 events when finding by sportId and coordinates', async () => {
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ sportId: sport1.id, coordinates: nearCoordinates })
-        .set('content-type', 'application/json');
+  it('should return 200 and 1 event when finding by userId and sportId', async () => {
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ userId: user1.id, sportId: sport1.id })
+      .set('content-type', 'application/json');
 
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(2);
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event3.id);
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(1);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].id).to.be.equal(event1.id);
+    expect(res.body.data.events[0].sport.id).to.be.equal(sport1.id);
+  });
+
+  it('should return 200 and 1 event when finding by userId and startDate', async () => {
+    const startDate = moment();
+
+    startDate.add(3, 'days').format();
+
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ userId: user2.id, startDate: startDate.format() })
+      .set('content-type', 'application/json');
+
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(1);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    expect(res.body.data.events[0].startDate).to.be.equal(event3.startDate.toISOString());
+  });
+
+  it('should return 200 and 1 event when finding by userId and coordinates', async () => {
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ userId: user1.id, coordinates: nearCoordinates })
+      .set('content-type', 'application/json');
+
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(2);
+    res.body.data.events.forEach((event) => {
+      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
     });
+    expect(res.body.data.events[0].id).to.be.equal(event1.id);
+    expect(res.body.data.events[1].id).to.be.equal(event2.id);
+  });
 
-    it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
-      const startDate = moment();
+  it('should return 200 and 1 event when finding by sportId and startDate', async () => {
+    const startDate = moment();
 
-      startDate.add(3, 'days');
+    startDate.add(3, 'days').format();
 
-      const res = await chai.request(app)
-        .get(`${eventPath}`)
-        .query({ startDate: startDate.format(), coordinates: nearCoordinates })
-        .set('content-type', 'application/json');
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ sportId: sport1.id, startDate: startDate.format() })
+      .set('content-type', 'application/json');
 
-      expect(res).to.be.json;
-      expect(res).to.have.status(200);
-      expect(res.body.data.events.length).to.be.equal(1);
-      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(1);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].id).to.be.equal(event3.id);
+  });
+
+  it('should return 200 and 2 events when finding by sportId and coordinates', async () => {
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ sportId: sport1.id, coordinates: nearCoordinates })
+      .set('content-type', 'application/json');
+
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(2);
+    res.body.data.events.forEach((event) => {
+      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(event.players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
     });
+    expect(res.body.data.events[0].id).to.be.equal(event1.id);
+    expect(res.body.data.events[1].id).to.be.equal(event3.id);
+  });
+
+  it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
+    const startDate = moment();
+
+    startDate.add(3, 'days');
+
+    const res = await chai.request(app)
+      .get(`${eventPath}`)
+      .query({ startDate: startDate.format(), coordinates: nearCoordinates })
+      .set('content-type', 'application/json');
+
+    expect(res).to.be.json;
+    expect(res).to.have.status(200);
+    expect(res.body.data.events.length).to.be.equal(1);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+      'intensity', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+      'endingDate', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].players[0]).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      'age', 'location', 'createdAt', 'updatedAt']);
+    expect(res.body.data.events[0].id).to.be.equal(event3.id);
   });
 
   describe('GET /events/:eventId', () => {
