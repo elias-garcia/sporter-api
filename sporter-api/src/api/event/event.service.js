@@ -7,7 +7,7 @@ const Sport = require('../sport/sport.model');
 const ApiError = require('../api-error');
 
 const create = async (userId, sportId, name, latitude, longitude,
-  startDate, endingDate, description, intensity, paid) => {
+  startDate, endingDate, description, intensity, fee) => {
   /**
    * Check if the sport exists in the db
    */
@@ -37,7 +37,7 @@ const create = async (userId, sportId, name, latitude, longitude,
     endingDate: moment(endingDate).utc().format(),
     description,
     intensity,
-    paid,
+    fee,
     status: EventStatus.WAITING,
     host: userId,
   });
@@ -45,6 +45,9 @@ const create = async (userId, sportId, name, latitude, longitude,
   /* Store the user in the event players field */
   event.players.push(user.id);
   event.save();
+
+  /* Populate the sport, host and player */
+  await event.populate('sport').populate('host').populate('players').execPopulate();
 
   /**
    * Return the created event
@@ -136,7 +139,7 @@ const find = async (eventId) => {
 };
 
 const update = async (eventId, sportId, name, latitude, longitude,
-  startDate, endingDate, description, intensity, paid, status) => {
+  startDate, endingDate, description, intensity, fee, status) => {
   /**
    * Find the event and update it
    */
@@ -153,8 +156,7 @@ const update = async (eventId, sportId, name, latitude, longitude,
       endingDate: moment(endingDate).utc().format(),
       description,
       intensity,
-      paid,
-      status,
+      fee,
     },
     { new: true },
   );

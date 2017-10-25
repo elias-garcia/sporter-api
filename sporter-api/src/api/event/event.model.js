@@ -33,8 +33,8 @@ const eventSchema = new mongoose.Schema({
     enum: Object.keys(eventIntensity).map(key => eventIntensity[key]),
     required: true,
   },
-  paid: {
-    type: Boolean,
+  fee: {
+    type: Number,
     required: true,
   },
   status: {

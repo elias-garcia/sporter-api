@@ -19,7 +19,7 @@ const create = async (req, res, next) => {
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(EventIntensity).includes(req.body.intensity) ||
-      !validator.isBoolean(req.body.paid)
+      !validator.isNumber(req.body.fee)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -37,7 +37,7 @@ const create = async (req, res, next) => {
       req.body.endingDate,
       req.body.description,
       req.body.intensity,
-      req.body.paid,
+      req.body.fee,
     );
 
     /**
@@ -164,7 +164,7 @@ const update = async (req, res, next) => {
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(EventIntensity).includes(req.body.intensity) ||
-      !validator.isBoolean(req.body.paid)
+      !validator.isNumber(req.body.fee)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -182,7 +182,7 @@ const update = async (req, res, next) => {
       req.body.endingDate,
       req.body.description,
       req.body.intensity,
-      req.body.paid,
+      req.body.fee,
       req.body.status,
     );
 

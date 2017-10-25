@@ -31,7 +31,7 @@ const createEventDb = (userId, sportId, offsetDays) => {
     description: 'Event description',
     intensity: eventIntensity.LOW,
     status: eventStatus.WAITING,
-    paid: false,
+    fee: 0,
     host: userId,
     players: [userId],
   };
@@ -53,7 +53,7 @@ const createEventPost = (sportId) => {
     endingDate: after.format(),
     description: 'Event description',
     intensity: eventIntensity.LOW,
-    paid: false,
+    fee: 0,
   };
   return event;
 };
