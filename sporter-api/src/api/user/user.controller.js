@@ -13,7 +13,7 @@ const create = async (req, res, next) => {
       !req.body.password ||
       !validator.isString(req.body.firstName) ||
       !validator.isString(req.body.lastName) ||
-      !validator.isNumber(req.body.age) ||
+      !validator.isPositiveInt(req.body.age) ||
       !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -71,7 +71,7 @@ const update = async (req, res, next) => {
       !validator.isEmail(req.body.email) ||
       !validator.isString(req.body.firstName) ||
       !validator.isString(req.body.lastName) ||
-      !validator.isNumber(req.body.age) ||
+      !validator.isPositiveInt(req.body.age) ||
       !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
     }

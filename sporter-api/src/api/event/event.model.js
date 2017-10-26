@@ -33,6 +33,10 @@ const eventSchema = new mongoose.Schema({
     enum: Object.keys(eventIntensity).map(key => eventIntensity[key]),
     required: true,
   },
+  maxPlayers: {
+    type: Number,
+    required: true,
+  },
   fee: {
     type: Number,
     required: true,

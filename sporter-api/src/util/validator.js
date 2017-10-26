@@ -3,9 +3,9 @@ const moment = require('moment');
 
 const isBoolean = value => typeof (value) === 'boolean';
 
-const isInt = value => value && validator.isInt(value.toString());
+const isPositiveInt = value => typeof value === 'number' && Number.isInteger(value) && value >= 0;
 
-const isNumber = value => typeof value === 'number' && !Number.isNaN(parseFloat(value));
+const isPositiveNumber = value => typeof value === 'number' && !Number.isNaN(parseFloat(value)) && value >= 0;
 
 const isString = value => typeof (value) === 'string';
 
@@ -36,11 +36,11 @@ module.exports = {
   isDateAfter,
   isDateAfterNow,
   isEmail,
-  isInt,
+  isPositiveInt,
   isISO8601,
   isLatLong,
   isLatLongArray,
   isMongoId,
-  isNumber,
+  isPositiveNumber,
   isString,
 };

@@ -4,11 +4,10 @@ const userDto = require('../user/user.dto');
 const toEventDto = (doc) => {
   const ret = dto.transform(doc);
 
-  [ret.location.coordinates[0], ret.location.coordinates[1]] =
-    [doc.location.coordinates[1], doc.location.coordinates[0]];
-  ret.sport = dto.transform(ret.sport);
-  ret.host = userDto.toUserDto(ret.host);
-  ret.players = userDto.toUsersDto(ret.players);
+  ret.location = [doc.location.coordinates[1], doc.location.coordinates[0]];
+  ret.sport = dto.transform(doc.sport);
+  ret.host = userDto.toUserDto(doc.host);
+  ret.players = userDto.toUsersDto(doc.players);
 
   return ret;
 };

@@ -1,4 +1,3 @@
-const moment = require('moment');
 const EventIntensity = require('./event-intensity.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
@@ -13,13 +12,14 @@ const create = async (req, res, next) => {
      */
     if (!validator.isMongoId(req.body.sportId) ||
       !validator.isString(req.body.name) ||
-      !validator.isLatLongArray(req.body.coordinates) ||
+      !validator.isLatLongArray(req.body.location) ||
       !validator.isDateAfterNow(req.body.startDate) ||
       !validator.isDateAfterNow(req.body.endingDate) ||
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
-      !Object.values(EventIntensity).includes(req.body.intensity) ||
-      !validator.isNumber(req.body.fee)
+      !Object.values(EventIntensity).includes(req.body.intensity.toUpperCase()) ||
+      !validator.isPositiveInt(req.body.maxPlayers) ||
+      !validator.isPositiveNumber(req.body.fee)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -31,12 +31,13 @@ const create = async (req, res, next) => {
       req.claim.sub,
       req.body.sportId,
       req.body.name,
-      req.body.coordinates[0],
-      req.body.coordinates[1],
+      req.body.location[0],
+      req.body.location[1],
       req.body.startDate,
       req.body.endingDate,
       req.body.description,
-      req.body.intensity,
+      req.body.intensity.toUpperCase(),
+      req.body.maxPlayers,
       req.body.fee,
     );
 
@@ -50,6 +51,9 @@ const create = async (req, res, next) => {
 };
 
 const findAll = async (req, res, next) => {
+  let limit;
+  let offset;
+  let maxDistance;
   let latitude;
   let longitude;
 
@@ -75,33 +79,36 @@ const findAll = async (req, res, next) => {
       }
     }
 
-    if (req.query.coordinates) {
-      if (!validator.isLatLong(req.query.coordinates)) {
+    if (req.query.location) {
+      if (!validator.isLatLong(req.query.location)) {
         throw new ApiError(422, 'unprocessable entity');
       }
       /**
        * Split the validated coordinates
        */
-      latitude = Number(req.query.coordinates.split(',')[0]);
-      longitude = Number(req.query.coordinates.split(',')[1]);
+      latitude = Number(req.query.location.split(',')[0]);
+      longitude = Number(req.query.location.split(',')[1]);
     }
 
     if (req.query.maxDistance) {
-      if (!validator.isInt(req.query.maxDistance)) {
+      if (!validator.isPositiveNumber(Number(req.query.maxDistance))) {
         throw new ApiError(422, 'unprocessable entity');
       }
+      maxDistance = Number(req.query.maxDistance);
     }
 
     if (req.query.limit) {
-      if (!validator.isInt(req.query.limit)) {
+      if (!validator.isPositiveInt(Number(req.query.limit)) || Number(req.query.offset) < 1) {
         throw new ApiError(422, 'unprocessable entity');
       }
+      limit = Number(req.query.limit);
     }
 
     if (req.query.offset) {
-      if (!validator.isInt(req.query.limit)) {
+      if (!validator.isPositiveInt(Number(req.query.offset)) || Number(req.query.offset) < 1) {
         throw new ApiError(422, 'unprocessable entity');
       }
+      offset = Number(req.query.offset);
     }
 
     /**
@@ -113,9 +120,9 @@ const findAll = async (req, res, next) => {
       req.query.startDate,
       latitude,
       longitude,
-      req.query.maxDistance,
-      Number(req.query.limit),
-      Number(req.query.offset),
+      maxDistance,
+      limit,
+      offset,
     );
 
     /**
@@ -158,13 +165,14 @@ const update = async (req, res, next) => {
      */
     if (!validator.isMongoId(req.body.sportId) ||
       !validator.isString(req.body.name) ||
-      !validator.isLatLongArray(req.body.coordinates) ||
+      !validator.isLatLongArray(req.body.location) ||
       !validator.isDateAfterNow(req.body.startDate) ||
       !validator.isDateAfterNow(req.body.endingDate) ||
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
-      !Object.values(EventIntensity).includes(req.body.intensity) ||
-      !validator.isNumber(req.body.fee)
+      !Object.values(EventIntensity).includes(req.body.intensity.toUpperCase()) ||
+      !validator.isPositiveInt(req.body.maxPlayers) ||
+      !validator.isPositiveNumber(req.body.fee)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -173,44 +181,18 @@ const update = async (req, res, next) => {
      * Update the event
      */
     const event = await eventService.update(
+      req.claim.sub,
       req.params.eventId,
       req.body.sportId,
       req.body.name,
-      req.body.coordinates[0],
-      req.body.coordinates[1],
+      req.body.location[0],
+      req.body.location[1],
       req.body.startDate,
       req.body.endingDate,
       req.body.description,
-      req.body.intensity,
+      req.body.intensity.toUpperCase(),
+      req.body.maxPlayers,
       req.body.fee,
-      req.body.status,
-    );
-
-    /**
-     * Return the updated event
-     */
-    return res.status(200).send(json.createData('event', eventDto.toEventDto(event)));
-  } catch (err) {
-    return next(err);
-  }
-};
-
-const join = async (req, res, next) => {
-  try {
-    /**
-     * Validate the input data
-     */
-    if (typeof (req.params.eventId) !== 'string' ||
-      !validator.isMongoId(req.params.eventId)) {
-      throw new ApiError(422, 'unprocessable entity');
-    }
-
-    /**
-     * Join the user to the event
-     */
-    const event = await eventService.join(
-      req.claim.sub,
-      req.body.eventId,
     );
 
     /**
@@ -251,6 +233,5 @@ module.exports = {
   create,
   find,
   update,
-  join,
   remove,
 };

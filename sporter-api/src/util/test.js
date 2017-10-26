@@ -31,6 +31,7 @@ const createEventDb = (userId, sportId, offsetDays) => {
     description: 'Event description',
     intensity: eventIntensity.LOW,
     status: eventStatus.WAITING,
+    maxPlayers: 2,
     fee: 0,
     host: userId,
     players: [userId],
@@ -47,12 +48,13 @@ const createEventPost = (sportId) => {
 
   const event = {
     name: 'Test Event',
-    coordinates: [43.367373, -8.407628],
+    location: [43.367373, -8.407628],
     sportId,
     startDate: now.format(),
     endingDate: after.format(),
     description: 'Event description',
     intensity: eventIntensity.LOW,
+    maxPlayers: 2,
     fee: 0,
   };
   return event;

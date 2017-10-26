@@ -7,7 +7,7 @@ const Sport = require('../sport/sport.model');
 const ApiError = require('../api-error');
 
 const create = async (userId, sportId, name, latitude, longitude,
-  startDate, endingDate, description, intensity, fee) => {
+  startDate, endingDate, description, intensity, maxPlayers, fee) => {
   /**
    * Check if the sport exists in the db
    */
@@ -37,6 +37,7 @@ const create = async (userId, sportId, name, latitude, longitude,
     endingDate: moment(endingDate).utc().format(),
     description,
     intensity,
+    maxPlayers,
     fee,
     status: EventStatus.WAITING,
     host: userId,
@@ -47,7 +48,7 @@ const create = async (userId, sportId, name, latitude, longitude,
   event.save();
 
   /* Populate the sport, host and player */
-  await event.populate('sport').populate('host').populate('players').execPopulate();
+  await event.populate('sport').populate('host').execPopulate();
 
   /**
    * Return the created event
@@ -103,7 +104,6 @@ const findAll = async (userId, sportId, startDate,
   const events = await query
     .populate('sport')
     .populate('host')
-    .populate('players')
     .sort({ startDate: 'asc' })
     .skip(skip)
     .limit(limit)
@@ -122,7 +122,6 @@ const find = async (eventId) => {
   const event = await Event.findById(eventId)
     .populate('sport')
     .populate('host')
-    .populate('players')
     .exec();
 
   /**
@@ -138,76 +137,58 @@ const find = async (eventId) => {
   return event;
 };
 
-const update = async (eventId, sportId, name, latitude, longitude,
-  startDate, endingDate, description, intensity, fee, status) => {
-  /**
-   * Find the event and update it
-   */
-  let event = await Event.findByIdAndUpdate(
-    eventId,
-    {
-      name,
-      location: {
-        type: 'Point',
-        coordinates: [longitude, latitude],
-      },
-      sport: sportId,
-      startDate: moment(startDate).utc().format(),
-      endingDate: moment(endingDate).utc().format(),
-      description,
-      intensity,
-      fee,
-    },
-    { new: true },
-  );
-
+const update = async (userId, eventId, sportId, name, latitude, longitude,
+  startDate, endingDate, description, intensity, maxPlayers, fee) => {
   /**
    * Check if the found event exist
    */
+  let event = await Event.findById(eventId);
   if (!event) {
     throw new ApiError(404, 'event not found');
   }
+
+  /**
+   * Check if the event to be removed was created by the user who performs the request
+   */
+  if (userId !== event.host.toString()) {
+    throw new ApiError(403, 'you are not allowed to access this resource');
+  }
+
+  /**
+   * Check if the event can be updated
+   */
+  if (event.status !== EventStatus.WAITING) {
+    throw new ApiError(409, 'event can\'t be updated');
+  }
+
+  /**
+   * Update the event
+   */
+  event.name = name;
+  event.location = {
+    type: 'Point',
+    coordinates: [longitude, latitude],
+  };
+  event.sport = sportId;
+  event.startDate = moment(startDate).utc().format();
+  event.endingDate = moment(endingDate).utc().format();
+  event.description = description;
+  event.intensity = intensity;
+  event.maxPlayers = maxPlayers;
+  event.fee = fee;
+
+  /**
+   * Save the event
+   */
+  event = await event.save();
 
   /**
    * Populate the event
    */
-  event = await event.populate('sport').populate('host').populate('players').execPopulate();
+  event = await event.populate('sport').populate('host').execPopulate();
 
   /**
-   * Return the updated event populated
-   */
-  return event;
-};
-
-const join = async (userId, eventId) => {
-  /**
-   * Check if the user exists
-   */
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(404, 'user not found');
-  }
-
-  /**
-   * Check if the event exists
-   */
-  const event = await Event.findById(eventId);
-  if (!event) {
-    throw new ApiError(404, 'event not found');
-  }
-
-  /**
-   * Add the user to the event players list
-   */
-  event.players.push(user.id);
-
-  /**
-   * Save changes
-   */
-  await event.save();
-
-  /**
-   * Return the event
+   * Return the updated event
    */
   return event;
 };
@@ -224,8 +205,17 @@ const remove = async (userId, eventId) => {
   /**
    * Check if the event to be removed was created by the user who performs the request
    */
-  if (userId !== event.host) {
+  if (userId !== event.host.toString()) {
     throw new ApiError(403, 'you are not allowed to access this resource');
+  }
+
+  /**
+   * Check if the event can be removed
+   */
+  if (!(event.status === EventStatus.WAITING &&
+    event.players.length === 1 &&
+    event.players[0].toString() === userId)) {
+    throw new ApiError(409, 'event can\'t be removed');
   }
 
   /**
@@ -244,6 +234,5 @@ module.exports = {
   findAll,
   find,
   update,
-  join,
   remove,
 };
