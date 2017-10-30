@@ -64,37 +64,33 @@ describe('Events', () => {
     it('should return 201, id and event info', async () => {
       const event = test.createEventPost(sport1.id);
 
-      try {
-        const res = await chai.request(app)
-          .post(`${eventPath}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${user1Token}`)
-          .send(event);
+      const res = await chai.request(app)
+        .post(`${eventPath}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${user1Token}`)
+        .send(event);
 
-        expect(res).to.be.json;
-        expect(res).to.have.status(201);
-        expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-          'endingDate', 'createdAt', 'updatedAt']);
-        expect(res.body.data.event.name).to.be.equal(event.name);
-        expect(res.body.data.event.location[0]).to.be.equal(event.location[0]);
-        expect(res.body.data.event.location[1]).to.be.equal(event.location[1]);
-        expect(moment(res.body.data.event.startDate).toISOString())
-          .to.be.equal(moment(event.startDate).toISOString());
-        expect(moment(res.body.data.event.endingDate).toISOString())
-          .to.be.equal(moment(event.endingDate).toISOString());
-        expect(res.body.data.event.description).to.be.equal(event.description);
-        expect(res.body.data.event.intensity).to.be.equal(eventIntensity.LOW);
-        expect(res.body.data.event.fee).to.be.equal(event.fee);
-        expect(res.body.data.event.status).to.be.equal(eventStatus.WAITING);
-        expect(res.body.data.event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-        expect(res.body.data.event.sport.id).to.be.equal(sport1.id);
-        expect(res.body.data.event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
-        expect(res.body.data.event.host.id).to.be.equal(user1.id);
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res).to.be.json;
+      expect(res).to.have.status(201);
+      expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.event.name).to.be.equal(event.name);
+      expect(res.body.data.event.location[0]).to.be.equal(event.location[0]);
+      expect(res.body.data.event.location[1]).to.be.equal(event.location[1]);
+      expect(moment(res.body.data.event.startDate).toISOString())
+        .to.be.equal(moment(event.startDate).toISOString());
+      expect(moment(res.body.data.event.endingDate).toISOString())
+        .to.be.equal(moment(event.endingDate).toISOString());
+      expect(res.body.data.event.description).to.be.equal(event.description);
+      expect(res.body.data.event.intensity).to.be.equal(eventIntensity.LOW);
+      expect(res.body.data.event.fee).to.be.equal(event.fee);
+      expect(res.body.data.event.status).to.be.equal(eventStatus.WAITING);
+      expect(res.body.data.event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.event.sport.id).to.be.equal(sport1.id);
+      expect(res.body.data.event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
   });
 
@@ -513,6 +509,21 @@ describe('Events', () => {
         expect(res).to.have.status(422);
         expect(res.body.error.status).to.be.equal(422);
         expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 404 when the eventId does not exist', async () => {
+      try {
+        await chai.request(app)
+          .get(`${eventPath}/${nonExistingEventId}`)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(404);
+        expect(res.body.error.status).to.be.equal(404);
+        expect(res.body.error.message).to.be.equal('event not found');
       }
     });
   });
