@@ -139,19 +139,20 @@ const find = async (eventId) => {
 
 const update = async (userId, eventId, sportId, name, latitude, longitude,
   startDate, endingDate, description, intensity, maxPlayers, fee) => {
-  /**
-   * Check if the found event exist
-   */
   let event = await Event.findById(eventId);
-  if (!event) {
-    throw new ApiError(404, 'event not found');
-  }
 
   /**
    * Check if the event to be removed was created by the user who performs the request
    */
   if (userId !== event.host.toString()) {
     throw new ApiError(403, 'you are not allowed to access this resource');
+  }
+
+  /**
+   * Check if the found event exist
+   */
+  if (!event) {
+    throw new ApiError(404, 'event not found');
   }
 
   /**
@@ -194,10 +195,11 @@ const update = async (userId, eventId, sportId, name, latitude, longitude,
 };
 
 const remove = async (userId, eventId) => {
+  const event = await Event.findById(eventId);
+
   /**
    * Check if the event exists
    */
-  const event = await Event.findById(eventId);
   if (!event) {
     throw new ApiError(404, 'event not found');
   }

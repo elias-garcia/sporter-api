@@ -40,18 +40,14 @@ describe('User', () => {
     it('should return 201, id and an auth token', async () => {
       const user = test.createUser('user@test.com');
 
-      try {
-        const res = await chai.request(app)
-          .post(userPath)
-          .set('content-type', 'application/json')
-          .send(user);
+      const res = await chai.request(app)
+        .post(userPath)
+        .set('content-type', 'application/json')
+        .send(user);
 
-        expect(res).to.be.json;
-        expect(res).to.have.status(201);
-        expect(res.body.data.session).to.have.all.keys(['id', 'token']);
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res).to.be.json;
+      expect(res).to.have.status(201);
+      expect(res.body.data.session).to.have.all.keys(['id', 'token']);
     });
 
     it('should return 422 when the email is not a string', async () => {
@@ -282,22 +278,18 @@ describe('User', () => {
 
       user = await User.create(user);
 
-      try {
-        const res = await chai.request(app)
-          .get(`${userPath}/${user.id}`)
-          .set('content-type', 'application/json');
+      const res = await chai.request(app)
+        .get(`${userPath}/${user.id}`)
+        .set('content-type', 'application/json');
 
-        expect(res).to.be.json;
-        expect(res).to.have.status(200);
-        expect(res.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
-          'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
-        expect(res.body.data.user.email).to.be.equal(user.email);
-        expect(res.body.data.user.firstName).to.be.equal(user.firstName);
-        expect(res.body.data.user.lastName).to.be.equal(user.lastName);
-        expect(res.body.data.user.location).to.be.equal(user.location);
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
+        'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
+      expect(res.body.data.user.email).to.be.equal(user.email);
+      expect(res.body.data.user.firstName).to.be.equal(user.firstName);
+      expect(res.body.data.user.lastName).to.be.equal(user.lastName);
+      expect(res.body.data.user.location).to.be.equal(user.location);
     });
 
     it('should return 422 if the userId is not a string', async () => {
@@ -377,35 +369,31 @@ describe('User', () => {
     it('should return 200 and update the user', async () => {
       const user = test.createUser('user@test.com');
 
-      try {
-        const res1 = await chai.request(app)
-          .post(`${userPath}`)
-          .set('content-type', 'application/json')
-          .send(user);
+      const res1 = await chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user);
 
-        const userId = res1.body.data.session.id;
-        const { token } = res1.body.data.session;
+      const userId = res1.body.data.session.id;
+      const { token } = res1.body.data.session;
 
-        user.email = 'put@users.com';
-        user.password = 'newPassword';
-        user.firstName = 'newTestFirstName';
-        user.lastName = 'newTestLastName';
-        user.age = 20;
-        user.location = 'A Coruña';
+      user.email = 'put@users.com';
+      user.password = 'newPassword';
+      user.firstName = 'newTestFirstName';
+      user.lastName = 'newTestLastName';
+      user.age = 20;
+      user.location = 'A Coruña';
 
-        const res2 = await chai.request(app)
-          .put(`${userPath}/${userId}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${token}`)
-          .send(user);
+      const res2 = await chai.request(app)
+        .put(`${userPath}/${userId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .send(user);
 
-        expect(res2).to.be.json;
-        expect(res2).to.have.status(200);
-        expect(res2.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
-          'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res2).to.be.json;
+      expect(res2).to.have.status(200);
+      expect(res2.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
+        'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
     });
 
     it('should return 422, unprocessable entity if the userId is not a string', async () => {
@@ -731,32 +719,28 @@ describe('User', () => {
     it('should return 204 and change the user password', async () => {
       const user = test.createUser('user@test.com');
 
-      try {
-        const res1 = await chai.request(app)
-          .post(`${userPath}`)
-          .set('content-type', 'application/json')
-          .send(user);
+      const res1 = await chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user);
 
-        const userId = res1.body.data.session.id;
-        const { token } = res1.body.data.session;
+      const userId = res1.body.data.session.id;
+      const { token } = res1.body.data.session;
 
-        const body = {
-          old_password: user.password,
-          new_password: 'new_password',
-        };
+      const body = {
+        old_password: user.password,
+        new_password: 'new_password',
+      };
 
-        const res2 = await chai.request(app)
-          .patch(`${userPath}/${userId}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${token}`)
-          .send(body);
+      const res2 = await chai.request(app)
+        .patch(`${userPath}/${userId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .send(body);
 
-        expect(res2).to.be.json;
-        expect(res2).to.have.status(204);
-        expect(res2.body).to.be.empty;
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res2).to.be.json;
+      expect(res2).to.have.status(204);
+      expect(res2.body).to.be.empty;
     });
 
     it('should return 422, unprocessable entity when the userId is not a string', async () => {
@@ -987,26 +971,22 @@ describe('User', () => {
     it('should return 204 and delete the existing user', async () => {
       const user = test.createUser('user@test.com');
 
-      try {
-        const res1 = await chai.request(app)
-          .post(`${userPath}`)
-          .set('content-type', 'application/json')
-          .send(user);
+      const res1 = await chai.request(app)
+        .post(`${userPath}`)
+        .set('content-type', 'application/json')
+        .send(user);
 
-        const userId = res1.body.data.session.id;
-        const { token } = res1.body.data.session;
+      const userId = res1.body.data.session.id;
+      const { token } = res1.body.data.session;
 
-        const res2 = await chai.request(app)
-          .delete(`${userPath}/${userId}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${token}`);
+      const res2 = await chai.request(app)
+        .delete(`${userPath}/${userId}`)
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`);
 
-        expect(res2).to.be.json;
-        expect(res2).to.have.status(204);
-        expect(res2.body).to.be.empty;
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res2).to.be.json;
+      expect(res2).to.have.status(204);
+      expect(res2.body).to.be.empty;
     });
 
     it('should return 422, unprocessable entity if the userId is not a string', async () => {

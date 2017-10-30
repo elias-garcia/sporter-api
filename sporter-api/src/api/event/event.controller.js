@@ -139,8 +139,7 @@ const find = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.eventId) !== 'string' ||
-      !validator.isMongoId(req.params.eventId)) {
+    if (!validator.isMongoId(req.params.eventId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
@@ -209,8 +208,7 @@ const remove = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.eventId) !== 'string' ||
-      !validator.isMongoId(req.params.eventId)) {
+    if (!validator.isMongoId(req.params.eventId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 

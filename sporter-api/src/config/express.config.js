@@ -23,7 +23,7 @@ const configure = (app) => {
   /* Set the application/json Content Type on all responses */
   app.use(middleware.setJson);
 
-  /* Endpoints that requires authentication/authorization */
+  /* Endpoints that requires authentication */
   app.put(`${appConfig.path}/users/:userId`, middleware.authenticate);
   app.patch(`${appConfig.path}/users/:userId`, middleware.authenticate);
   app.delete(`${appConfig.path}/users/:userId`, middleware.authenticate);
