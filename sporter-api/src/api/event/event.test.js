@@ -65,7 +65,7 @@ describe('Events', () => {
       const event = test.createEventPost(sport1.id);
 
       const res = await chai.request(app)
-        .post(`${eventPath}`)
+        .post(eventPath)
         .set('content-type', 'application/json')
         .set('authorization', `Bearer ${user1Token}`)
         .send(event);
@@ -98,7 +98,7 @@ describe('Events', () => {
 
       try {
         await chai.request(app)
-          .post(`${eventPath}`)
+          .post(eventPath)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
@@ -119,7 +119,7 @@ describe('Events', () => {
 
       try {
         await chai.request(app)
-          .post(`${eventPath}`)
+          .post(eventPath)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
@@ -137,7 +137,7 @@ describe('Events', () => {
   describe('GET /events', () => {
     it('should return 200 and all events sorted when searching without query params', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .set('content-type', 'application/json');
 
       expect(res).to.be.json;
@@ -162,7 +162,7 @@ describe('Events', () => {
 
     it('should return 200 and 2 events sorted with limit 2 and offset 0', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ limit: 2, offset: 1 })
         .set('content-type', 'application/json');
 
@@ -186,7 +186,7 @@ describe('Events', () => {
 
     it('should return 200 and 1 event sorted with limit 3 and offset 1', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ limit: 3, offset: 2 })
         .set('content-type', 'application/json');
 
@@ -210,7 +210,7 @@ describe('Events', () => {
 
     it('should return 200 and 2 events sorted when finding by user1 id', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ userId: user1.id })
         .set('content-type', 'application/json');
 
@@ -234,7 +234,7 @@ describe('Events', () => {
 
     it('should return 200 and 2 events when finding by sport1 id', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ sportId: sport1.id })
         .set('content-type', 'application/json');
 
@@ -261,7 +261,7 @@ describe('Events', () => {
       startDate.add(1, 'day');
 
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ startDate: startDate.format() })
         .set('content-type', 'application/json');
 
@@ -289,7 +289,7 @@ describe('Events', () => {
       startDate.add(5, 'days');
 
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ startDate: startDate.format() })
         .set('content-type', 'application/json');
 
@@ -310,7 +310,7 @@ describe('Events', () => {
 
     it('should return 200 and 0 events sorted when finding by a far away distance', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ location: farCoordinates })
         .set('content-type', 'application/json');
 
@@ -321,7 +321,7 @@ describe('Events', () => {
 
     it('should return 200 and 4 events sorted when finding by maxDistance', async () => {
       const res = await chai.request(app)
-        .get(`${eventPath}`)
+        .get(eventPath)
         .query({ location: farCoordinates, maxDistance: longDistance })
         .set('content-type', 'application/json');
 
@@ -346,7 +346,7 @@ describe('Events', () => {
 
   it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ location: nearCoordinates })
       .set('content-type', 'application/json');
 
@@ -368,7 +368,7 @@ describe('Events', () => {
 
   it('should return 200 and 1 event when finding by userId and sportId', async () => {
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ userId: user1.id, sportId: sport1.id })
       .set('content-type', 'application/json');
 
@@ -394,7 +394,7 @@ describe('Events', () => {
     startDate.add(3, 'days').format();
 
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ userId: user2.id, startDate: startDate.format() })
       .set('content-type', 'application/json');
 
@@ -416,7 +416,7 @@ describe('Events', () => {
 
   it('should return 200 and 1 event when finding by userId and coordinates', async () => {
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ userId: user1.id, location: nearCoordinates })
       .set('content-type', 'application/json');
 
@@ -444,7 +444,7 @@ describe('Events', () => {
     startDate.add(3, 'days').format();
 
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ sportId: sport1.id, startDate: startDate.format() })
       .set('content-type', 'application/json');
 
@@ -465,7 +465,7 @@ describe('Events', () => {
 
   it('should return 200 and 2 events when finding by sportId and coordinates', async () => {
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ sportId: sport1.id, location: nearCoordinates })
       .set('content-type', 'application/json');
 
@@ -493,7 +493,7 @@ describe('Events', () => {
     startDate.add(3, 'days');
 
     const res = await chai.request(app)
-      .get(`${eventPath}`)
+      .get(eventPath)
       .query({ startDate: startDate.format(), location: nearCoordinates })
       .set('content-type', 'application/json');
 
@@ -510,6 +510,74 @@ describe('Events', () => {
     expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
       'age', 'location', 'createdAt', 'updatedAt']);
     expect(res.body.data.events[0].id).to.be.equal(event3.id);
+  });
+
+  describe('PUT /events', () => {
+    it('should return 501, not implemented', async () => {
+      try {
+        await chai.request(app)
+          .put(eventPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
+    });
+  });
+
+  describe('PATCH /events', () => {
+    it('should return 501, not implemented', async () => {
+      try {
+        await chai.request(app)
+          .patch(eventPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
+    });
+  });
+
+  describe('DELETE /events', () => {
+    it('should return 501, not implemented', async () => {
+      try {
+        await chai.request(app)
+          .delete(eventPath)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
+    });
+  });
+
+  describe('POST /events/:eventId', () => {
+    it('should return 501, not implemented', async () => {
+      try {
+        await chai.request(app)
+          .post(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
+      }
+    });
   });
 
   describe('GET /events/:eventId', () => {
@@ -724,6 +792,23 @@ describe('Events', () => {
         expect(res).to.have.status(409);
         expect(res.body.error.status).to.be.equal(409);
         expect(res.body.error.message).to.be.equal('event can\'t be updated');
+      }
+    });
+  });
+
+  describe('PATCH /events', () => {
+    it('should return 501, not implemented', async () => {
+      try {
+        await chai.request(app)
+          .patch(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json');
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(501);
+        expect(res.body.error.status).to.be.equal(501);
+        expect(res.body.error.message).to.be.equal('not implemented');
       }
     });
   });
