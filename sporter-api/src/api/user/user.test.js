@@ -25,6 +25,8 @@ describe('User', () => {
         await chai.request(app)
           .get(userPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -62,6 +64,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -84,6 +88,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -104,6 +110,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -124,6 +132,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -146,6 +156,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -168,6 +180,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -190,6 +204,8 @@ describe('User', () => {
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -203,13 +219,15 @@ describe('User', () => {
     it('should return 409 when posting a user with an existing email', async () => {
       const user = test.createUser('user@test.com');
 
-      await User.create();
+      await User.create(user);
 
       try {
         await chai.request(app)
           .post(userPath)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -227,6 +245,8 @@ describe('User', () => {
         await chai.request(app)
           .put(userPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -244,6 +264,8 @@ describe('User', () => {
         await chai.request(app)
           .patch(userPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -261,6 +283,8 @@ describe('User', () => {
         await chai.request(app)
           .get(userPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -302,6 +326,8 @@ describe('User', () => {
         await chai.request(app)
           .get(`${userPath}/${userId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -322,6 +348,8 @@ describe('User', () => {
         await chai.request(app)
           .get(`${userPath}/${userId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -337,6 +365,8 @@ describe('User', () => {
         await chai.request(app)
           .get(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -354,6 +384,8 @@ describe('User', () => {
         await chai.request(app)
           .post(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -413,6 +445,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -440,6 +474,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -469,6 +505,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -498,6 +536,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -527,6 +567,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -551,11 +593,13 @@ describe('User', () => {
 
         user.lastName = 231;
 
-        chai.request(app)
+        await chai.request(app)
           .put(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -585,6 +629,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -614,6 +660,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -632,6 +680,8 @@ describe('User', () => {
           .put(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json')
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -651,6 +701,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${notValidToken}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -671,11 +723,13 @@ describe('User', () => {
 
         const { token } = res.body.data.session;
 
-        chai.request(app)
+        await chai.request(app)
           .put(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -686,7 +740,7 @@ describe('User', () => {
       }
     });
 
-    it('should return 404 if the userId does not exist', async () => {
+    it('should return 404 if the userId not found', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -699,11 +753,13 @@ describe('User', () => {
 
         await User.remove({});
 
-        chai.request(app)
+        await chai.request(app)
           .put(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -760,11 +816,13 @@ describe('User', () => {
           new_password: 'new_password',
         };
 
-        chai.request(app)
+        await chai.request(app)
           .patch(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -792,11 +850,13 @@ describe('User', () => {
           new_password: 'new_password',
         };
 
-        chai.request(app)
+        await chai.request(app)
           .patch(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -823,11 +883,13 @@ describe('User', () => {
           new_password: 'new_password',
         };
 
-        chai.request(app)
+        await chai.request(app)
           .patch(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -854,11 +916,13 @@ describe('User', () => {
           old_password: user.password,
         };
 
-        chai.request(app)
+        await chai.request(app)
           .patch(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -886,11 +950,13 @@ describe('User', () => {
           new_password: 'new_password',
         };
 
-        chai.request(app)
+        await chai.request(app)
           .patch(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -917,11 +983,13 @@ describe('User', () => {
           new_password: 'new_password',
         };
 
-        chai.request(app)
+        await chai.request(app)
           .patch(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -932,7 +1000,7 @@ describe('User', () => {
       }
     });
 
-    it('should return 404, not found when the user to be updated does not exist', async () => {
+    it('should return 404, not found when the user to be updated not found', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -956,6 +1024,8 @@ describe('User', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(body);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -1001,11 +1071,13 @@ describe('User', () => {
         const userId = 5;
         const { token } = res.body.data.session;
 
-        chai.request(app)
+        await chai.request(app)
           .delete(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -1028,11 +1100,13 @@ describe('User', () => {
         const userId = 'string';
         const { token } = res.body.data.session;
 
-        chai.request(app)
+        await chai.request(app)
           .delete(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`)
           .send(user);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -1048,6 +1122,8 @@ describe('User', () => {
         await chai.request(app)
           .delete(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -1064,6 +1140,8 @@ describe('User', () => {
           .delete(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json')
           .set('authorization', notValidToken);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -1085,10 +1163,12 @@ describe('User', () => {
 
         const { token } = res.body.data.session;
 
-        chai.request(app)
+        await chai.request(app)
           .delete(`${userPath}/${nonExistingUserId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -1099,7 +1179,7 @@ describe('User', () => {
       }
     });
 
-    it('should return 404 if the userId does not exist', async () => {
+    it('should return 404 if the userId not found', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1111,12 +1191,14 @@ describe('User', () => {
         const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
-        User.remove({});
+        await User.remove({});
 
-        chai.request(app)
+        await chai.request(app)
           .delete(`${userPath}/${userId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 

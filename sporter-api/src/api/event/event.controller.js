@@ -18,8 +18,8 @@ const create = async (req, res, next) => {
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(EventIntensity).includes(req.body.intensity.toUpperCase()) ||
-      !validator.isPositiveInt(req.body.maxPlayers) ||
-      !validator.isPositiveNumber(req.body.fee)
+      !validator.isGreaterIntThan(req.body.maxPlayers, 2) ||
+      !validator.isGreaterFloatThan(req.body.fee, 0)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -91,21 +91,21 @@ const findAll = async (req, res, next) => {
     }
 
     if (req.query.maxDistance) {
-      if (!validator.isPositiveNumber(Number(req.query.maxDistance))) {
+      if (!validator.isPositiveFloat(Number(req.query.maxDistance))) {
         throw new ApiError(422, 'unprocessable entity');
       }
       maxDistance = Number(req.query.maxDistance);
     }
 
     if (req.query.limit) {
-      if (!validator.isPositiveInt(Number(req.query.limit)) || Number(req.query.offset) < 1) {
+      if (!validator.isGreaterIntThan(Number(req.query.limit), 1)) {
         throw new ApiError(422, 'unprocessable entity');
       }
       limit = Number(req.query.limit);
     }
 
     if (req.query.offset) {
-      if (!validator.isPositiveInt(Number(req.query.offset)) || Number(req.query.offset) < 1) {
+      if (!validator.isGreaterIntThan(Number(req.query.offset), 1)) {
         throw new ApiError(422, 'unprocessable entity');
       }
       offset = Number(req.query.offset);
@@ -170,8 +170,8 @@ const update = async (req, res, next) => {
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(EventIntensity).includes(req.body.intensity.toUpperCase()) ||
-      !validator.isPositiveInt(req.body.maxPlayers) ||
-      !validator.isPositiveNumber(req.body.fee)
+      !validator.isGreaterIntThan(req.body.maxPlayers, 2) ||
+      !validator.isGreaterFloatThan(req.body.fee, 0)
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }

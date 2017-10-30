@@ -93,7 +93,7 @@ describe('Events', () => {
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
 
-    it('should return 404 not found when the sportId does not exist', async () => {
+    it('should return 404 not found when the sportId not found', async () => {
       const event = test.createEventPost(user1.id, nonExistingId);
 
       try {
@@ -102,17 +102,19 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('sport does not exist');
+        expect(res.body.error.message).to.be.equal('sport not found');
       }
     });
 
-    it('should return 404 not found when the userId does not exist', async () => {
+    it('should return 404 not found when the userId not found', async () => {
       const event = test.createEventPost(user1.id, sport1.id);
 
       await user1.remove();
@@ -123,13 +125,15 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('user does not exist');
+        expect(res.body.error.message).to.be.equal('user not found');
       }
     });
   });
@@ -518,6 +522,8 @@ describe('Events', () => {
         await chai.request(app)
           .put(eventPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -535,6 +541,8 @@ describe('Events', () => {
         await chai.request(app)
           .patch(eventPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -552,6 +560,8 @@ describe('Events', () => {
         await chai.request(app)
           .delete(eventPath)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -569,6 +579,8 @@ describe('Events', () => {
         await chai.request(app)
           .post(`${eventPath}/${event1.id}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -610,6 +622,8 @@ describe('Events', () => {
         await chai.request(app)
           .get(`${eventPath}/${notValidMongoId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -620,18 +634,20 @@ describe('Events', () => {
       }
     });
 
-    it('should return 404 when the eventId does not exist', async () => {
+    it('should return 404 when the eventId not found', async () => {
       try {
         await chai.request(app)
           .get(`${eventPath}/${nonExistingId}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('event does not exist');
+        expect(res.body.error.message).to.be.equal('event not found');
       }
     });
   });
@@ -676,7 +692,7 @@ describe('Events', () => {
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
 
-    it('should return 404 when the event does not exist', async () => {
+    it('should return 404 when the event not found', async () => {
       const event = test.createEventPost(sport1.id);
 
       try {
@@ -685,13 +701,15 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('event does not exist');
+        expect(res.body.error.message).to.be.equal('event not found');
       }
     });
 
@@ -716,6 +734,8 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${userToken}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -739,6 +759,8 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -762,6 +784,8 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -772,10 +796,10 @@ describe('Events', () => {
       }
     });
 
-    it('should return 409 when there are only one player and i\'ts not the owner', async () => {
+    it('should return 409 when there are only one player and he is not the owner', async () => {
       const event = test.createEventPost(sport1.id);
 
-      event1.players.players = [user2.id];
+      event1.players = [user2.id];
 
       await event1.save();
 
@@ -785,6 +809,8 @@ describe('Events', () => {
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`)
           .send(event);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -802,6 +828,8 @@ describe('Events', () => {
         await chai.request(app)
           .patch(`${eventPath}/${event1.id}`)
           .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -830,6 +858,8 @@ describe('Events', () => {
           .delete(`${eventPath}/${notValidMongoId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -859,6 +889,8 @@ describe('Events', () => {
           .delete(`${eventPath}/${event1.id}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${userToken}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -869,19 +901,21 @@ describe('Events', () => {
       }
     });
 
-    it('should return 404 when the event does not exist', async () => {
+    it('should return 404 when the event not found', async () => {
       try {
         await chai.request(app)
           .delete(`${eventPath}/${nonExistingId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('event does not exist');
+        expect(res.body.error.message).to.be.equal('event not found');
       }
     });
 
@@ -895,6 +929,8 @@ describe('Events', () => {
           .delete(`${eventPath}/${event1.id}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -915,6 +951,8 @@ describe('Events', () => {
           .delete(`${eventPath}/${event1.id}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -935,6 +973,8 @@ describe('Events', () => {
           .delete(`${eventPath}/${event1.id}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`);
+
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 

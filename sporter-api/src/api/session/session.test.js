@@ -23,6 +23,7 @@ describe('Session', () => {
         await chai.request(app)
           .get(sessionPath)
           .set('content-type', 'application/json');
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -41,18 +42,14 @@ describe('Session', () => {
 
       user = await User.create(user);
 
-      try {
-        const res = await chai.request(app)
-          .post(sessionPath)
-          .set('content-type', 'application/json')
-          .send({ email: user.email, password: plainPassword });
+      const res = await chai.request(app)
+        .post(sessionPath)
+        .set('content-type', 'application/json')
+        .send({ email: user.email, password: plainPassword });
 
-        expect(res).to.be.json;
-        expect(res).to.have.status(200);
-        expect(res.body.data.session).to.have.all.keys(['id', 'token']);
-      } catch (e) {
-        throw new Error(e);
-      }
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.session).to.have.all.keys(['id', 'token']);
     });
 
     it('should return 422, unprocessable entity when email is not a string', async () => {
@@ -67,6 +64,7 @@ describe('Session', () => {
           .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: user.password });
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -89,6 +87,7 @@ describe('Session', () => {
           .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: user.password });
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -111,13 +110,14 @@ describe('Session', () => {
           .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: user.password });
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
         expect(res).to.be.json;
         expect(res).to.have.status(401);
         expect(res.body.error.status).to.be.equal(401);
-        expect(res.body.error.message).to.be.equal('email does not exist');
+        expect(res.body.error.message).to.be.equal('email not found');
       }
     });
 
@@ -133,6 +133,7 @@ describe('Session', () => {
           .post(sessionPath)
           .set('content-type', 'application/json')
           .send({ email: user.email, password: user.password });
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -147,9 +148,10 @@ describe('Session', () => {
   describe('PUT /sessions', () => {
     it('should return 501, not implemented', async () => {
       try {
-        chai.request(app)
+        await chai.request(app)
           .put(sessionPath)
           .set('content-type', 'application/json');
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -167,6 +169,7 @@ describe('Session', () => {
         await chai.request(app)
           .patch(sessionPath)
           .set('content-type', 'application/json');
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 
@@ -184,6 +187,7 @@ describe('Session', () => {
         await chai.request(app)
           .delete(sessionPath)
           .set('content-type', 'application/json');
+        expect(true).to.be.false;
       } catch (e) {
         const res = e.response;
 

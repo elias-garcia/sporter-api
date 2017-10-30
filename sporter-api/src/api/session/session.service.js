@@ -16,7 +16,7 @@ const logIn = async (email, password) => {
    */
   const user = await User.findOne({ email }).exec();
   if (!user) {
-    throw new ApiError(401, 'email does not exist');
+    throw new ApiError(401, 'email not found');
   }
 
   /**

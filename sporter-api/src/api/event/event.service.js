@@ -13,7 +13,7 @@ const create = async (userId, sportId, name, latitude, longitude,
    */
   const user = await User.findById(userId);
   if (!user) {
-    throw new ApiError(404, 'user does not exist');
+    throw new ApiError(404, 'user not found');
   }
 
   /**
@@ -21,7 +21,7 @@ const create = async (userId, sportId, name, latitude, longitude,
  */
   const sport = await Sport.findById(sportId);
   if (!sport) {
-    throw new ApiError(404, 'sport does not exist');
+    throw new ApiError(404, 'sport not found');
   }
 
   /**
@@ -128,7 +128,7 @@ const find = async (eventId) => {
    * Check if the event exists
    */
   if (!event) {
-    throw new ApiError(404, 'event does not exist');
+    throw new ApiError(404, 'event not found');
   }
 
   /**
@@ -145,7 +145,7 @@ const update = async (userId, eventId, sportId, name, latitude, longitude,
    * Check if the found event exist
    */
   if (!event) {
-    throw new ApiError(404, 'event does not exist');
+    throw new ApiError(404, 'event not found');
   }
 
   /**
@@ -203,7 +203,7 @@ const remove = async (userId, eventId) => {
    * Check if the event exists
    */
   if (!event) {
-    throw new ApiError(404, 'event does not exist');
+    throw new ApiError(404, 'event not found');
   }
 
   /**

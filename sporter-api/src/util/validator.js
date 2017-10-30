@@ -5,7 +5,11 @@ const isBoolean = value => typeof (value) === 'boolean';
 
 const isPositiveInt = value => typeof value === 'number' && Number.isInteger(value) && value >= 0;
 
-const isPositiveNumber = value => typeof value === 'number' && !Number.isNaN(parseFloat(value)) && value >= 0;
+const isPositiveFloat = value => typeof value === 'number' && !Number.isNaN(parseFloat(value)) && value >= 0;
+
+const isGreaterIntThan = (value, minValue) => isPositiveInt(value) && (value >= minValue);
+
+const isGreaterFloatThan = (value, minValue) => isPositiveFloat(value) && (value >= minValue);
 
 const isString = value => typeof (value) === 'string';
 
@@ -36,11 +40,13 @@ module.exports = {
   isDateAfter,
   isDateAfterNow,
   isEmail,
+  isGreaterIntThan,
+  isGreaterFloatThan,
   isPositiveInt,
   isISO8601,
   isLatLong,
   isLatLongArray,
   isMongoId,
-  isPositiveNumber,
+  isPositiveFloat,
   isString,
 };
