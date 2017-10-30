@@ -49,7 +49,7 @@ const createEventPost = (sportId) => {
   const event = {
     name: 'Test Event',
     location: [43.367373, -8.407628],
-    sportId,
+    sport: sportId,
     startDate: now.format(),
     endingDate: after.format(),
     description: 'Event description',

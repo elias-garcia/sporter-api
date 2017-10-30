@@ -17,7 +17,7 @@ chai.use(chaiHttp);
 
 describe('Events', () => {
   const eventPath = `${apiPath}/events`;
-  const nonExistingEventId = '58ffc747a0033611f1f783a7';
+  const nonExistingId = '59f1b902020ca91a82c1eca3';
   const notValidMongoId = 'asdf1234';
   const farCoordinates = '42.878213,-8.544844';
   const nearCoordinates = '43.3683169,-8.4149298';
@@ -91,6 +91,46 @@ describe('Events', () => {
       expect(res.body.data.event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
         'age', 'location', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
+    });
+
+    it('should return 404 not found when the sportId does not exist', async () => {
+      const event = test.createEventPost(user1.id, nonExistingId);
+
+      try {
+        await chai.request(app)
+          .post(`${eventPath}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(404);
+        expect(res.body.error.status).to.be.equal(404);
+        expect(res.body.error.message).to.be.equal('sport does not exist');
+      }
+    });
+
+    it('should return 404 not found when the userId does not exist', async () => {
+      const event = test.createEventPost(user1.id, sport1.id);
+
+      await user1.remove();
+
+      try {
+        await chai.request(app)
+          .post(`${eventPath}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(404);
+        expect(res.body.error.status).to.be.equal(404);
+        expect(res.body.error.message).to.be.equal('user does not exist');
+      }
     });
   });
 
@@ -515,7 +555,7 @@ describe('Events', () => {
     it('should return 404 when the eventId does not exist', async () => {
       try {
         await chai.request(app)
-          .get(`${eventPath}/${nonExistingEventId}`)
+          .get(`${eventPath}/${nonExistingId}`)
           .set('content-type', 'application/json');
       } catch (e) {
         const res = e.response;
@@ -523,7 +563,7 @@ describe('Events', () => {
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('event not found');
+        expect(res.body.error.message).to.be.equal('event does not exist');
       }
     });
   });
@@ -567,6 +607,125 @@ describe('Events', () => {
         'age', 'location', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
+
+    it('should return 404 when the event does not exist', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${nonExistingId}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(404);
+        expect(res.body.error.status).to.be.equal(404);
+        expect(res.body.error.message).to.be.equal('event does not exist');
+      }
+    });
+
+    it('should return 403 when the user who wants to update the event is not the owner', async () => {
+      const event = test.createEventPost(sport1.id);
+      const user = test.createUser();
+
+      user.email = 'newTestEmail@test.com';
+
+      User.create(user);
+
+      try {
+        const res = await chai.request(app)
+          .post(`${apiPath}/sessions`)
+          .set('content-type', 'application/json')
+          .send({ email: user.email, password: user.password });
+
+        const userToken = res.body.data.session.token;
+
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${userToken}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(403);
+        expect(res.body.error.status).to.be.equal(403);
+        expect(res.body.error.message).to.be.equal('you are not allowed to access this resource');
+      }
+    });
+
+    it('should return 409 when the status of the event is not WAITING', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event1.status = eventStatus.CANCELED;
+
+      await event1.save();
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(409);
+        expect(res.body.error.status).to.be.equal(409);
+        expect(res.body.error.message).to.be.equal('event can\'t be updated');
+      }
+    });
+
+    it('should return 409 when there are more than one player', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event1.players.push(user2.id);
+
+      await event1.save();
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(409);
+        expect(res.body.error.status).to.be.equal(409);
+        expect(res.body.error.message).to.be.equal('event can\'t be updated');
+      }
+    });
+
+    it('should return 409 when there are only one player and i\'ts not the owner', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event1.players.players = [user2.id];
+
+      await event1.save();
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(409);
+        expect(res.body.error.status).to.be.equal(409);
+        expect(res.body.error.message).to.be.equal('event can\'t be updated');
+      }
+    });
   });
 
   describe('DELETE /events/:eventId', () => {
@@ -597,13 +756,13 @@ describe('Events', () => {
     });
 
     it('should return 403 not allowed when the user is not the event owner', async () => {
+      const user = test.createUser();
+
+      user.email = 'newTestEmail@test.com';
+
+      User.create(user);
+
       try {
-        const user = test.createUser();
-
-        user.email = 'newTestEmail@test.com';
-
-        User.create(user);
-
         const res = await chai.request(app)
           .post(`${apiPath}/sessions`)
           .set('content-type', 'application/json')
@@ -628,7 +787,7 @@ describe('Events', () => {
     it('should return 404 when the event does not exist', async () => {
       try {
         await chai.request(app)
-          .delete(`${eventPath}/${nonExistingEventId}`)
+          .delete(`${eventPath}/${nonExistingId}`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${user1Token}`);
       } catch (e) {
@@ -637,7 +796,7 @@ describe('Events', () => {
         expect(res).to.be.json;
         expect(res).to.have.status(404);
         expect(res.body.error.status).to.be.equal(404);
-        expect(res.body.error.message).to.be.equal('event not found');
+        expect(res.body.error.message).to.be.equal('event does not exist');
       }
     });
 

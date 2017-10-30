@@ -10,7 +10,7 @@ const create = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (!validator.isMongoId(req.body.sportId) ||
+    if (!validator.isMongoId(req.body.sport) ||
       !validator.isString(req.body.name) ||
       !validator.isLatLongArray(req.body.location) ||
       !validator.isDateAfterNow(req.body.startDate) ||
@@ -29,7 +29,7 @@ const create = async (req, res, next) => {
      */
     const event = await eventService.create(
       req.claim.sub,
-      req.body.sportId,
+      req.body.sport,
       req.body.name,
       req.body.location[0],
       req.body.location[1],
@@ -162,7 +162,7 @@ const update = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (!validator.isMongoId(req.body.sportId) ||
+    if (!validator.isMongoId(req.body.sport) ||
       !validator.isString(req.body.name) ||
       !validator.isLatLongArray(req.body.location) ||
       !validator.isDateAfterNow(req.body.startDate) ||
@@ -182,7 +182,7 @@ const update = async (req, res, next) => {
     const event = await eventService.update(
       req.claim.sub,
       req.params.eventId,
-      req.body.sportId,
+      req.body.sport,
       req.body.name,
       req.body.location[0],
       req.body.location[1],

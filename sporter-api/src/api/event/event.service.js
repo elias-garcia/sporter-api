@@ -9,19 +9,19 @@ const ApiError = require('../api-error');
 const create = async (userId, sportId, name, latitude, longitude,
   startDate, endingDate, description, intensity, maxPlayers, fee) => {
   /**
-   * Check if the sport exists in the db
-   */
-  const sport = await Sport.findById(sportId);
-  if (!sport) {
-    throw new ApiError(404, 'sport not found');
-  }
-
-  /**
    * Check if the user exists in the db
    */
   const user = await User.findById(userId);
   if (!user) {
-    throw new ApiError(404, 'user not found');
+    throw new ApiError(404, 'user does not exist');
+  }
+
+  /**
+ * Check if the sport exists in the db
+ */
+  const sport = await Sport.findById(sportId);
+  if (!sport) {
+    throw new ApiError(404, 'sport does not exist');
   }
 
   /**
@@ -128,7 +128,7 @@ const find = async (eventId) => {
    * Check if the event exists
    */
   if (!event) {
-    throw new ApiError(404, 'event not found');
+    throw new ApiError(404, 'event does not exist');
   }
 
   /**
@@ -142,6 +142,13 @@ const update = async (userId, eventId, sportId, name, latitude, longitude,
   let event = await Event.findById(eventId);
 
   /**
+   * Check if the found event exist
+   */
+  if (!event) {
+    throw new ApiError(404, 'event does not exist');
+  }
+
+  /**
    * Check if the event to be removed was created by the user who performs the request
    */
   if (userId !== event.host.toString()) {
@@ -149,16 +156,11 @@ const update = async (userId, eventId, sportId, name, latitude, longitude,
   }
 
   /**
-   * Check if the found event exist
-   */
-  if (!event) {
-    throw new ApiError(404, 'event not found');
-  }
-
-  /**
    * Check if the event can be updated
    */
-  if (event.status !== EventStatus.WAITING) {
+  if (!(event.status === EventStatus.WAITING &&
+    event.players.length === 1 &&
+    event.players[0].toString() === userId)) {
     throw new ApiError(409, 'event can\'t be updated');
   }
 
@@ -201,7 +203,7 @@ const remove = async (userId, eventId) => {
    * Check if the event exists
    */
   if (!event) {
-    throw new ApiError(404, 'event not found');
+    throw new ApiError(404, 'event does not exist');
   }
 
   /**
