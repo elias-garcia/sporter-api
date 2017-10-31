@@ -106,8 +106,7 @@ const findAll = async (userId, sportId, startDate,
     .populate('host')
     .sort({ startDate: 'asc' })
     .skip(skip)
-    .limit(limit)
-    .exec();
+    .limit(limit);
 
   /**
    * Return the matched events
@@ -121,8 +120,7 @@ const find = async (eventId) => {
    */
   const event = await Event.findById(eventId)
     .populate('sport')
-    .populate('host')
-    .exec();
+    .populate('host');
 
   /**
    * Check if the event exists

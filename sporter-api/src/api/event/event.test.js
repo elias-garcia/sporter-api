@@ -93,7 +93,218 @@ describe('Events', () => {
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
 
-    it('should return 404 not found when the sportId not found', async () => {
+    it('should return 422 unprocessable entity when the sportId is not a valid mongo id', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.sport = notValidMongoId;
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the name is not a string', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.name = 123;
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the location is not a valid pair of coordinates', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.location = '(90, 129)';
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the description is not a string', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.description = false;
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when maxPlayers is not an int >= 2', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.maxPlayers = 1.923;
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the fee is not an int >= 0', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.fee = -2;
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the intensity is not valid', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.intensity = 'nothing';
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the startDate is before than now', async () => {
+      const event = test.createEventPost(sport1.id);
+      const now = moment();
+
+      now.subtract(15, 'minutes');
+      event.startDate = now.format();
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the endingDate is before than the startDate', async () => {
+      const event = test.createEventPost(sport1.id);
+      const now = moment();
+
+      now.subtract(2, 'hours');
+      event.endingDate = now.format();
+
+      try {
+        await chai.request(app)
+          .post(eventPath)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 404 not found when the sportId does not exist', async () => {
       const event = test.createEventPost(user1.id, nonExistingId);
 
       try {
@@ -114,7 +325,7 @@ describe('Events', () => {
       }
     });
 
-    it('should return 404 not found when the userId not found', async () => {
+    it('should return 404 not found when the userId does not exist', async () => {
       const event = test.createEventPost(user1.id, sport1.id);
 
       await user1.remove();
@@ -346,174 +557,174 @@ describe('Events', () => {
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
     });
-  });
 
-  it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ location: nearCoordinates })
-      .set('content-type', 'application/json');
+    it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ location: nearCoordinates })
+        .set('content-type', 'application/json');
 
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(4);
-    res.body.data.events.forEach((event) => {
-      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-        'endingDate', 'createdAt', 'updatedAt']);
-      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-        'endingDate', 'createdAt', 'updatedAt']);
-      expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-      expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(4);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+      });
     });
-  });
 
-  it('should return 200 and 1 event when finding by userId and sportId', async () => {
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ userId: user1.id, sportId: sport1.id })
-      .set('content-type', 'application/json');
+    it('should return 200 and 1 event when finding by userId and sportId', async () => {
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ userId: user1.id, sportId: sport1.id })
+        .set('content-type', 'application/json');
 
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(1);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-      'age', 'location', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].id).to.be.equal(event1.id);
-    expect(res.body.data.events[0].sport.id).to.be.equal(sport1.id);
-  });
-
-  it('should return 200 and 1 event when finding by userId and startDate', async () => {
-    const startDate = moment();
-
-    startDate.add(3, 'days').format();
-
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ userId: user2.id, startDate: startDate.format() })
-      .set('content-type', 'application/json');
-
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(1);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-      'age', 'location', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].id).to.be.equal(event3.id);
-    expect(res.body.data.events[0].startDate).to.be.equal(event3.startDate.toISOString());
-  });
-
-  it('should return 200 and 1 event when finding by userId and coordinates', async () => {
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ userId: user1.id, location: nearCoordinates })
-      .set('content-type', 'application/json');
-
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(2);
-    res.body.data.events.forEach((event) => {
-      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
         'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
-      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
         'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
-      expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-      expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
         'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[0].sport.id).to.be.equal(sport1.id);
     });
-    expect(res.body.data.events[0].id).to.be.equal(event1.id);
-    expect(res.body.data.events[1].id).to.be.equal(event2.id);
-  });
 
-  it('should return 200 and 1 event when finding by sportId and startDate', async () => {
-    const startDate = moment();
+    it('should return 200 and 1 event when finding by userId and startDate', async () => {
+      const startDate = moment();
 
-    startDate.add(3, 'days').format();
+      startDate.add(3, 'days').format();
 
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ sportId: sport1.id, startDate: startDate.format() })
-      .set('content-type', 'application/json');
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ userId: user2.id, startDate: startDate.format() })
+        .set('content-type', 'application/json');
 
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(1);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-      'age', 'location', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].id).to.be.equal(event3.id);
-  });
-
-  it('should return 200 and 2 events when finding by sportId and coordinates', async () => {
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ sportId: sport1.id, location: nearCoordinates })
-      .set('content-type', 'application/json');
-
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(2);
-    res.body.data.events.forEach((event) => {
-      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
         'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
-      expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
         'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
-      expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-      expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+      expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
         'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+      expect(res.body.data.events[0].startDate).to.be.equal(event3.startDate.toISOString());
     });
-    expect(res.body.data.events[0].id).to.be.equal(event1.id);
-    expect(res.body.data.events[1].id).to.be.equal(event3.id);
-  });
 
-  it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
-    const startDate = moment();
+    it('should return 200 and 1 event when finding by userId and coordinates', async () => {
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ userId: user1.id, location: nearCoordinates })
+        .set('content-type', 'application/json');
 
-    startDate.add(3, 'days');
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+      });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+    });
 
-    const res = await chai.request(app)
-      .get(eventPath)
-      .query({ startDate: startDate.format(), location: nearCoordinates })
-      .set('content-type', 'application/json');
+    it('should return 200 and 1 event when finding by sportId and startDate', async () => {
+      const startDate = moment();
 
-    expect(res).to.be.json;
-    expect(res).to.have.status(200);
-    expect(res.body.data.events.length).to.be.equal(1);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-      'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
-      'endingDate', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-      'age', 'location', 'createdAt', 'updatedAt']);
-    expect(res.body.data.events[0].id).to.be.equal(event3.id);
+      startDate.add(3, 'days').format();
+
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ sportId: sport1.id, startDate: startDate.format() })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    });
+
+    it('should return 200 and 2 events when finding by sportId and coordinates', async () => {
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ sportId: sport1.id, location: nearCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(2);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'age', 'location', 'createdAt', 'updatedAt']);
+      });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event3.id);
+    });
+
+    it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
+      const startDate = moment();
+
+      startDate.add(3, 'days');
+
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ startDate: startDate.format(), location: nearCoordinates })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(1);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
+        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'endingDate', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+        'age', 'location', 'createdAt', 'updatedAt']);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
+    });
   });
 
   describe('PUT /events', () => {
@@ -634,7 +845,7 @@ describe('Events', () => {
       }
     });
 
-    it('should return 404 when the eventId not found', async () => {
+    it('should return 404 when the eventId does not exist', async () => {
       try {
         await chai.request(app)
           .get(`${eventPath}/${nonExistingId}`)
@@ -692,7 +903,218 @@ describe('Events', () => {
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
 
-    it('should return 404 when the event not found', async () => {
+    it('should return 422 unprocessable entity when the sportId is not a valid mongo id', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.sport = notValidMongoId;
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the name is not a string', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.name = 123;
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the location is not a valid pair of coordinates', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.location = '(90, 129)';
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the description is not a string', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.description = false;
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when maxPlayers is not an int >= 2', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.maxPlayers = 1.923;
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the fee is not an int >= 0', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.fee = -2;
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the intensity is not valid', async () => {
+      const event = test.createEventPost(sport1.id);
+
+      event.intensity = 'nothing';
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the startDate is before than now', async () => {
+      const event = test.createEventPost(sport1.id);
+      const now = moment();
+
+      now.subtract(15, 'minutes');
+      event.startDate = now.format();
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the endingDate is before than the startDate', async () => {
+      const event = test.createEventPost(sport1.id);
+      const now = moment();
+
+      now.subtract(2, 'hours');
+      event.endingDate = now.format();
+
+      try {
+        await chai.request(app)
+          .put(`${eventPath}/${event1.id}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${user1Token}`)
+          .send(event);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 404 when the event does not exist', async () => {
       const event = test.createEventPost(sport1.id);
 
       try {
@@ -901,7 +1323,7 @@ describe('Events', () => {
       }
     });
 
-    it('should return 404 when the event not found', async () => {
+    it('should return 404 when the event does not exist', async () => {
       try {
         await chai.request(app)
           .delete(`${eventPath}/${nonExistingId}`)

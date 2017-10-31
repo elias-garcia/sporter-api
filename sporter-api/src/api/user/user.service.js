@@ -18,7 +18,7 @@ const register = async (email, password, firstName, lastName, age, location) => 
   /**
    * Check if the user already exists in the db
    */
-  const oldUser = await User.findOne({ email }).exec();
+  const oldUser = await User.findOne({ email });
   if (oldUser) {
     throw new ApiError(409, 'user already exists');
   }
@@ -51,7 +51,7 @@ const findById = async (userId) => {
   /**
    * Find the user in db and check if it exists
    */
-  const user = await User.findById(userId, '-password').exec();
+  const user = await User.findById(userId, '-password');
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
@@ -134,7 +134,7 @@ const remove = async (userId) => {
   /**
    * Find the user to be removed to check if it exists
    */
-  const user = await User.findById(userId).exec();
+  const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, 'user not found');
   }
