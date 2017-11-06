@@ -725,6 +725,96 @@ describe('Events', () => {
         'age', 'location', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event3.id);
     });
+
+    it('should return 422 unprocessable entity when the userId is not a valid mongo id', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ userId: notValidMongoId })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when the sportId is not a valid mongo id', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ sportId: notValidMongoId })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when maxDistance is not valid', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ maxDistance: 0 })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when limit is not valid', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ limit: 0 })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when offset is not valid', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ offset: 0 })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
   });
 
   describe('PUT /events', () => {

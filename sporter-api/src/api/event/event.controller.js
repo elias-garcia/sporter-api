@@ -90,7 +90,7 @@ const findAll = async (req, res, next) => {
     }
 
     if (req.query.maxDistance) {
-      if (!validator.isPositiveFloat(Number(req.query.maxDistance))) {
+      if (!validator.isGreaterFloatThan(Number(req.query.maxDistance), 0.1)) {
         throw new ApiError(422, 'unprocessable entity');
       }
       maxDistance = Number(req.query.maxDistance);
