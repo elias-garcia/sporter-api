@@ -762,6 +762,42 @@ describe('Events', () => {
       }
     });
 
+    it('should return 422 unprocessable entity when startDate is not valid', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ startDate: '2017-09-24T44:00:00+02:00' })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when location are not valid', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ location: '(12,0)' })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
     it('should return 422 unprocessable entity when maxDistance is not valid', async () => {
       try {
         await chai.request(app)
