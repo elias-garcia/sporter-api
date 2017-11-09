@@ -9,14 +9,14 @@ const join = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.eventId) !== 'string' || !validator.isMongoId(req.params.eventId)) {
+    if (!validator.isMongoId(req.params.eventId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
     /**
      * Join the user to the event
     */
-    const player = await playersService.join(req.claim.sub, req.body.eventId);
+    const player = await playersService.join(req.claim.sub, req.params.eventId);
 
     /**
      * Return the updated event
@@ -32,8 +32,7 @@ const findAll = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.eventId) !== 'string' ||
-      !validator.isMongoId(req.params.eventId)) {
+    if (!validator.isMongoId(req.params.eventId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
@@ -56,20 +55,27 @@ const leave = async (req, res, next) => {
     /**
      * Validate the input data
      */
-    if (typeof (req.params.eventId) !== 'string' ||
-      !validator.isMongoId(req.params.eventId)) {
+    if (!validator.isMongoId(req.params.eventId) ||
+      !validator.isMongoId(req.params.playerId)) {
       throw new ApiError(422, 'unprocessable entity');
+    }
+
+    /**
+     * Check if the playerId is the same as the user who sent the request
+     */
+    if (req.claim.sub !== req.params.playerId) {
+      throw new ApiError(403, 'you are not allowed to access this resource');
     }
 
     /**
      * Remove the user from the event
      */
-    await playersService.leave(req.claim.sub, req.body.eventId);
+    await playersService.leave(req.claim.sub, req.params.eventId);
 
     /**
      * Return the updated event
      */
-    return res.status(204).send();
+    return res.status(204).end();
   } catch (err) {
     return next(err);
   }

@@ -9,8 +9,9 @@
     "start": "node ./src/app.js",
     "test": "mocha ./src/**/*.test.js",
     "test-event": "mocha ./src/api/event/*.test.js",
-    "test-user": "mocha ./src/api/user/*.test.js",
+    "test-event-players": "mocha ./src/api/event/players/*.test.js",
     "test-session": "mocha ./src/api/session/*.test.js",
+    "test-user": "mocha ./src/api/user/*.test.js",
     "lint": "eslint ./src"
   },
   "author": "Elías García",

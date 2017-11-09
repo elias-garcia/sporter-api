@@ -28,10 +28,10 @@ const join = async (userId, eventId) => {
   }
 
   /**
-   * Check if the event has available space for a new player
+   * Check if the user already takes part in the event
    */
-  if (event.players.length === event.maxPlayers) {
-    throw new ApiError(409, 'event is full');
+  if (event.players.map(playerId => String(playerId)).includes(userId)) {
+    throw new ApiError(409, 'you\'ve already joined the event');
   }
 
   /**
@@ -102,14 +102,21 @@ const leave = async (userId, eventId) => {
   }
 
   /**
+   * Check if the user takes part in the event
+   */
+  if (!event.players.map(playerId => String(playerId)).includes(userId)) {
+    throw new ApiError(404, 'user not found in the event');
+  }
+
+  /**
    * Remove the user from the event players
    */
-  event.players.filter(playerId => playerId.toString() !== userId);
+  event.players = event.players.filter(playerId => String(playerId) !== userId);
 
   /**
    * Check if the event was FULL and its status needs to be changed
    */
-  if (event.status === EventStatus.FULL && event.players.length < event.maxPlayers) {
+  if (event.status === EventStatus.FULL && event.players.length === (event.maxPlayers - 1)) {
     event.status = EventStatus.WAITING;
   }
 

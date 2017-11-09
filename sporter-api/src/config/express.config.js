@@ -30,6 +30,8 @@ const configure = (app) => {
   app.post(`${appConfig.path}/events`, middleware.authenticate);
   app.put(`${appConfig.path}/events/:eventId`, middleware.authenticate);
   app.delete(`${appConfig.path}/events/:eventId`, middleware.authenticate);
+  app.post(`${appConfig.path}/events/:eventId/players`, middleware.authenticate);
+  app.delete(`${appConfig.path}/events/:eventId/players/:playerId`, middleware.authenticate);
 
   /* Routing configuration */
   app.use(appConfig.path, routes);
