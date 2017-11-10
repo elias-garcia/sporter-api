@@ -218,7 +218,7 @@ describe('Event Players', () => {
     it('should return 404 not found when the event does not exist', async () => {
       try {
         await chai.request(app)
-          .post(`${eventPath}/${nonExistingId}/players`)
+          .get(`${eventPath}/${nonExistingId}/players`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${userToken}`);
 
@@ -236,7 +236,7 @@ describe('Event Players', () => {
     it('should return 422 unprocessable entity when the eventId is not a valid mongoId', async () => {
       try {
         await chai.request(app)
-          .post(`${eventPath}/${notValidMongoId}/players`)
+          .get(`${eventPath}/${notValidMongoId}/players`)
           .set('content-type', 'application/json')
           .set('authorization', `Bearer ${userToken}`);
 

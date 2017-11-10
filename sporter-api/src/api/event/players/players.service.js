@@ -63,7 +63,7 @@ const findAll = async (eventId) => {
    */
   let event = await Event.findById(eventId);
   if (!event) {
-    throw new ApiError(404, 'event doest not exist');
+    throw new ApiError(404, 'event not found');
   }
 
   /**
