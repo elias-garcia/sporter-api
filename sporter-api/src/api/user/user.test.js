@@ -786,6 +786,7 @@ describe('User', () => {
       const body = {
         old_password: user.password,
         new_password: 'new_password',
+        new_password_repeat: 'new_password',
       };
 
       const res2 = await chai.request(app)
@@ -933,6 +934,75 @@ describe('User', () => {
       }
     });
 
+    it('should return 422, unprocessable entity when the new password repeat is not sent', async () => {
+      const user = test.createUser('user@test.com');
+
+      try {
+        const res = await chai.request(app)
+          .post(`${userPath}`)
+          .set('content-type', 'application/json')
+          .send(user);
+
+        const userId = res.body.data.session.id;
+        const { token } = res.body.data.session;
+
+        const body = {
+          old_password: 'old_password',
+          new_password: 'new_password',
+        };
+
+        await chai.request(app)
+          .patch(`${userPath}/${userId}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${token}`)
+          .send(body);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422, unprocessable entity when the new passwords does not match', async () => {
+      const user = test.createUser('user@test.com');
+
+      try {
+        const res = await chai.request(app)
+          .post(`${userPath}`)
+          .set('content-type', 'application/json')
+          .send(user);
+
+        const userId = res.body.data.session.id;
+        const { token } = res.body.data.session;
+
+        const body = {
+          old_password: 'old_password',
+          new_password: 'new_password',
+          new_password_repeat: 'another_password',
+        };
+
+        await chai.request(app)
+          .patch(`${userPath}/${userId}`)
+          .set('content-type', 'application/json')
+          .set('authorization', `Bearer ${token}`)
+          .send(body);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
     it('should return 422, unprocessable entity when the old password sent is wrong', async () => {
       const user = test.createUser('user@test.com');
 
@@ -981,6 +1051,7 @@ describe('User', () => {
         const body = {
           old_password: user.password,
           new_password: 'new_password',
+          new_password_repeat: 'new_password',
         };
 
         await chai.request(app)
@@ -1015,6 +1086,7 @@ describe('User', () => {
         const body = {
           old_password: user.password,
           new_password: 'new_password',
+          new_password_repeat: 'new_password',
         };
 
         await User.remove({});

@@ -111,7 +111,9 @@ const changePassword = async (req, res, next) => {
      */
     if (!validator.isMongoId(req.params.userId) ||
       !req.body.old_password ||
-      !req.body.new_password) {
+      !req.body.new_password ||
+      !req.body.new_password_repeat ||
+      String(req.body.new_password) !== String(req.body.new_password_repeat)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
