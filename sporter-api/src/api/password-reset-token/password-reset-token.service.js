@@ -51,12 +51,12 @@ const createPasswordResetToken = async (email) => {
     await dbToken.remove();
   });
 
-  scheduler.schedule(expirationDate.toDate(), 'password reset token', { tokenId: token.id });
+  scheduler.schedule(expirationDate.toDate(), 'password reset token', { tokenId: token.id, userId: user.id });
 
   /**
    * Send the password reset link to te user by email
    */
-  await mailer.sendPasswordResetToken(user.email, newToken);
+  await mailer.sendPasswordResetToken(user.email, user.id, newToken);
 };
 
 module.exports = {

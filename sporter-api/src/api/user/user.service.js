@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const appConfig = require('../../config/app.config');
 const User = require('../user/user.model');
+const PasswordResetToken = require('../password-reset-token/password-reset-token.model');
+const scheduler = require('../../util/scheduler');
 const ApiError = require('../api-error');
 
 /**
@@ -103,14 +105,30 @@ const update = async (userId, email, firstName, lastName, age, location) => {
  * @param {*} userId - The userId of the user to be updated
  * @param {*} oldPassword - The current password of the user
  * @param {*} email - The new password of the user
+ * @param {*} token - A reset password token
  */
-const changePassword = async (userId, oldPassword, newPassword) => {
+const changePassword = async (userId, oldPassword, newPassword, token) => {
   /**
    * Find the user to be updated to check if it exists
    */
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, 'user not found');
+  }
+
+  /**
+   * If token exists, find the hashed token in db and check if it's valid.
+   * If it's valid then cancel the scheduled job and remove the token info from db
+   */
+  if (token) {
+    const dbToken = await PasswordResetToken.findOne({ user: userId });
+
+    if (!bcrypt.compareSync(token, dbToken.value)) {
+      throw new ApiError(422, 'unprocessable entity');
+    }
+
+    await scheduler.cancel({ data: { userId } });
+    await dbToken.remove();
   }
 
   /**

@@ -131,6 +131,7 @@ const changePassword = async (req, res, next) => {
       req.params.userId,
       String(req.body.old_password),
       String(req.body.new_password),
+      req.body.token,
     );
 
     /**
