@@ -1,5 +1,6 @@
 const express = require('express');
 const config = require('./config/index');
+require('./util/scheduler');
 
 const app = express();
 
