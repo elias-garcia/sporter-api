@@ -42,10 +42,10 @@ sporter-api/coverage
 # 2. ANGULAR
 
 # Compiled output
-sporter-front/dist
-sporter-front/tmp
-sporter-front/out-tsc
+sporter-client/dist
+sporter-client/tmp
+sporter-client/out-tsc
 
 # e2e
-sporter-front/e2e/*.js
-sporter-front/e2e/*.map
+sporter-client/e2e/*.js
+sporter-client/e2e/*.map
