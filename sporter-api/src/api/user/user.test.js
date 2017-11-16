@@ -12,6 +12,7 @@ chai.use(chaiHttp);
 
 describe('User', () => {
   const userPath = `${apiPath}/users`;
+  const passwordResetTokenPath = `${apiPath}/password-reset-token`;
   const nonExistingUserId = '59afcfa6f8e7020004e5765d';
   const notValidToken = 'Bearer I1NiIsI6Ie.yJhbGciOiJIUz.eyJzdWkpXVCJ9';
 
@@ -772,7 +773,7 @@ describe('User', () => {
   });
 
   describe('PATCH /users/:userId', () => {
-    it('should return 204 and change the user password', async () => {
+    it('should return 204 and change the user password when the token is not send', async () => {
       const user = test.createUser('user@test.com');
 
       const res1 = await chai.request(app)

@@ -1,13 +1,8 @@
 const mongoose = require('mongoose');
 const appConfig = require('../config/app.config');
 
-const configure = () => {
+const configure = async () => {
   mongoose.Promise = global.Promise;
-
-  mongoose.connect(appConfig.mongo, { useMongoClient: true }, () => {
-    // Initialization code
-    // mongoose.set('debug', true);
-  });
 
   mongoose.connection.on('connected', () => {
     console.log(`Mongoose default connection open to ${appConfig.mongo}`);
@@ -16,6 +11,8 @@ const configure = () => {
   mongoose.connection.on('error', (err) => {
     console.log(`Mongoose default connection error ${err}`);
   });
+
+  await mongoose.connect(appConfig.mongo, { useMongoClient: true });
 
   process.on('SIGINT', () => {
     mongoose.connection.close(() => {

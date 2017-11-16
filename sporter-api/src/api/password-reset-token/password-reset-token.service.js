@@ -6,6 +6,7 @@ const User = require('../user/user.model');
 const PasswordResetToken = require('./password-reset-token.model');
 const mailer = require('../../util/mailer');
 const scheduler = require('../../util/scheduler');
+const jobTypes = require('../../jobs/job-types-enum');
 const ApiError = require('../api-error');
 
 const createPasswordResetToken = async (email) => {
@@ -23,7 +24,7 @@ const createPasswordResetToken = async (email) => {
    */
   const oldToken = await PasswordResetToken.findOne({ user: user.id });
   if (oldToken) {
-    oldToken.remove();
+    await oldToken.remove();
   }
 
   /**
@@ -45,13 +46,11 @@ const createPasswordResetToken = async (email) => {
     user: user.id,
   });
 
-  scheduler.define('password reset token', async (job) => {
-    const dbToken = await PasswordResetToken.findById(job.attrs.data.tokenId);
-
-    await dbToken.remove();
-  });
-
-  scheduler.schedule(expirationDate.toDate(), 'password reset token', { tokenId: token.id, userId: user.id });
+  scheduler.schedule(
+    expirationDate.toDate(),
+    jobTypes.PASSWORD_RESET_TOKEN_EXPIRE,
+    { tokenId: token.id, userId: user.id },
+  );
 
   /**
    * Send the password reset link to te user by email

@@ -8,7 +8,7 @@ const createPasswordResetToken = async (req, res, next) => {
      * Validate the input data
      */
     if (!req.body.email ||
-      validator.isEmail(req.body.isEmail)) {
+      !validator.isEmail(req.body.email)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 

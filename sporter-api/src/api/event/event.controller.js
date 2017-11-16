@@ -1,4 +1,4 @@
-const EventIntensity = require('./event-intensity.enum');
+const eventIntensity = require('./event-intensity.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
 const json = require('../../util/json');
@@ -16,7 +16,7 @@ const create = async (req, res, next) => {
       !validator.isDateAfterNow(req.body.startDate) ||
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
-      !Object.values(EventIntensity).includes(req.body.intensity.toUpperCase()) ||
+      !Object.values(eventIntensity).includes(req.body.intensity.toUpperCase()) ||
       !validator.isGreaterIntThan(req.body.maxPlayers, 2) ||
       !validator.isGreaterFloatThan(req.body.fee, 0)
     ) {
@@ -167,7 +167,7 @@ const update = async (req, res, next) => {
       !validator.isDateAfterNow(req.body.startDate) ||
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
-      !Object.values(EventIntensity).includes(req.body.intensity.toUpperCase()) ||
+      !Object.values(eventIntensity).includes(req.body.intensity.toUpperCase()) ||
       !validator.isGreaterIntThan(req.body.maxPlayers, 2) ||
       !validator.isGreaterFloatThan(req.body.fee, 0)
     ) {
