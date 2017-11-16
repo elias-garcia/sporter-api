@@ -1,6 +1,6 @@
 const Agenda = require('agenda');
 const appConfig = require('../config/app.config');
-const jobTypes = require('../jobs/job-types-enum');
+const jobTypes = require('../jobs/job-types.enum');
 const jobs = require('../jobs/index');
 
 const agenda = new Agenda({ db: { address: appConfig.mongo } });

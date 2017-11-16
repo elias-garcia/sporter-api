@@ -6,7 +6,7 @@ const User = require('../user/user.model');
 const PasswordResetToken = require('./password-reset-token.model');
 const mailer = require('../../util/mailer');
 const scheduler = require('../../util/scheduler');
-const jobTypes = require('../../jobs/job-types-enum');
+const jobTypes = require('../../jobs/job-types.enum');
 const ApiError = require('../api-error');
 
 const createPasswordResetToken = async (email) => {

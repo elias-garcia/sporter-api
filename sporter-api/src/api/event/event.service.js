@@ -4,6 +4,8 @@ const EventStatus = require('./event-status.enum');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
+const scheduler = require('../../util/scheduler');
+const jobTypes = require('../../jobs/job-types.enum');
 const ApiError = require('../api-error');
 
 const create = async (userId, sportId, name, latitude, longitude,
@@ -49,6 +51,28 @@ const create = async (userId, sportId, name, latitude, longitude,
 
   /* Populate the sport, host and player */
   await event.populate('sport').populate('host').execPopulate();
+
+  /**
+   * Schedule tasks for the event to change it's status based on
+   * it's dates
+   */
+  scheduler.schedule(
+    moment(startDate).subtract(30, 'minutes').utc().toDate(),
+    jobTypes.EVENT_CONFIRM,
+    { eventId: event.id },
+  );
+
+  scheduler.schedule(
+    moment(startDate).utc().toDate(),
+    jobTypes.EVENT_START,
+    { eventId: event.id },
+  );
+
+  scheduler.schedule(
+    moment(endingDate).utc().toDate(),
+    jobTypes.EVENT_FINISH,
+    { eventId: event.id },
+  );
 
   /**
    * Return the created event
@@ -223,12 +247,12 @@ const remove = async (userId, eventId) => {
   /**
    * Remove the event from db
    */
-  event.remove();
+  await event.remove();
 
   /**
-   * Return the event
+   * Remove the scheduled tasks for the event
    */
-  return event;
+  scheduler.cancel({ 'data.eventId': eventId }, () => { });
 };
 
 module.exports = {

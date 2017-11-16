@@ -41,7 +41,7 @@ describe('Password Reset Token', () => {
 
       const tokens = await PasswordResetToken.find({ user: user.id });
       expect(tokens.length).to.be.equal(1);
-      scheduler.jobs({}, (err, jobs) => {
+      scheduler.jobs({ 'data.userId': user.id }, (err, jobs) => {
         expect(jobs.length).to.be.equal(1);
       });
     });
