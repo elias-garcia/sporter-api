@@ -16,7 +16,7 @@ const join = async (req, res, next) => {
     /**
      * Join the user to the event
     */
-    const player = await playersService.join(req.claim.sub, req.params.eventId);
+    const player = await playersService.join(req.user.sub, req.params.eventId);
 
     /**
      * Return the updated event
@@ -63,14 +63,14 @@ const leave = async (req, res, next) => {
     /**
      * Check if the playerId is the same as the user who sent the request
      */
-    if (req.claim.sub !== req.params.playerId) {
+    if (req.user.sub !== req.params.playerId) {
       throw new ApiError(403, 'you are not allowed to access this resource');
     }
 
     /**
      * Remove the user from the event
      */
-    await playersService.leave(req.claim.sub, req.params.eventId);
+    await playersService.leave(req.user.sub, req.params.eventId);
 
     /**
      * Return the updated event

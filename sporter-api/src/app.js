@@ -3,6 +3,10 @@ const config = require('./config/index');
 
 const app = express();
 
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'development';
+}
+
 config.express(app);
 config.mongoose();
 

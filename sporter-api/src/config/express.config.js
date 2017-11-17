@@ -1,5 +1,8 @@
-const bodyParser = require('body-parser');
+const Raven = require('raven');
+const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const middleware = require('../middleware/index');
 const routes = require('../api/index');
 const error = require('../util/error');
@@ -7,15 +10,31 @@ const appConfig = require('./app.config');
 const ApiError = require('../api/api-error');
 
 const configure = (app) => {
+  /* Configure Raven to log if in prod mode */
+  Raven.config(
+    appConfig.sentryDsn,
+    {
+      shouldSendCallback: () => process.env.NODE_ENV === 'production',
+    },
+  ).install();
+
+  /* Raven request log */
+  app.use(Raven.requestHandler());
+
+  /* Use morgan to log if in dev mode */
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+  }
+
+  /* Basic security protection */
+  app.use(helmet());
+
   /* Server configuration */
   app.set('port', appConfig.port);
 
-  /* Utilities configuration */
-  app.use(bodyParser.json());
-  app.use(morgan('dev'));
-
-  /* Disable the X-Powered-By header */
-  app.disable('x-powered-by');
+  /* Use json as body request parser */
+  app.use(express.json());
 
   /* Accept only Content Type application/json */
   app.use(middleware.acceptJson);
@@ -40,6 +59,9 @@ const configure = (app) => {
   app.use((req, res, next) => {
     next(new ApiError(501, 'not implemented'));
   });
+
+  /* Error handler for Raven */
+  app.use(Raven.errorHandler());
 
   /* Error handler for runtime and API errors */
   app.use(error.handler);

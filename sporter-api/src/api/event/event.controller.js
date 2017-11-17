@@ -27,7 +27,7 @@ const create = async (req, res, next) => {
      * Create the event
      */
     const event = await eventService.create(
-      req.claim.sub,
+      req.user.sub,
       req.body.sport,
       req.body.name,
       req.body.location[0],
@@ -178,7 +178,7 @@ const update = async (req, res, next) => {
      * Update the event
      */
     const event = await eventService.update(
-      req.claim.sub,
+      req.user.sub,
       req.params.eventId,
       req.body.sport,
       req.body.name,
@@ -213,7 +213,7 @@ const remove = async (req, res, next) => {
     /**
      * Remove the event from db
      */
-    await eventService.remove(req.claim.sub, req.params.eventId);
+    await eventService.remove(req.user.sub, req.params.eventId);
 
     /**
      * Return no content
