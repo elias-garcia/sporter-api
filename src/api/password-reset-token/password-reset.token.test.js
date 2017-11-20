@@ -31,8 +31,6 @@ describe('Password Reset Token', () => {
 
   describe('POST /password-reset-token', () => {
     it('should return 202 accepted', async () => {
-      this.timeout(0);
-
       const res = await chai.request(app)
         .post(passwordResetTokenPath)
         .set('content-type', 'application/json')
@@ -46,7 +44,7 @@ describe('Password Reset Token', () => {
       scheduler.jobs({ 'data.userId': user.id }, (err, jobs) => {
         expect(jobs.length).to.be.equal(1);
       });
-    });
+    }).timeout(5000);
 
     it('should return 422 unprocessable entity when the email is not sent', async () => {
       try {
