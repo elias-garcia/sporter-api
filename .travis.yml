@@ -1,18 +1,13 @@
 language: node_js
 
-node_js:
-  - stable
+node_js: stable
 
-services:
-  - mongodb
+services: mongodb
 
-before_install: cd sporter-api
+before_install: npm i -g codecov
 
-install:
-  - npm i
-  - npm i -g codecov
+install: npm i
 
-script: istanbul cover ./node_modules/mocha/bin/_mocha ./src/**/*.test.js --report lcovonly -- -R spec
+script: npm run cover
 
-after_success:
-  - codecov
+after_success: codecov

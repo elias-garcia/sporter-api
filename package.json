@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha ./src/**/*.test.js --report html -- -R spec",
+    "cover": "./node_modules/.bin/istanbul cover -x \"**/*.test.js\" -x \"src/jobs/*.js\" ./node_modules/mocha/bin/_mocha ./src/**/*.test.js  --report html -- -R spec",
     "dev": "nodemon ./src/app.js",
     "start": "node ./src/app.js",
     "test": "mocha ./src/**/*.test.js",
@@ -28,7 +28,7 @@
     "helmet": "^3.9.0",
     "jsonwebtoken": "^7.4.3",
     "moment": "^2.19.2",
-    "mongoose": "^4.13.3",
+    "mongoose": "^4.13.4",
     "morgan": "^1.8.2",
     "nodemailer": "^4.4.0",
     "raven": "^2.2.1",

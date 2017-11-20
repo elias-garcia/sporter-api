@@ -1,29 +1,18 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# 1. SHARED
-
 # System Files
 **/.DS_Store
 **/Thumbs.db
 
 # Dependencies
-**/node_modules
+node_modules
 
-# IDEs and editors
-**/.idea
-**/.project
-**/.classpath
-**/.c9/
-**/*.launch
-**/.settings/
-**/*.sublime-workspace
-
-# IDE - VSCode
-**/.vscode/*
-!**/.vscode/settings.json
-!**/.vscode/tasks.json
-!**/.vscode/launch.json
-!**/.vscode/extensions.json
+# VSCode IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # Misc
 **/.sass-cache
@@ -33,19 +22,3 @@
 **/npm-debug.log
 **/testem.log
 **/typings
-
-# 3. NODE.JS
-
-# Coverage files
-sporter-api/coverage
-
-# 2. ANGULAR
-
-# Compiled output
-sporter-client/dist
-sporter-client/tmp
-sporter-client/out-tsc
-
-# e2e
-sporter-client/e2e/*.js
-sporter-client/e2e/*.map
