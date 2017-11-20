@@ -22,7 +22,6 @@ const configure = (app) => {
   app.use(Raven.requestHandler());
 
   /* Use morgan to log if in dev mode */
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
   }

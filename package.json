@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "cover": "./node_modules/.bin/istanbul cover -x \"**/*.test.js\" -x \"src/jobs/*.js\" ./node_modules/mocha/bin/_mocha ./src/**/*.test.js  --report html -- -R spec",
+    "cover": "./node_modules/.bin/istanbul cover -x \"**/*.test.js\" -x \"src/jobs/*.js\" ./node_modules/mocha/bin/_mocha ./src/**/*.test.js  --report lcovonly -- -R spec",
     "dev": "nodemon ./src/app.js",
     "start": "node ./src/app.js",
     "test": "mocha ./src/**/*.test.js",
