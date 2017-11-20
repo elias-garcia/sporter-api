@@ -31,6 +31,8 @@ describe('Password Reset Token', () => {
 
   describe('POST /password-reset-token', () => {
     it('should return 202 accepted', async () => {
+      this.timeout(0);
+
       const res = await chai.request(app)
         .post(passwordResetTokenPath)
         .set('content-type', 'application/json')
