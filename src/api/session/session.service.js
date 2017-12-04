@@ -16,14 +16,14 @@ const logIn = async (email, password) => {
    */
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(401, 'email not found');
+    throw new ApiError(403, 'email not found');
   }
 
   /**
   * Check if the password is valid
   */
   if (!bcrypt.compareSync(password, user.password)) {
-    throw new ApiError(401, 'password does not match');
+    throw new ApiError(403, 'password does not match');
   }
 
   /**

@@ -98,7 +98,7 @@ describe('Session', () => {
       }
     });
 
-    it('should return 401, unauthorized when the email does not match', async () => {
+    it('should return 403, unauthorized when the email does not match', async () => {
       let user = test.createUser('user@test.com');
 
       user = await User.create(user);
@@ -115,13 +115,13 @@ describe('Session', () => {
         const res = e.response;
 
         expect(res).to.be.json;
-        expect(res).to.have.status(401);
-        expect(res.body.error.status).to.be.equal(401);
+        expect(res).to.have.status(403);
+        expect(res.body.error.status).to.be.equal(403);
         expect(res.body.error.message).to.be.equal('email not found');
       }
     });
 
-    it('should return 401, unauthorized when the password does not match', async () => {
+    it('should return 403, unauthorized when the password does not match', async () => {
       let user = test.createUser('user@test.com');
 
       user = await User.create(user);
@@ -138,8 +138,8 @@ describe('Session', () => {
         const res = e.response;
 
         expect(res).to.be.json;
-        expect(res).to.have.status(401);
-        expect(res.body.error.status).to.be.equal(401);
+        expect(res).to.have.status(403);
+        expect(res.body.error.status).to.be.equal(403);
         expect(res.body.error.message).to.be.equal('password does not match');
       }
     });
