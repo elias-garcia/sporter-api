@@ -1,7 +1,6 @@
 const Raven = require('raven');
 const express = require('express');
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const middleware = require('../middleware/index');
 const routes = require('../api/index');
@@ -29,6 +28,12 @@ const configure = (app) => {
   /* Basic security protection */
   app.use(helmet());
 
+  /* Accept origins */
+  app.use(middleware.accessControl);
+
+  /* Allowed methods */
+  app.use(middleware.methodAllowed);
+
   /* Server configuration */
   app.set('port', appConfig.port);
 
@@ -42,14 +47,14 @@ const configure = (app) => {
   app.use(middleware.setJson);
 
   /* Endpoints that requires authentication */
-  app.put(`${appConfig.path}/users/:userId`, middleware.authenticate);
-  app.patch(`${appConfig.path}/users/:userId`, middleware.authenticate);
-  app.delete(`${appConfig.path}/users/:userId`, middleware.authenticate);
-  app.post(`${appConfig.path}/events`, middleware.authenticate);
-  app.put(`${appConfig.path}/events/:eventId`, middleware.authenticate);
-  app.delete(`${appConfig.path}/events/:eventId`, middleware.authenticate);
-  app.post(`${appConfig.path}/events/:eventId/players`, middleware.authenticate);
-  app.delete(`${appConfig.path}/events/:eventId/players/:playerId`, middleware.authenticate);
+  app.put(`${appConfig.path}/users/:userId`, middleware.auth);
+  app.patch(`${appConfig.path}/users/:userId`, middleware.auth);
+  app.delete(`${appConfig.path}/users/:userId`, middleware.auth);
+  app.post(`${appConfig.path}/events`, middleware.auth);
+  app.put(`${appConfig.path}/events/:eventId`, middleware.auth);
+  app.delete(`${appConfig.path}/events/:eventId`, middleware.auth);
+  app.post(`${appConfig.path}/events/:eventId/players`, middleware.auth);
+  app.delete(`${appConfig.path}/events/:eventId/players/:playerId`, middleware.auth);
 
   /* Routing configuration */
   app.use(appConfig.path, routes);
