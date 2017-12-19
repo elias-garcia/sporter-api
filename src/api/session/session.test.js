@@ -49,7 +49,7 @@ describe('Session', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
-      expect(res.body.data.session).to.have.all.keys(['id', 'token']);
+      expect(res.body.data.session).to.have.all.keys(['userId', 'firstName', 'token']);
     });
 
     it('should return 422, unprocessable entity when email is not a string', async () => {

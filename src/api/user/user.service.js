@@ -45,7 +45,7 @@ const register = async (email, password, passwordConfirm, firstName, lastName, b
     { expiresIn: appConfig.jwtMaxAge },
   );
 
-  return { id: newUser.id, token };
+  return { userId: newUser.id, firstName: newUser.firstName, token };
 };
 
 /**

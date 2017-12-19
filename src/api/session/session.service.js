@@ -35,7 +35,7 @@ const logIn = async (email, password) => {
     { expiresIn: appConfig.jwtMaxAge },
   );
 
-  return { id: user.id, token };
+  return { userId: user.id, firstName: user.firstName, token };
 };
 
 module.exports = {
