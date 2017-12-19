@@ -12,7 +12,6 @@ chai.use(chaiHttp);
 
 describe('User', () => {
   const userPath = `${apiPath}/users`;
-  const passwordResetTokenPath = `${apiPath}/password-reset-token`;
   const nonExistingUserId = '59afcfa6f8e7020004e5765d';
   const notValidToken = 'Bearer I1NiIsI6Ie.yJhbGciOiJIUz.eyJzdWkpXVCJ9';
 
@@ -123,6 +122,50 @@ describe('User', () => {
       }
     });
 
+    it('should return 422, unprocessable entity when the passwordConfirm is not sent', async () => {
+      const user = test.createUser('user@test.com');
+
+      delete user.passwordConfirm;
+
+      try {
+        await chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422, unprocessable entity when the password and passwordConfirm does not match', async () => {
+      const user = test.createUser('user@test.com');
+
+      user.passwordConfirm = 'NewPass';
+
+      try {
+        await chai.request(app)
+          .post(userPath)
+          .set('content-type', 'application/json')
+          .send(user);
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
     it('should return 422 when the first name is not a string', async () => {
       const user = test.createUser('user@test.com');
 
@@ -169,34 +212,10 @@ describe('User', () => {
       }
     });
 
-    it('should return 422 when the age is not a number', async () => {
+    it('should return 422 when the birthdate is not a valid ISO8601 date', async () => {
       const user = test.createUser('user@test.com');
 
-      user.age = '19';
-
-      await User.create(user);
-
-      try {
-        await chai.request(app)
-          .post(userPath)
-          .set('content-type', 'application/json')
-          .send(user);
-
-        expect(true).to.be.false;
-      } catch (e) {
-        const res = e.response;
-
-        expect(res).to.be.json;
-        expect(res).to.have.status(422);
-        expect(res.body.error.status).to.be.equal(422);
-        expect(res.body.error.message).to.be.equal('unprocessable entity');
-      }
-    });
-
-    it('should return 422 when the location is not a string', async () => {
-      const user = test.createUser('user@test.com');
-
-      user.location = 10;
+      user.birthdate = '1995/12/21';
 
       User.create(user);
 
@@ -310,7 +329,7 @@ describe('User', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
-        'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
+        'lastName', 'birthdate', 'updatedAt', 'createdAt']);
       expect(res.body.data.user.email).to.be.equal(user.email);
       expect(res.body.data.user.firstName).to.be.equal(user.firstName);
       expect(res.body.data.user.lastName).to.be.equal(user.lastName);
@@ -426,7 +445,7 @@ describe('User', () => {
       expect(res2).to.be.json;
       expect(res2).to.have.status(200);
       expect(res2.body.data.user).to.have.all.keys(['id', 'email', 'firstName',
-        'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
+        'lastName', 'birthdate', 'updatedAt', 'createdAt']);
     });
 
     it('should return 422, unprocessable entity if the userId is not a string', async () => {
@@ -611,7 +630,7 @@ describe('User', () => {
       }
     });
 
-    it('should return 422, unprocessable entity if the age is not a number', async () => {
+    it('should return 422, unprocessable entity if the birthdate is not a valid ISO8601 date', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -623,38 +642,7 @@ describe('User', () => {
         const userId = res.body.data.session.id;
         const { token } = res.body.data.session;
 
-        user.age = '22';
-
-        await chai.request(app)
-          .put(`${userPath}/${userId}`)
-          .set('content-type', 'application/json')
-          .set('authorization', `Bearer ${token}`)
-          .send(user);
-
-        expect(true).to.be.false;
-      } catch (e) {
-        const res = e.response;
-
-        expect(res).to.be.json;
-        expect(res).to.have.status(422);
-        expect(res.body.error.status).to.be.equal(422);
-        expect(res.body.error.message).to.be.equal('unprocessable entity');
-      }
-    });
-
-    it('should return 422, unprocessable entity if the location is not a string', async () => {
-      const user = test.createUser('user@test.com');
-
-      try {
-        const res = await chai.request(app)
-          .post(`${userPath}`)
-          .set('content-type', 'application/json')
-          .send(user);
-
-        const userId = res.body.data.session.id;
-        const { token } = res.body.data.session;
-
-        user.location = true;
+        user.birthdate = '1995/12/21';
 
         await chai.request(app)
           .put(`${userPath}/${userId}`)

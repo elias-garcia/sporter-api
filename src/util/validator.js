@@ -15,10 +15,14 @@ const isString = value => typeof (value) === 'string';
 
 const isISO8601 = value => isString(value) && moment(value, 'YYYY-MM-DDTHH:mm:ssZZ', true).isValid();
 
+const isISO8601Date = value => isString(value) && moment(value, 'YYYY-MM-DD', true).isValid();
+
 const isDateAfter = (date1, date2) =>
   isISO8601(date1) && isISO8601(date2) && moment(date1).isAfter(moment(date2));
 
-const isDateAfterNow = date => isISO8601(date) && moment(date).isAfter();
+const isDateAfterNow = date => moment(date).isAfter();
+
+const isDateBeforeNow = date => moment(date).isBefore();
 
 const isEmail = email => isString(email) && validator.isEmail(email);
 
@@ -37,8 +41,10 @@ const isMongoId = value => isString(value) && validator.isMongoId(value);
 
 module.exports = {
   isBoolean,
+  isISO8601Date,
   isDateAfter,
   isDateAfterNow,
+  isDateBeforeNow,
   isEmail,
   isGreaterIntThan,
   isGreaterFloatThan,

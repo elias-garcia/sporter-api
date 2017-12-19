@@ -11,8 +11,8 @@ module.exports = {
     host: process.env.MAILER_HOST || 'smtp.ethereal.email',
     port: process.env.MAILER_PORT || 587,
     auth: {
-      user: process.env.MAILER_USER || 'u2alwcia7b7pfqwo@ethereal.email',
-      pass: process.env.MAILER_PASSWORD || 'wWkb5USA53FM6KK6v9',
+      user: process.env.MAILER_USER || 'uhhkfpgsq2kpoti2@ethereal.email',
+      pass: process.env.MAILER_PASSWORD || 'V8VbPRhQfZFrPfjCrf',
     },
   },
   sentryDsn: process.env.SENTRY_DSN || '',

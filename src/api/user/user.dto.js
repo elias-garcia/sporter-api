@@ -1,3 +1,4 @@
+const moment = require('moment');
 const dto = require('../../util/dto');
 
 const toUserDto = (doc) => {
@@ -6,6 +7,8 @@ const toUserDto = (doc) => {
   if (ret.password) {
     delete ret.password;
   }
+
+  ret.birthdate = moment.utc(ret.birthdate).format('YYYY-MM-DD');
 
   return ret;
 };

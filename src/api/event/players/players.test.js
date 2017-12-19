@@ -60,15 +60,16 @@ describe('Event Players', () => {
         .set('content-type', 'application/json')
         .set('authorization', `Bearer ${user2Token}`);
 
+      console.log(res2.body.data.player.birthdate);
       expect(res2).to.be.json;
       expect(res2).to.have.status(201);
       expect(res2.body.data.player).to.have.all.keys(['id', 'email', 'firstName',
-        'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
+        'lastName', 'birthdate', 'updatedAt', 'createdAt']);
       expect(res2.body.data.player.id).to.be.equal(user2.id);
       expect(res2.body.data.player.email).to.be.equal(user2.email);
       expect(res2.body.data.player.firstName).to.be.equal(user2.firstName);
       expect(res2.body.data.player.lastName).to.be.equal(user2.lastName);
-      expect(res2.body.data.player.age).to.be.equal(user2.age);
+      expect(res2.body.data.player.birthdate).to.be.equal(preUser.birthdate);
       expect(res2.body.data.player.location).to.be.equal(user2.location);
 
       const dbEvent = await Event.findById(event.id);
@@ -212,7 +213,7 @@ describe('Event Players', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.players.length).to.be.equal(1);
       expect(res.body.data.players[0]).to.have.all.keys(['id', 'email', 'firstName',
-        'lastName', 'age', 'location', 'updatedAt', 'createdAt']);
+        'lastName', 'birthdate', 'updatedAt', 'createdAt']);
     });
 
     it('should return 404 not found when the event does not exist', async () => {

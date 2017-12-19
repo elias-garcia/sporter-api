@@ -7,9 +7,10 @@ const createSport = name => ({ name });
 const createUser = email => ({
   email,
   password: 'testpassword',
+  passwordConfirm: 'testpassword',
   firstName: 'User',
   lastName: 'Test',
-  age: 30,
+  birthdate: '1995-12-21',
   location: 'Madrid, Spain',
 });
 

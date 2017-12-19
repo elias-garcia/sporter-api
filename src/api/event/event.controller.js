@@ -13,7 +13,9 @@ const create = async (req, res, next) => {
     if (!validator.isMongoId(req.body.sport) ||
       !validator.isString(req.body.name) ||
       !validator.isLatLongArray(req.body.location) ||
+      !validator.isISO8601(req.body.startDate) ||
       !validator.isDateAfterNow(req.body.startDate) ||
+      !validator.isISO8601(req.body.endingDate) ||
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(eventIntensity).includes(req.body.intensity.toUpperCase()) ||
@@ -164,7 +166,9 @@ const update = async (req, res, next) => {
     if (!validator.isMongoId(req.body.sport) ||
       !validator.isString(req.body.name) ||
       !validator.isLatLongArray(req.body.location) ||
+      !validator.isISO8601(req.body.startDate) ||
       !validator.isDateAfterNow(req.body.startDate) ||
+      !validator.isISO8601(req.body.endingDate) ||
       !validator.isDateAfter(req.body.endingDate, req.body.startDate) ||
       !validator.isString(req.body.description) ||
       !Object.values(eventIntensity).includes(req.body.intensity.toUpperCase()) ||

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const moment = require('moment');
 const appConfig = require('../../config/app.config');
 const User = require('../user/user.model');
 const PasswordResetToken = require('../password-reset-token/password-reset-token.model');
@@ -12,11 +13,10 @@ const ApiError = require('../api-error');
  * @param {*} password - Password of the new user
  * @param {*} firstName - First name of the new user
  * @param {*} lastName - Lasr name of the new user
- * @param {*} age - Age of the new user
- * @param {*} location - Location of the new user
+ * @param {*} birthdate - Birthdate of the new user
  * @returns {Object} Session object containing the logged in user userId and a JWT token
  */
-const register = async (email, password, firstName, lastName, age, location) => {
+const register = async (email, password, passwordConfirm, firstName, lastName, birthdate) => {
   /**
    * Check if the user already exists in the db
    */
@@ -29,7 +29,11 @@ const register = async (email, password, firstName, lastName, age, location) => 
    * Create the user in the db
    */
   const newUser = await User.create({
-    email, password, firstName, lastName, age, location,
+    email,
+    password,
+    firstName,
+    lastName,
+    birthdate: moment.utc(birthdate).toDate(),
   });
 
   /**
@@ -68,10 +72,10 @@ const findById = async (userId) => {
  * @param {*} password - The new password of the user
  * @param {*} firstName - The new first name of the user
  * @param {*} lastName - The new last name of the user
- * @param {*} age - The new age of the user
+ * @param {*} birthdate - The birthdate of the user
  * @param {*} location - The new location of the user
  */
-const update = async (userId, email, firstName, lastName, age, location) => {
+const update = async (userId, email, firstName, lastName, birthdate, location) => {
   /**
    * Find and update the user information
    */
@@ -81,7 +85,7 @@ const update = async (userId, email, firstName, lastName, age, location) => {
       email,
       firstName,
       lastName,
-      age,
+      birthdate,
       location,
     },
     { new: true },

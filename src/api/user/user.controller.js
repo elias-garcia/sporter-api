@@ -11,10 +11,11 @@ const create = async (req, res, next) => {
      */
     if (!validator.isEmail(req.body.email) ||
       !req.body.password ||
+      !req.body.passwordConfirm ||
+      !(req.body.password === req.body.passwordConfirm) ||
       !validator.isString(req.body.firstName) ||
       !validator.isString(req.body.lastName) ||
-      !validator.isPositiveInt(req.body.age) ||
-      !validator.isString(req.body.location)) {
+      !validator.isISO8601Date(req.body.birthdate)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
@@ -24,10 +25,10 @@ const create = async (req, res, next) => {
     const session = await userService.register(
       req.body.email,
       String(req.body.password),
+      String(req.body.passwordConfirm),
       req.body.firstName,
       req.body.lastName,
-      req.body.age,
-      req.body.location,
+      req.body.birthdate,
     );
 
     /**
@@ -71,7 +72,7 @@ const update = async (req, res, next) => {
       !validator.isEmail(req.body.email) ||
       !validator.isString(req.body.firstName) ||
       !validator.isString(req.body.lastName) ||
-      !validator.isPositiveInt(req.body.age) ||
+      !validator.isISO8601Date(req.body.birthdate) ||
       !validator.isString(req.body.location)) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -91,7 +92,7 @@ const update = async (req, res, next) => {
       req.body.email,
       req.body.firstName,
       req.body.lastName,
-      req.body.age,
+      req.body.birthdate,
       req.body.location,
     );
 

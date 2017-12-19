@@ -89,7 +89,7 @@ describe('Events', () => {
       expect(res.body.data.event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.sport.id).to.be.equal(sport1.id);
       expect(res.body.data.event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
 
@@ -367,7 +367,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -393,7 +393,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -419,7 +419,7 @@ describe('Events', () => {
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event4.id);
     });
 
@@ -441,7 +441,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -465,7 +465,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
         expect(event.sport.id).to.be.equal(sport1.id);
       });
     });
@@ -492,7 +492,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -519,7 +519,7 @@ describe('Events', () => {
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event4.id);
     });
 
@@ -552,7 +552,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -576,7 +576,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
     });
 
@@ -597,7 +597,7 @@ describe('Events', () => {
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[0].sport.id).to.be.equal(sport1.id);
     });
@@ -623,7 +623,7 @@ describe('Events', () => {
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event3.id);
       expect(res.body.data.events[0].startDate).to.be.equal(event3.startDate.toISOString());
     });
@@ -646,7 +646,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event2.id);
@@ -673,7 +673,7 @@ describe('Events', () => {
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event3.id);
     });
 
@@ -695,7 +695,7 @@ describe('Events', () => {
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-          'age', 'location', 'createdAt', 'updatedAt']);
+          'birthdate', 'createdAt', 'updatedAt']);
       });
       expect(res.body.data.events[0].id).to.be.equal(event1.id);
       expect(res.body.data.events[1].id).to.be.equal(event3.id);
@@ -722,7 +722,7 @@ describe('Events', () => {
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].id).to.be.equal(event3.id);
     });
 
@@ -1025,7 +1025,7 @@ describe('Events', () => {
       expect(res.body.data.event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.sport.id).to.be.equal(sport2.id);
       expect(res.body.data.event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
-        'age', 'location', 'createdAt', 'updatedAt']);
+        'birthdate', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.host.id).to.be.equal(user1.id);
     });
 
