@@ -1,6 +1,13 @@
 const dto = require('../../util/dto');
 
-const toSportDto = doc => dto.transform(doc);
+const toSportDto = (doc) => {
+  const ret = dto.transform(doc);
+
+  delete ret.createdAt;
+  delete ret.updatedAt;
+
+  return ret;
+};
 
 const toSportsDto = docs => docs.map(doc => toSportDto(doc));
 
