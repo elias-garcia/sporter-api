@@ -9,7 +9,7 @@ const jobTypes = require('../../jobs/job-types.enum');
 const ApiError = require('../api-error');
 
 const create = async (userId, sportId, name, latitude, longitude,
-  startDate, endingDate, description, intensity, maxPlayers, fee) => {
+  startDate, endingDate, description, intensity, maxPlayers, fee, currencyCode) => {
   /**
    * Check if the user exists in the db
    */
@@ -41,6 +41,7 @@ const create = async (userId, sportId, name, latitude, longitude,
     intensity,
     maxPlayers,
     fee,
+    currencyCode,
     status: EventStatus.WAITING,
     host: userId,
   });
@@ -160,7 +161,7 @@ const find = async (eventId) => {
 };
 
 const update = async (userId, eventId, sportId, name, latitude, longitude,
-  startDate, endingDate, description, intensity, maxPlayers, fee) => {
+  startDate, endingDate, description, intensity, maxPlayers, fee, currencyCode) => {
   let event = await Event.findById(eventId);
 
   /**
@@ -201,6 +202,7 @@ const update = async (userId, eventId, sportId, name, latitude, longitude,
   event.intensity = intensity;
   event.maxPlayers = maxPlayers;
   event.fee = fee;
+  event.currencyCode = currencyCode;
 
   /**
    * Save the event

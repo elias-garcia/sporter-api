@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const eventStatus = require('./event-status.enum');
 const eventIntensity = require('./event-intensity.enum');
+const eventCurrencyCode = require('./event-currency-code.enum');
 
 const eventSchema = new mongoose.Schema({
   name: {
@@ -39,6 +40,11 @@ const eventSchema = new mongoose.Schema({
   },
   fee: {
     type: Number,
+    required: true,
+  },
+  currencyCode: {
+    type: String,
+    enum: Object.keys(eventCurrencyCode).map(key => eventCurrencyCode[key]),
     required: true,
   },
   status: {

@@ -34,6 +34,7 @@ const createEventDb = (userId, sportId, offsetDays) => {
     status: eventStatus.WAITING,
     maxPlayers: 2,
     fee: 0,
+    currencyCode: 'EUR',
     host: userId,
     players: [userId],
   };
@@ -57,6 +58,7 @@ const createEventPost = (sportId) => {
     intensity: eventIntensity.LOW,
     maxPlayers: 2,
     fee: 0,
+    currencyCode: 'EUR',
   };
   return event;
 };

@@ -1,4 +1,5 @@
 const eventIntensity = require('./event-intensity.enum');
+const eventCurrencyCode = require('./event-currency-code.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
 const json = require('../../util/json');
@@ -20,7 +21,8 @@ const create = async (req, res, next) => {
       !validator.isString(req.body.description) ||
       !Object.values(eventIntensity).includes(req.body.intensity.toUpperCase()) ||
       !validator.isGreaterIntThan(req.body.maxPlayers, 2) ||
-      !validator.isGreaterFloatThan(req.body.fee, 0)
+      !validator.isGreaterFloatThan(req.body.fee, 0) ||
+      !Object.values(eventCurrencyCode).includes(req.body.currencyCode.toUpperCase())
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -40,6 +42,7 @@ const create = async (req, res, next) => {
       req.body.intensity.toUpperCase(),
       req.body.maxPlayers,
       req.body.fee,
+      req.body.currencyCode,
     );
 
     /**
@@ -173,7 +176,8 @@ const update = async (req, res, next) => {
       !validator.isString(req.body.description) ||
       !Object.values(eventIntensity).includes(req.body.intensity.toUpperCase()) ||
       !validator.isGreaterIntThan(req.body.maxPlayers, 2) ||
-      !validator.isGreaterFloatThan(req.body.fee, 0)
+      !validator.isGreaterFloatThan(req.body.fee, 0) ||
+      !Object.values(eventCurrencyCode).includes(req.body.currencyCode.toUpperCase())
     ) {
       throw new ApiError(422, 'unprocessable entity');
     }
@@ -194,6 +198,7 @@ const update = async (req, res, next) => {
       req.body.intensity.toUpperCase(),
       req.body.maxPlayers,
       req.body.fee,
+      req.body.currencyCode,
     );
 
     /**
