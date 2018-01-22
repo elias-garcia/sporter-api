@@ -37,7 +37,7 @@ describe('Sport', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.sports.length).to.be.equal(3);
       await Promise.all(res.body.data.sports.map(async (sport) => {
-        expect(sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(sport).to.have.all.keys(['id', 'name']);
       }));
       expect(res.body.data.sports[0].id).to.be.equal(sport1.id);
       expect(res.body.data.sports[1].id).to.be.equal(sport2.id);

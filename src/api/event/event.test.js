@@ -73,7 +73,7 @@ describe('Events', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(201);
       expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.name).to.be.equal(event.name);
       expect(res.body.data.event.location[0]).to.be.equal(event.location[0]);
@@ -360,10 +360,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(4);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -386,10 +386,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(2);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -409,13 +409,13 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -434,10 +434,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(2);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -458,10 +458,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(2);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -485,10 +485,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(2);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -512,10 +512,10 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -545,10 +545,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(4);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -569,10 +569,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(4);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -590,10 +590,10 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -616,10 +616,10 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -639,10 +639,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(2);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -666,10 +666,10 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -688,10 +688,10 @@ describe('Events', () => {
       expect(res.body.data.events.length).to.be.equal(2);
       res.body.data.events.forEach((event) => {
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
-          'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+          'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
           'endingDate', 'createdAt', 'updatedAt']);
         expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -715,10 +715,10 @@ describe('Events', () => {
       expect(res).to.have.status(200);
       expect(res.body.data.events.length).to.be.equal(1);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0]).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
@@ -938,7 +938,7 @@ describe('Events', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.id).to.be.equal(event1.id);
       expect(res.body.data.event.name).to.be.equal(event1.name);
@@ -1009,7 +1009,7 @@ describe('Events', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data.event).to.have.all.keys(['id', 'name', 'sport', 'description',
-        'intensity', 'maxPlayers', 'fee', 'host', 'players', 'status', 'location', 'startDate',
+        'intensity', 'maxPlayers', 'fee', 'host', 'status', 'location', 'startDate',
         'endingDate', 'createdAt', 'updatedAt']);
       expect(res.body.data.event.name).to.be.equal(event.name);
       expect(res.body.data.event.location[0]).to.be.equal(event.location[0]);
