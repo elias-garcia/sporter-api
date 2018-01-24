@@ -1,5 +1,6 @@
 const eventIntensity = require('./event-intensity.enum');
 const eventCurrencyCode = require('./event-currency-code.enum');
+const eventStatus = require('./event-status.enum');
 const eventService = require('./event.service');
 const validator = require('../../util/validator');
 const json = require('../../util/json');
@@ -58,6 +59,7 @@ const findAll = async (req, res, next) => {
   let limit;
   let offset;
   let maxDistance;
+  let status;
   let latitude;
   let longitude;
 
@@ -101,6 +103,13 @@ const findAll = async (req, res, next) => {
       maxDistance = Number(req.query.maxDistance);
     }
 
+    if (req.query.status) {
+      if (!Object.values(eventStatus).includes(req.query.status.toUpperCase())) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+      status = req.query.status.toUpperCase();
+    }
+
     if (req.query.limit) {
       if (!validator.isGreaterIntThan(Number(req.query.limit), 1)) {
         throw new ApiError(422, 'unprocessable entity');
@@ -125,6 +134,7 @@ const findAll = async (req, res, next) => {
       latitude,
       longitude,
       maxDistance,
+      status,
       limit,
       offset,
     );

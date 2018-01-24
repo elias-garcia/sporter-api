@@ -580,6 +580,30 @@ describe('Events', () => {
       });
     });
 
+    it('should return 200 and 4 events sorted when finding by status', async () => {
+      const res = await chai.request(app)
+        .get(eventPath)
+        .query({ status: 'WAITING' })
+        .set('content-type', 'application/json');
+
+      expect(res).to.be.json;
+      expect(res).to.have.status(200);
+      expect(res.body.data.events.length).to.be.equal(4);
+      res.body.data.events.forEach((event) => {
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'currencyCode', 'host', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event).to.have.all.keys(['id', 'name', 'sport', 'description',
+          'intensity', 'maxPlayers', 'fee', 'currencyCode', 'host', 'status', 'location', 'startDate',
+          'endingDate', 'createdAt', 'updatedAt']);
+        expect(event.sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
+        expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
+          'birthdate', 'createdAt', 'updatedAt']);
+      });
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
+      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+    });
+
     it('should return 200 and 1 event when finding by userId and sportId', async () => {
       const res = await chai.request(app)
         .get(eventPath)
@@ -803,6 +827,24 @@ describe('Events', () => {
         await chai.request(app)
           .get(eventPath)
           .query({ maxDistance: 0 })
+          .set('content-type', 'application/json');
+
+        expect(true).to.be.false;
+      } catch (e) {
+        const res = e.response;
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(422);
+        expect(res.body.error.status).to.be.equal(422);
+        expect(res.body.error.message).to.be.equal('unprocessable entity');
+      }
+    });
+
+    it('should return 422 unprocessable entity when status is not valid', async () => {
+      try {
+        await chai.request(app)
+          .get(eventPath)
+          .query({ status: 'wait' })
           .set('content-type', 'application/json');
 
         expect(true).to.be.false;

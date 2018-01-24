@@ -81,8 +81,8 @@ const create = async (userId, sportId, name, latitude, longitude,
   return event;
 };
 
-const findAll = async (userId, sportId, startDate,
-  latitude, longitude, maxDistance, pageSize, pageNumber) => {
+const findAll = async (userId, sportId, startDate, latitude,
+  longitude, maxDistance, status, pageSize, pageNumber) => {
   const limit = pageSize || appConfig.defaultLimit;
   const offset = pageNumber || 1;
   const skip = limit * (offset - 1);
@@ -118,9 +118,16 @@ const findAll = async (userId, sportId, startDate,
    */
   if (latitude && longitude) {
     const distance = maxDistance || appConfig.defaultMaxDistance;
-    query = query.where('location').near({
+    query.where('location').near({
       center: { coordinates: [longitude, latitude], type: 'Point' }, maxDistance: distance * 1000, spherical: true,
     });
+  }
+
+  /**
+   * Filter the events by status
+   */
+  if (status) {
+    query.where('status').equals(status);
   }
 
   /**
