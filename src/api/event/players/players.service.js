@@ -1,7 +1,10 @@
-const EventStatus = require('../event-status.enum');
+const eventStatus = require('../event-status.enum');
 const Event = require('..//event.model');
 const User = require('../../user/user.model');
 const ApiError = require('../../api-error');
+const io = require('../../../websockets/socket-io');
+const notificationService = require('../../notification/notification.service');
+const notificationType = require('../../notification/notification-type.enum');
 
 const join = async (userId, eventId) => {
   /**
@@ -23,7 +26,7 @@ const join = async (userId, eventId) => {
   /**
    * Check if the event is in WAITING status
    */
-  if (event.status !== EventStatus.WAITING) {
+  if (event.status !== eventStatus.WAITING) {
     throw new ApiError(409, 'event does not accept new players');
   }
 
@@ -35,17 +38,29 @@ const join = async (userId, eventId) => {
   }
 
   /**
+   * Notify the users
+   */
+  const notificationUrl = `events/${event.id}`;
+  event.players.forEach(async (playerId) => {
+    await notificationService.create(playerId, notificationType.JOIN_EVENT, notificationUrl);
+    io.emitNewNotifications(playerId);
+  });
+
+  /**
    * Add the user to the event players list
    */
   event.players.push(user.id);
 
   /**
-   * Check if the event is full and change its status
+   * Check if the event is full and change its status and notify the users
    */
   if (event.players.length === event.maxPlayers) {
-    event.status = EventStatus.FULL;
+    event.status = eventStatus.FULL;
+    event.players.forEach(async (player) => {
+      await notificationService.create(player.id, notificationType.EVENT_FULL, notificationUrl);
+      io.emitNewNotifications(player.id);
+    });
   }
-
   /**
    * Save changes
    */
@@ -97,7 +112,7 @@ const leave = async (userId, eventId) => {
   /**
    * Check if the user can leave the event
    */
-  if (event.status !== EventStatus.WAITING && event.status !== EventStatus.FULL) {
+  if (event.status !== eventStatus.WAITING && event.status !== eventStatus.FULL) {
     throw new ApiError(409, 'you can\'t leave the event');
   }
 
@@ -116,8 +131,8 @@ const leave = async (userId, eventId) => {
   /**
    * Check if the event was FULL and its status needs to be changed
    */
-  if (event.status === EventStatus.FULL && event.players.length === (event.maxPlayers - 1)) {
-    event.status = EventStatus.WAITING;
+  if (event.status === eventStatus.FULL && event.players.length === (event.maxPlayers - 1)) {
+    event.status = eventStatus.WAITING;
   }
 
   /**

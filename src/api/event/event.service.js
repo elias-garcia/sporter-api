@@ -1,6 +1,6 @@
 const moment = require('moment');
 const appConfig = require('../../config/app.config');
-const EventStatus = require('./event-status.enum');
+const eventStatus = require('./event-status.enum');
 const Event = require('./event.model');
 const User = require('../user/user.model');
 const Sport = require('../sport/sport.model');
@@ -42,7 +42,7 @@ const create = async (userId, sportId, name, latitude, longitude,
     maxPlayers,
     fee,
     currencyCode,
-    status: EventStatus.WAITING,
+    status: eventStatus.WAITING,
     host: userId,
   });
 
@@ -109,7 +109,8 @@ const findAll = async (userId, sportId, startDate, latitude,
    */
   if (startDate) {
     const date = moment(startDate).utc();
-    query.where('startDate').gte(date.startOf('day').format()).lte(date.endOf('day').format());
+
+    query.where('startDate').gte(date.clone().startOf('day').format()).lte(date.clone().endOf('day').format());
   }
 
   /**
@@ -118,6 +119,7 @@ const findAll = async (userId, sportId, startDate, latitude,
    */
   if (latitude && longitude) {
     const distance = maxDistance || appConfig.defaultMaxDistance;
+
     query.where('location').near({
       center: { coordinates: [longitude, latitude], type: 'Point' }, maxDistance: distance * 1000, spherical: true,
     });
@@ -188,7 +190,7 @@ const update = async (userId, eventId, sportId, name, latitude, longitude,
   /**
    * Check if the event can be updated
    */
-  if (!(event.status === EventStatus.WAITING &&
+  if (!(event.status === eventStatus.WAITING &&
     event.players.length === 1 &&
     event.players[0].toString() === userId)) {
     throw new ApiError(409, 'event can\'t be updated');
@@ -247,7 +249,7 @@ const remove = async (userId, eventId) => {
   /**
    * Check if the event can be removed
    */
-  if (!(event.status === EventStatus.WAITING &&
+  if (!(event.status === eventStatus.WAITING &&
     event.players.length === 1 &&
     event.players[0].toString() === userId)) {
     throw new ApiError(409, 'event can\'t be removed');
