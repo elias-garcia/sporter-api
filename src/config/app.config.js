@@ -3,7 +3,7 @@ module.exports = {
   mongo: process.env.MONGO_URI || 'mongodb://localhost:27017/sporter-app',
   path: '/api',
   jwtSecret: process.env.JWT_SECRET || 'sporter-jwt-secret',
-  jwtMaxAge: '604800', // One week in seconds
+  jwtMaxAge: '7d', // One week
   passwordResetTokenExpiration: 3600, // One hour in seconds
   defaultLimit: 10,
   defaultMaxDistance: 10,

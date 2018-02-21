@@ -11,6 +11,8 @@ const isGreaterIntThan = (value, minValue) => isPositiveInt(value) && (value >= 
 
 const isGreaterFloatThan = (value, minValue) => isPositiveFloat(value) && (value >= minValue);
 
+const isSmallerIntThan = (value, maxValue) => isPositiveInt(value) && (value <= maxValue);
+
 const isString = value => typeof (value) === 'string';
 
 const isISO8601 = value => isString(value) && moment(value, 'YYYY-MM-DDTHH:mm:ssZZ', true).isValid();
@@ -48,6 +50,7 @@ module.exports = {
   isEmail,
   isGreaterIntThan,
   isGreaterFloatThan,
+  isSmallerIntThan,
   isPositiveInt,
   isISO8601,
   isLatLong,

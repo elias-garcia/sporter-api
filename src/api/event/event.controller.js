@@ -244,9 +244,9 @@ const remove = async (req, res, next) => {
 };
 
 module.exports = {
-  findAll,
   create,
   find,
+  findAll,
   update,
   remove,
 };
