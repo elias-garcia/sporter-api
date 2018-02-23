@@ -55,6 +55,9 @@ const configure = (app) => {
   app.delete(`${appConfig.path}/events/:eventId`, middleware.auth);
   app.post(`${appConfig.path}/events/:eventId/players`, middleware.auth);
   app.delete(`${appConfig.path}/events/:eventId/players/:playerId`, middleware.auth);
+  app.post(`${appConfig.path}/users/:userId/ratings`, middleware.auth);
+  app.put(`${appConfig.path}/users/:userId/ratings/:ratingId`, middleware.auth);
+  app.delete(`${appConfig.path}/users/:userId/ratings/:ratingId`, middleware.auth);
 
   /* Routing configuration */
   app.use(appConfig.path, routes);

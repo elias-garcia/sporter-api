@@ -11,6 +11,7 @@
     "test-event": "mocha ./src/api/event/*.test.js",
     "test-event-players": "mocha ./src/api/event/players/*.test.js",
     "test-password-reset-token": "mocha ./src/api/password-reset-token/*.test.js",
+    "test-rating": "mocha ./src/api/user/rating/*.test.js",
     "test-session": "mocha ./src/api/session/*.test.js",
     "test-user": "mocha ./src/api/user/*.test.js",
     "lint": "eslint ./src"

@@ -6,20 +6,18 @@ const json = require('../../../util/json');
 
 const create = async (req, res, next) => {
   try {
-    if (!req.body.from
-      || !validator.isMongoId(req.body.from)
-      || !req.body.to
-      || !validator.isMongoId(req.body.to)
+    if (!req.params.userId
+      || !validator.isMongoId(req.params.userId)
       || !req.body.score
-      || !validator.isSmallerIntThan(5)
+      || !validator.isSmallerIntThan(req.body.score, 5)
       || !req.body.comment
       || !validator.isString(req.body.comment)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
     const rating = await ratingService.create(
-      req.body.from,
-      req.body.to,
+      req.user.sub,
+      req.params.userId,
       req.body.score,
       req.body.comment,
     );
@@ -36,12 +34,12 @@ const findAll = async (req, res, next) => {
   let offset;
 
   try {
-    if (!validator.isMongoId(req.query.userId)) {
+    if (!validator.isMongoId(req.params.userId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
     if (req.query.score) {
-      if (!validator.isSmallerIntThan(5)) {
+      if (!validator.isSmallerIntThan(Number(req.query.score), 5)) {
         throw new ApiError(422, 'unprocessable entity');
       }
       score = Number(req.query.score);
@@ -61,7 +59,7 @@ const findAll = async (req, res, next) => {
       offset = Number(req.query.offset);
     }
 
-    const ratings = await ratingService.findAll(req.query.userId, score, limit, offset);
+    const ratings = await ratingService.findAll(req.params.userId, score, limit, offset);
 
     return res.status(200).json(json.createData('ratings', ratingDto.toRatingsDto(ratings)));
   } catch (err) {
@@ -71,16 +69,20 @@ const findAll = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    if (!req.params.ratingId
+    if (!req.params.userId
+      || !validator.isMongoId(req.params.userId)
+      || !req.params.ratingId
       || !validator.isMongoId(req.params.ratingId)
       || !req.body.score
-      || !validator.isSmallerIntThan(5)
+      || !validator.isSmallerIntThan(req.body.score, 5)
       || !req.body.comment
       || !validator.isString(req.body.comment)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
     const rating = await ratingService.update(
+      req.user.sub,
+      req.params.userId,
       req.params.ratingId,
       req.body.score,
       req.body.comment,
@@ -94,12 +96,14 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    if (!req.params.ratingId
-      || validator.isMongoId(req.params.ratingId)) {
+    if (!req.params.userId
+      || !validator.isMongoId(req.params.userId)
+      || !req.params.ratingId
+      || !validator.isMongoId(req.params.ratingId)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
-    await ratingService.remove();
+    await ratingService.remove(req.user.sub, req.params.userId, req.params.ratingId);
 
     return res.status(204).end();
   } catch (err) {

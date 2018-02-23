@@ -63,9 +63,26 @@ const createEventPost = (sportId) => {
   return event;
 };
 
+const createRatingDb = (from, to, score) => ({
+  from,
+  to,
+  score,
+  comment: {
+    version: 0,
+    value: 'Comment',
+  },
+});
+
+const createRatingPost = score => ({
+  score,
+  comment: 'Comment',
+});
+
 module.exports = {
   createSport,
   createUser,
   createEventDb,
   createEventPost,
+  createRatingDb,
+  createRatingPost,
 };
