@@ -40,7 +40,7 @@ const createPasswordResetToken = async (email) => {
    * Hash the token and store it in the db with the issueDate and expirationDate
    */
   const token = await PasswordResetToken.create({
-    value: bcrypt.hashSync(newToken, 10),
+    value: bcrypt.hashSync(newToken),
     issueDate: issueDate.format(),
     expirationDate: expirationDate.format(),
     user: user.id,

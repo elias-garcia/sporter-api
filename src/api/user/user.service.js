@@ -145,7 +145,9 @@ const changePassword = async (userId, oldPassword, newPassword, token) => {
   /**
    * Update the user password
    */
-  await user.update({ password: newPassword });
+  user.password = bcrypt.hashSync(newPassword);
+
+  await user.save();
 };
 
 /**

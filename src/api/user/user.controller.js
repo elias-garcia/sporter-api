@@ -111,13 +111,14 @@ const changePassword = async (req, res, next) => {
      * Validate the input data
      */
     if (!validator.isMongoId(req.params.userId) ||
-      !req.body.old_password ||
-      !req.body.new_password ||
-      !req.body.new_password_repeat ||
-      String(req.body.new_password) !== String(req.body.new_password_repeat)) {
+      !req.body.oldPassword ||
+      !req.body.newPassword ||
+      !req.body.newPasswordConfirm ||
+      String(req.body.newPassword) !== String(req.body.newPasswordConfirm)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
+    console.log('pasa');
     /**
      * Check if the user to be updated is the same who performs the request
      */
@@ -130,8 +131,8 @@ const changePassword = async (req, res, next) => {
      */
     await userService.changePassword(
       req.params.userId,
-      String(req.body.old_password),
-      String(req.body.new_password),
+      String(req.body.oldPassword),
+      String(req.body.newPassword),
       req.body.token,
     );
 

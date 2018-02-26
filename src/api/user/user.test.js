@@ -759,7 +759,7 @@ describe('User', () => {
   });
 
   describe('PATCH /users/:userId', () => {
-    it('should return 204 and change the user password when the token is not send', async () => {
+    it('should return 204 and change the user password when the token is not sent', async () => {
       const user = test.createUser('user@test.com');
 
       const res1 = await chai.request(app)
@@ -770,9 +770,9 @@ describe('User', () => {
       const { userId, token } = res1.body.data.session;
 
       const body = {
-        old_password: user.password,
-        new_password: 'new_password',
-        new_password_repeat: 'new_password',
+        oldPassword: user.password,
+        newPassword: 'new_password',
+        newPasswordConfirm: 'new_password',
       };
 
       const res2 = await chai.request(app)
@@ -1035,9 +1035,9 @@ describe('User', () => {
         const { token } = res.body.data.session;
 
         const body = {
-          old_password: user.password,
-          new_password: 'new_password',
-          new_password_repeat: 'new_password',
+          oldPassword: user.password,
+          newPassword: 'new_password',
+          newPasswordConfirm: 'new_password',
         };
 
         await chai.request(app)
@@ -1057,7 +1057,7 @@ describe('User', () => {
       }
     });
 
-    it('should return 404, not found when the user to be updated not found', async () => {
+    it('should return 404, not found when the user to be updated is not found', async () => {
       const user = test.createUser('user@test.com');
 
       try {
@@ -1069,9 +1069,9 @@ describe('User', () => {
         const { userId, token } = res.body.data.session;
 
         const body = {
-          old_password: user.password,
-          new_password: 'new_password',
-          new_password_repeat: 'new_password',
+          oldPassword: user.password,
+          newPassword: 'new_password',
+          newPasswordConfirm: 'new_password',
         };
 
         await User.remove({});

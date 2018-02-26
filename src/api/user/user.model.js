@@ -34,7 +34,7 @@ userSchema.pre('save', function (next) {
   }
 
   try {
-    this.password = bcrypt.hashSync(user.password, 10);
+    this.password = bcrypt.hashSync(user.password);
   } catch (err) {
     return next(err);
   }

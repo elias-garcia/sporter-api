@@ -31,9 +31,6 @@ const configure = (app) => {
   /* Accept origins */
   app.use(middleware.accessControl);
 
-  /* Allowed methods */
-  app.use(middleware.methodAllowed);
-
   /* Server configuration */
   app.set('port', appConfig.port);
 
