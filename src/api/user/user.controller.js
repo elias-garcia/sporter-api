@@ -118,7 +118,6 @@ const changePassword = async (req, res, next) => {
       throw new ApiError(422, 'unprocessable entity');
     }
 
-    console.log('pasa');
     /**
      * Check if the user to be updated is the same who performs the request
      */
