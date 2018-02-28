@@ -40,7 +40,25 @@ const findAll = async (userId, score, pageSize, pageNumber) => {
     .skip(skip)
     .limit(limit);
 
-  return ratings;
+  const stats = {};
+
+  stats.totalCount = await query.count();
+
+  if (!score) {
+    const scores = [1, 2, 3, 4, 5];
+
+    stats.scoresCount = [];
+
+    await Promise.all(scores.map(async (value) => {
+      const count = await Rating.count({ to: userId, score: value });
+
+      stats.scoresCount.push({ score: value, count });
+    }));
+
+    stats.scoresCount = stats.scoresCount.sort((a, b) => a.score - b.score);
+  }
+
+  return { ratings, stats };
 };
 
 const update = async (fromUserId, toUserId, ratingId, score, comment) => {

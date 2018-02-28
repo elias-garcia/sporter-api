@@ -59,9 +59,12 @@ const findAll = async (req, res, next) => {
       offset = Number(req.query.offset);
     }
 
-    const ratings = await ratingService.findAll(req.params.userId, score, limit, offset);
+    const result = await ratingService.findAll(req.params.userId, score, limit, offset);
 
-    return res.status(200).json(json.createData([{ title: 'ratings', data: ratingDto.toRatingsDto(ratings) }]));
+    return res.status(200).json(json.createData([
+      { title: 'ratings', data: ratingDto.toRatingsDto(result.ratings) },
+      { title: 'stats', data: result.stats },
+    ]));
   } catch (err) {
     return next(err);
   }

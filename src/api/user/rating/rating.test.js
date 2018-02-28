@@ -290,6 +290,20 @@ describe('Ratings', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
+      expect(res.body.data).to.have.all.keys(['ratings', 'stats']);
+      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'scoresCount']);
+      expect(res.body.data.stats.totalCount).to.be.equal(6);
+      expect(res.body.data.stats.scoresCount.length).to.be.equal(5);
+      expect(res.body.data.stats.scoresCount[0].score).to.be.equal(1);
+      expect(res.body.data.stats.scoresCount[0].count).to.be.equal(0);
+      expect(res.body.data.stats.scoresCount[1].score).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount[1].count).to.be.equal(4);
+      expect(res.body.data.stats.scoresCount[2].score).to.be.equal(3);
+      expect(res.body.data.stats.scoresCount[2].count).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount[3].score).to.be.equal(4);
+      expect(res.body.data.stats.scoresCount[3].count).to.be.equal(0);
+      expect(res.body.data.stats.scoresCount[4].score).to.be.equal(5);
+      expect(res.body.data.stats.scoresCount[4].count).to.be.equal(0);
       expect(res.body.data.ratings.length).to.be.equal(6);
       res.body.data.ratings.forEach((rating) => {
         expect(rating).to.have.all.keys(['id', 'from', 'to', 'score', 'comment']);
@@ -310,6 +324,20 @@ describe('Ratings', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
+      expect(res.body.data).to.have.all.keys(['ratings', 'stats']);
+      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'scoresCount']);
+      expect(res.body.data.stats.totalCount).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount.length).to.be.equal(5);
+      expect(res.body.data.stats.scoresCount[0].score).to.be.equal(1);
+      expect(res.body.data.stats.scoresCount[0].count).to.be.equal(0);
+      expect(res.body.data.stats.scoresCount[1].score).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount[1].count).to.be.equal(4);
+      expect(res.body.data.stats.scoresCount[2].score).to.be.equal(3);
+      expect(res.body.data.stats.scoresCount[2].count).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount[3].score).to.be.equal(4);
+      expect(res.body.data.stats.scoresCount[3].count).to.be.equal(0);
+      expect(res.body.data.stats.scoresCount[4].score).to.be.equal(5);
+      expect(res.body.data.stats.scoresCount[4].count).to.be.equal(0);
       expect(res.body.data.ratings.length).to.be.equal(2);
       res.body.data.ratings.forEach((rating) => {
         expect(rating).to.have.all.keys(['id', 'from', 'to', 'score', 'comment']);
@@ -330,6 +358,20 @@ describe('Ratings', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
+      expect(res.body.data).to.have.all.keys(['ratings', 'stats']);
+      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'scoresCount']);
+      expect(res.body.data.stats.totalCount).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount.length).to.be.equal(5);
+      expect(res.body.data.stats.scoresCount[0].score).to.be.equal(1);
+      expect(res.body.data.stats.scoresCount[0].count).to.be.equal(0);
+      expect(res.body.data.stats.scoresCount[1].score).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount[1].count).to.be.equal(4);
+      expect(res.body.data.stats.scoresCount[2].score).to.be.equal(3);
+      expect(res.body.data.stats.scoresCount[2].count).to.be.equal(2);
+      expect(res.body.data.stats.scoresCount[3].score).to.be.equal(4);
+      expect(res.body.data.stats.scoresCount[3].count).to.be.equal(0);
+      expect(res.body.data.stats.scoresCount[4].score).to.be.equal(5);
+      expect(res.body.data.stats.scoresCount[4].count).to.be.equal(0);
       expect(res.body.data.ratings.length).to.be.equal(2);
       res.body.data.ratings.forEach((rating) => {
         expect(rating).to.have.all.keys(['id', 'from', 'to', 'score', 'comment']);
@@ -350,6 +392,8 @@ describe('Ratings', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
+      expect(res.body.data).to.have.all.keys('ratings', 'stats');
+      expect(res.body.data.stats).to.have.all.keys('totalCount');
       expect(res.body.data.ratings.length).to.be.equal(4);
       res.body.data.ratings.forEach((rating) => {
         expect(rating).to.have.all.keys(['id', 'from', 'to', 'score', 'comment']);
@@ -370,6 +414,8 @@ describe('Ratings', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
+      expect(res.body.data).to.have.all.keys('ratings', 'stats');
+      expect(res.body.data.stats).to.have.all.keys('totalCount');
       expect(res.body.data.ratings.length).to.be.equal(3);
       res.body.data.ratings.forEach((rating) => {
         expect(rating).to.have.all.keys(['id', 'from', 'to', 'score', 'comment']);
@@ -390,6 +436,8 @@ describe('Ratings', () => {
 
       expect(res).to.be.json;
       expect(res).to.have.status(200);
+      expect(res.body.data).to.have.all.keys('ratings', 'stats');
+      expect(res.body.data.stats).to.have.all.keys('totalCount');
       expect(res.body.data.ratings.length).to.be.equal(1);
       res.body.data.ratings.forEach((rating) => {
         expect(rating).to.have.all.keys(['id', 'from', 'to', 'score', 'comment']);
