@@ -23,7 +23,7 @@ const logIn = async (req, res, next) => {
     /**
      * Return the session object
      */
-    return res.status(200).json(json.createData('session', session));
+    return res.status(200).json(json.createData([{ title: 'session', data: session }]));
   } catch (err) {
     return next(err);
   }

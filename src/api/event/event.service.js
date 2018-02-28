@@ -255,10 +255,11 @@ const remove = async (userId, eventId) => {
     throw new ApiError(409, 'event can\'t be removed');
   }
 
+  event.status = eventStatus.CANCELED;
   /**
-   * Remove the event from db
+   * Remove the event
    */
-  await event.remove();
+  await event.save();
 
   /**
    * Remove the scheduled tasks for the event

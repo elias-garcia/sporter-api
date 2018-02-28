@@ -60,7 +60,6 @@ describe('Event Players', () => {
         .set('content-type', 'application/json')
         .set('authorization', `Bearer ${user2Token}`);
 
-      console.log(res2.body.data.player.birthdate);
       expect(res2).to.be.json;
       expect(res2).to.have.status(201);
       expect(res2.body.data.player).to.have.all.keys(['id', 'email', 'firstName',

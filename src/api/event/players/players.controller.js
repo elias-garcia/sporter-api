@@ -21,7 +21,7 @@ const join = async (req, res, next) => {
     /**
      * Return the updated event
      */
-    return res.status(201).send(json.createData('player', userDto.toUserDto(player)));
+    return res.status(201).send(json.createData([{ title: 'player', data: userDto.toUserDto(player) }]));
   } catch (err) {
     return next(err);
   }
@@ -44,7 +44,7 @@ const findAll = async (req, res, next) => {
     /**
      * Return the players
      */
-    return res.status(200).send(json.createData('players', userDto.toUsersDto(players)));
+    return res.status(200).send(json.createData([{ title: 'players', data: userDto.toUsersDto(players) }]));
   } catch (e) {
     return next(e);
   }

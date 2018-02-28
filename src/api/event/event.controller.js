@@ -49,7 +49,7 @@ const create = async (req, res, next) => {
     /**
      * Return the created event
      */
-    return res.status(201).json(json.createData('event', eventDto.toEventDto(event)));
+    return res.status(201).json(json.createData([{ title: 'event', data: eventDto.toEventDto(event) }]));
   } catch (err) {
     return next(err);
   }
@@ -142,7 +142,7 @@ const findAll = async (req, res, next) => {
     /**
      * Return the matching events
      */
-    return res.status(200).json(json.createData('events', eventDto.toEventsDto(events)));
+    return res.status(200).json(json.createData([{ title: 'events', data: eventDto.toEventsDto(events) }]));
   } catch (err) {
     return next(err);
   }
@@ -165,7 +165,7 @@ const find = async (req, res, next) => {
     /**
      * Return the requested event
      */
-    return res.status(200).json(json.createData('event', eventDto.toEventDto(event)));
+    return res.status(200).json(json.createData([{ title: 'event', data: eventDto.toEventDto(event) }]));
   } catch (err) {
     return next(err);
   }
@@ -214,7 +214,7 @@ const update = async (req, res, next) => {
     /**
      * Return the updated event
      */
-    return res.status(200).send(json.createData('event', eventDto.toEventDto(event)));
+    return res.status(200).send(json.createData([{ title: 'event', data: eventDto.toEventDto(event) }]));
   } catch (err) {
     return next(err);
   }

@@ -22,7 +22,7 @@ const create = async (req, res, next) => {
       req.body.comment,
     );
 
-    return res.status(201).json(json.createData('rating', ratingDto.toRatingDto(rating)));
+    return res.status(201).json(json.createData([{ title: 'rating', data: ratingDto.toRatingDto(rating) }]));
   } catch (err) {
     return next(err);
   }
@@ -61,7 +61,7 @@ const findAll = async (req, res, next) => {
 
     const ratings = await ratingService.findAll(req.params.userId, score, limit, offset);
 
-    return res.status(200).json(json.createData('ratings', ratingDto.toRatingsDto(ratings)));
+    return res.status(200).json(json.createData([{ title: 'ratings', data: ratingDto.toRatingsDto(ratings) }]));
   } catch (err) {
     return next(err);
   }
@@ -88,7 +88,7 @@ const update = async (req, res, next) => {
       req.body.comment,
     );
 
-    return res.status(200).send(json.createData('rating', ratingDto.toRatingDto(rating)));
+    return res.status(200).send(json.createData([{ title: 'rating', data: ratingDto.toRatingDto(rating) }]));
   } catch (err) {
     return next(err);
   }

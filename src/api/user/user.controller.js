@@ -34,7 +34,7 @@ const create = async (req, res, next) => {
     /**
      * Return the session object
      */
-    return res.status(201).json(json.createData('session', session));
+    return res.status(201).json(json.createData([{ title: 'session', data: session }]));
   } catch (err) {
     return next(err);
   }
@@ -57,7 +57,7 @@ const find = async (req, res, next) => {
     /**
      * Return the created user object
      */
-    return res.status(200).json(json.createData('user', userDto.toUserDto(user)));
+    return res.status(200).json(json.createData([{ title: 'user', data: userDto.toUserDto(user) }]));
   } catch (err) {
     return next(err);
   }
@@ -72,8 +72,7 @@ const update = async (req, res, next) => {
       !validator.isEmail(req.body.email) ||
       !validator.isString(req.body.firstName) ||
       !validator.isString(req.body.lastName) ||
-      !validator.isISO8601Date(req.body.birthdate) ||
-      !validator.isString(req.body.location)) {
+      !validator.isISO8601Date(req.body.birthdate)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
@@ -99,7 +98,7 @@ const update = async (req, res, next) => {
     /**
      * Return no content
      */
-    return res.status(200).json(json.createData('user', userDto.toUserDto(user)));
+    return res.status(200).json(json.createData([{ title: 'user', data: userDto.toUserDto(user) }]));
   } catch (err) {
     return next(err);
   }

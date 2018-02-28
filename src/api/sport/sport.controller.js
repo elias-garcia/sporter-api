@@ -6,7 +6,7 @@ const findAll = async (req, res, next) => {
   try {
     const sports = await sportService.findAll();
 
-    return res.status(200).json(json.createData('sports', sportDto.toSportsDto(sports)));
+    return res.status(200).json(json.createData([{ title: 'sports', data: sportDto.toSportsDto(sports) }]));
   } catch (err) {
     return next(err);
   }
