@@ -46,8 +46,13 @@ const findAll = async (userId, score, pageSize, pageNumber) => {
 
   if (!score) {
     const scores = [1, 2, 3, 4, 5];
+    const allRatings = await Rating.find({ to: userId });
+    const allRatingsSum = allRatings
+      .map(rating => rating.score)
+      .reduce((a, b) => a + b);
 
     stats.scoresCount = [];
+    stats.averageRating = Number((allRatingsSum / allRatings.length).toFixed(1));
 
     await Promise.all(scores.map(async (value) => {
       const count = await Rating.count({ to: userId, score: value });

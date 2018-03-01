@@ -291,8 +291,9 @@ describe('Ratings', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data).to.have.all.keys(['ratings', 'stats']);
-      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'scoresCount']);
+      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'averageRating', 'scoresCount']);
       expect(res.body.data.stats.totalCount).to.be.equal(6);
+      expect(res.body.data.stats.averageRating).to.be.equal(2.3);
       expect(res.body.data.stats.scoresCount.length).to.be.equal(5);
       expect(res.body.data.stats.scoresCount[0].score).to.be.equal(1);
       expect(res.body.data.stats.scoresCount[0].count).to.be.equal(0);
@@ -325,8 +326,9 @@ describe('Ratings', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data).to.have.all.keys(['ratings', 'stats']);
-      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'scoresCount']);
+      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'averageRating', 'scoresCount']);
       expect(res.body.data.stats.totalCount).to.be.equal(2);
+      expect(res.body.data.stats.averageRating).to.be.equal(2.3);
       expect(res.body.data.stats.scoresCount.length).to.be.equal(5);
       expect(res.body.data.stats.scoresCount[0].score).to.be.equal(1);
       expect(res.body.data.stats.scoresCount[0].count).to.be.equal(0);
@@ -359,8 +361,9 @@ describe('Ratings', () => {
       expect(res).to.be.json;
       expect(res).to.have.status(200);
       expect(res.body.data).to.have.all.keys(['ratings', 'stats']);
-      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'scoresCount']);
+      expect(res.body.data.stats).to.have.all.keys(['totalCount', 'averageRating', 'scoresCount']);
       expect(res.body.data.stats.totalCount).to.be.equal(2);
+      expect(res.body.data.stats.averageRating).to.be.equal(2.3);
       expect(res.body.data.stats.scoresCount.length).to.be.equal(5);
       expect(res.body.data.stats.scoresCount[0].score).to.be.equal(1);
       expect(res.body.data.stats.scoresCount[0].count).to.be.equal(0);
