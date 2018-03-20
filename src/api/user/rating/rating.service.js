@@ -4,7 +4,7 @@ const User = require('../user.model');
 const ApiError = require('../../api-error');
 
 const create = async (fromUserId, toUserId, score, comment) => {
-  const toUser = User.findById(toUserId);
+  const toUser = await User.findById(toUserId);
 
   if (!toUser) {
     throw ApiError(404, 'user not found');
