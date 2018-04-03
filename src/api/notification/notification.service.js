@@ -11,7 +11,7 @@ const create = async (userId, type, url) => {
 };
 
 const countUnreadNotifications = async (userId) => {
-  const count = await Notification.count({ userId });
+  const count = await Notification.count({ userId, read: false });
 
   return count;
 };
@@ -21,7 +21,7 @@ const findAll = async (userId, skip) => {
     .find({ userId })
     .skip(skip)
     .limit(appConfig.defaultLimit)
-    .sort({ createdAt: 'asc' });
+    .sort({ createdAt: 'desc' });
 
   return notifications;
 };

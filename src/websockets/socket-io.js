@@ -22,6 +22,7 @@ const emitNewNotifications = async (userId, socket) => {
     if (socket) {
       socket.emit('new-notifications', { notifications, unread });
     } else {
+      console.log(userId);
       const client = sockets.filter(clientElem => clientElem.userId === userId.toString())[0];
 
       io.to(client.socketId).emit('new-notifications', { notifications, unread });
@@ -31,10 +32,10 @@ const emitNewNotifications = async (userId, socket) => {
   }
 };
 
-const emitNotifications = async (socket, userId, skip) => {
+const emitNotifications = async (socket, query) => {
   try {
-    const notifications = await findAndTransformNotifications(userId, skip);
-    const unread = await notificationService.countUnreadNotifications(userId);
+    const notifications = await findAndTransformNotifications(query.userId, query.skip);
+    const unread = await notificationService.countUnreadNotifications(query.userId);
 
     socket.emit('notifications', { notifications, unread });
   } catch (err) {
@@ -42,7 +43,7 @@ const emitNotifications = async (socket, userId, skip) => {
   }
 };
 
-const markNotificationAsRead = async (socket, notificationId) => {
+const markNotificationAsRead = async (notificationId) => {
   try {
     await notificationService.markAsRead(notificationId);
   } catch (err) {
@@ -59,12 +60,12 @@ const initHandlers = () => {
 
     emitNewNotifications(socket.handshake.query.userId, socket);
 
-    socket.on('read-notification', async (notification) => {
-      markNotificationAsRead(notification.id);
+    socket.on('read-notification', async (notificationId) => {
+      await markNotificationAsRead(notificationId);
     });
 
     socket.on('query-notifications', async (query) => {
-      emitNotifications(socket, ...query);
+      emitNotifications(socket, query);
     });
 
     socket.on('disconnect', () => {

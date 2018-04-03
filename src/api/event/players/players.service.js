@@ -41,10 +41,10 @@ const join = async (userId, eventId) => {
    * Notify the users
    */
   const notificationUrl = `events/${event.id}`;
-  event.players.forEach(async (playerId) => {
+  await Promise.all(event.players.map(async (playerId) => {
     await notificationService.create(playerId, notificationType.JOIN_EVENT, notificationUrl);
     io.emitNewNotifications(playerId);
-  });
+  }));
 
   /**
    * Add the user to the event players list
@@ -56,10 +56,10 @@ const join = async (userId, eventId) => {
    */
   if (event.players.length === event.maxPlayers) {
     event.status = eventStatus.FULL;
-    event.players.forEach(async (player) => {
-      await notificationService.create(player.id, notificationType.EVENT_FULL, notificationUrl);
-      io.emitNewNotifications(player.id);
-    });
+    await Promise.all(event.players.map(async (player) => {
+      await notificationService.create(player, notificationType.EVENT_FULL, notificationUrl);
+      io.emitNewNotifications(player);
+    }));
   }
   /**
    * Save changes
