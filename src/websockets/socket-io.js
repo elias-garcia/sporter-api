@@ -16,13 +16,12 @@ const findAndTransformNotifications = async (userId, skip) => {
 
 const emitNewNotifications = async (userId, socket) => {
   try {
-    const notifications = await findAndTransformNotifications(userId, 0);
+    const notifications = await findAndTransformNotifications(userId, 1);
     const unread = await notificationService.countUnreadNotifications(userId);
 
     if (socket) {
       socket.emit('new-notifications', { notifications, unread });
     } else {
-      console.log(userId);
       const client = sockets.filter(clientElem => clientElem.userId === userId.toString())[0];
 
       io.to(client.socketId).emit('new-notifications', { notifications, unread });

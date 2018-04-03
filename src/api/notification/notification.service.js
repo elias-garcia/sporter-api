@@ -16,12 +16,14 @@ const countUnreadNotifications = async (userId) => {
   return count;
 };
 
-const findAll = async (userId, skip) => {
+const findAll = async (userId, offset) => {
+  const skip = appConfig.defaultNotificationsLimit * (offset - 1);
+  console.log(skip);
   const notifications = await Notification
     .find({ userId })
+    .sort({ createdAt: 'desc' })
     .skip(skip)
-    .limit(appConfig.defaultLimit)
-    .sort({ createdAt: 'desc' });
+    .limit(appConfig.defaultNotificationsLimit);
 
   return notifications;
 };

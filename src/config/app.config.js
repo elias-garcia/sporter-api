@@ -6,6 +6,7 @@ module.exports = {
   jwtMaxAge: '7d', // One week
   passwordResetTokenExpiration: 3600, // One hour in seconds
   defaultLimit: 10,
+  defaultNotificationsLimit: 5,
   defaultMaxDistance: 10,
   mailer: {
     host: process.env.MAILER_HOST || 'smtp.ethereal.email',
