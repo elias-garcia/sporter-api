@@ -37,6 +37,7 @@ const findAll = async (userId, score, pageSize, pageNumber) => {
 
   const ratings = await query
     .populate('from')
+    .sort({ createdAt: 'desc' })
     .skip(skip)
     .limit(limit);
 
