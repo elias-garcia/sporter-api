@@ -4,7 +4,6 @@ const appConfig = require('../config/app.config');
 
 const configure = async () => {
   mongoose.Promise = global.Promise;
-  mongoose.set('debug', true);
   mongoose.connection.on('connected', () => {
     // dbProd.init();
     console.log(`Mongoose default connection open to ${appConfig.mongo}`);

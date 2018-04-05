@@ -8,7 +8,6 @@ const toEventDto = (doc) => {
   ret.sport = dto.transform(doc.sport);
   ret.host = userDto.toUserDto(doc.host);
   delete ret.players;
-  // ret.players = userDto.toUsersDto(doc.players);
 
   return ret;
 };

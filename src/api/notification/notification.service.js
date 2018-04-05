@@ -7,6 +7,7 @@ const create = async (userId, type, url) => {
     type,
     url,
   };
+
   return Notification.create(notification);
 };
 

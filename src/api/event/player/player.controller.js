@@ -1,4 +1,4 @@
-const playersService = require('./players.service');
+const playerService = require('./player.service');
 const validator = require('../../../util/validator');
 const json = require('../../../util/json');
 const userDto = require('../../user/user.dto');
@@ -16,7 +16,7 @@ const join = async (req, res, next) => {
     /**
      * Join the user to the event
     */
-    const player = await playersService.join(req.user.sub, req.params.eventId);
+    const player = await playerService.join(req.user.sub, req.params.eventId);
 
     /**
      * Return the updated event
@@ -39,7 +39,7 @@ const findAll = async (req, res, next) => {
     /**
      * Find the event players
      */
-    const players = await playersService.findAll(req.params.eventId);
+    const players = await playerService.findAll(req.params.eventId);
 
     /**
      * Return the players
@@ -70,7 +70,7 @@ const leave = async (req, res, next) => {
     /**
      * Remove the user from the event
      */
-    await playersService.leave(req.user.sub, req.params.eventId);
+    await playerService.leave(req.user.sub, req.params.eventId);
 
     /**
      * Return the updated event
