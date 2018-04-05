@@ -2,6 +2,9 @@ const appConfig = require('../../../config/app.config');
 const Rating = require('./rating.model');
 const User = require('../user.model');
 const ApiError = require('../../api-error');
+const notificationsSocket = require('../../../websockets/notifications.socket');
+const notificationService = require('../../notification/notification.service');
+const notificationType = require('../../notification/notification-type.enum');
 
 const create = async (fromUserId, toUserId, score, comment) => {
   const toUser = await User.findById(toUserId);
@@ -21,6 +24,10 @@ const create = async (fromUserId, toUserId, score, comment) => {
   });
 
   await rating.populate('from').execPopulate();
+
+  const notificationUrl = `users/${toUserId}`;
+  await notificationService.create(toUserId, notificationType.NEW_RATING, notificationUrl);
+  notificationsSocket.emitNewNotifications(toUserId);
 
   return rating;
 };

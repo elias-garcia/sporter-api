@@ -1,7 +1,7 @@
 const validator = require('validator');
 const moment = require('moment');
 
-const isBoolean = value => typeof (value) === 'boolean';
+const isBoolean = value => validator.isBoolean(value);
 
 const isPositiveInt = value => typeof value === 'number' && Number.isInteger(value) && value >= 0;
 

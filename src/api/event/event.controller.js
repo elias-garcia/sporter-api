@@ -110,6 +110,12 @@ const findAll = async (req, res, next) => {
       status = req.query.status.toUpperCase();
     }
 
+    if (req.query.history) {
+      if (!validator.isBoolean(req.query.history)) {
+        throw new ApiError(422, 'unprocessable entity');
+      }
+    }
+
     if (req.query.limit) {
       if (!validator.isGreaterIntThan(Number(req.query.limit), 1)) {
         throw new ApiError(422, 'unprocessable entity');
@@ -135,6 +141,7 @@ const findAll = async (req, res, next) => {
       longitude,
       maxDistance,
       status,
+      Boolean(req.query.history),
       limit,
       offset,
     );

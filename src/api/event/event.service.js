@@ -82,7 +82,7 @@ const create = async (userId, sportId, name, latitude, longitude,
 };
 
 const findAll = async (userId, sportId, startDate, latitude,
-  longitude, maxDistance, status, pageSize, pageNumber) => {
+  longitude, maxDistance, status, history, pageSize, pageNumber) => {
   const limit = pageSize || appConfig.defaultLimit;
   const offset = pageNumber || 1;
   const skip = limit * (offset - 1);
@@ -91,9 +91,15 @@ const findAll = async (userId, sportId, startDate, latitude,
   /**
    * Filter the events by user
    */
-  if (userId) {
+  if (userId && !history) {
     query = Event.find({ host: userId });
-  } else {
+  }
+
+  if (userId && history) {
+    query = Event.find({ players: userId });
+  }
+
+  if (!userId) {
     query = Event.find({});
   }
 

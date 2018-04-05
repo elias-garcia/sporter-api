@@ -2,7 +2,7 @@ const eventStatus = require('../event-status.enum');
 const Event = require('..//event.model');
 const User = require('../../user/user.model');
 const ApiError = require('../../api-error');
-const io = require('../../../websockets/socket-io');
+const notificationsSocket = require('../../../websockets/notifications.socket');
 const notificationService = require('../../notification/notification.service');
 const notificationType = require('../../notification/notification-type.enum');
 
@@ -43,7 +43,7 @@ const join = async (userId, eventId) => {
   const notificationUrl = `events/${event.id}`;
   await Promise.all(event.players.map(async (playerId) => {
     await notificationService.create(playerId, notificationType.JOIN_EVENT, notificationUrl);
-    io.emitNewNotifications(playerId);
+    notificationsSocket.emitNewNotifications(playerId);
   }));
 
   /**
@@ -58,7 +58,7 @@ const join = async (userId, eventId) => {
     event.status = eventStatus.FULL;
     await Promise.all(event.players.map(async (player) => {
       await notificationService.create(player, notificationType.EVENT_FULL, notificationUrl);
-      io.emitNewNotifications(player);
+      notificationsSocket.emitNewNotifications(player);
     }));
   }
   /**
