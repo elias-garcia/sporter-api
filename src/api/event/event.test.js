@@ -369,10 +369,10 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
-      expect(res.body.data.events[2].id).to.be.equal(event3.id);
-      expect(res.body.data.events[3].id).to.be.equal(event4.id);
+      expect(res.body.data.events[3].id).to.be.equal(event1.id);
+      expect(res.body.data.events[2].id).to.be.equal(event2.id);
+      expect(res.body.data.events[1].id).to.be.equal(event3.id);
+      expect(res.body.data.events[0].id).to.be.equal(event4.id);
     });
 
     it('should return 200 and 2 events sorted with limit 2 and offset 0', async () => {
@@ -395,8 +395,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[0].id).to.be.equal(event4.id);
+      expect(res.body.data.events[1].id).to.be.equal(event3.id);
     });
 
     it('should return 200 and 1 event sorted with limit 3 and offset 1', async () => {
@@ -420,7 +420,7 @@ describe('Events', () => {
       expect(res.body.data.events[0].sport).to.have.all.keys(['id', 'name', 'createdAt', 'updatedAt']);
       expect(res.body.data.events[0].host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
         'birthdate', 'createdAt', 'updatedAt']);
-      expect(res.body.data.events[0].id).to.be.equal(event4.id);
+      expect(res.body.data.events[0].id).to.be.equal(event1.id);
     });
 
     it('should return 200 and 2 events sorted when finding by user1 id', async () => {
@@ -443,8 +443,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[1].id).to.be.equal(event1.id);
+      expect(res.body.data.events[0].id).to.be.equal(event2.id);
     });
 
     it('should return 200 and 2 events when finding by sport1 id', async () => {
@@ -494,8 +494,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[1].id).to.be.equal(event1.id);
+      expect(res.body.data.events[0].id).to.be.equal(event2.id);
     });
 
     it('should return 200 and 1 event sorted when finding by 5d away from today', async () => {
@@ -554,8 +554,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[0].id).to.be.equal(event4.id);
+      expect(res.body.data.events[1].id).to.be.equal(event3.id);
     });
 
     it('should return 200 and 4 events sorted when finding by default maxDistance', async () => {
@@ -600,8 +600,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[0].id).to.be.equal(event4.id);
+      expect(res.body.data.events[1].id).to.be.equal(event3.id);
     });
 
     it('should return 200 and 1 event when finding by userId and sportId', async () => {
@@ -672,8 +672,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event2.id);
+      expect(res.body.data.events[1].id).to.be.equal(event1.id);
+      expect(res.body.data.events[0].id).to.be.equal(event2.id);
     });
 
     it('should return 200 and 1 event when finding by sportId and startDate', async () => {
@@ -721,8 +721,8 @@ describe('Events', () => {
         expect(event.host).to.have.all.keys(['id', 'email', 'firstName', 'lastName',
           'birthdate', 'createdAt', 'updatedAt']);
       });
-      expect(res.body.data.events[0].id).to.be.equal(event1.id);
-      expect(res.body.data.events[1].id).to.be.equal(event3.id);
+      expect(res.body.data.events[1].id).to.be.equal(event1.id);
+      expect(res.body.data.events[0].id).to.be.equal(event3.id);
     });
 
     it('should return 200 and 1 event when finding by startDate and coordinates', async () => {
