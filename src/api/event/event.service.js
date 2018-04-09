@@ -262,6 +262,7 @@ const remove = async (userId, eventId) => {
   }
 
   event.status = eventStatus.CANCELED;
+
   /**
    * Remove the event
    */
