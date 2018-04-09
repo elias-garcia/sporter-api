@@ -10,7 +10,7 @@ const create = async (fromUserId, toUserId, score, comment) => {
   const toUser = await User.findById(toUserId);
 
   if (!toUser) {
-    throw ApiError(404, 'user not found');
+    throw new ApiError(404, 'user not found');
   }
 
   const rating = await Rating.create({

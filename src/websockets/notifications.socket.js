@@ -36,7 +36,9 @@ const emitNotifications = async (socket, query) => {
     const notifications = await findAndTransformNotifications(query.userId, query.skip);
     const unread = await notificationService.countUnreadNotifications(query.userId);
 
-    socket.emit('notifications', { notifications, unread });
+    if (socket) {
+      socket.emit('notifications', { notifications, unread });
+    }
   } catch (err) {
     throw err;
   }
