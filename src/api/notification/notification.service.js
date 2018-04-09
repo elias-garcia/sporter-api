@@ -19,11 +19,13 @@ const countUnreadNotifications = async (userId) => {
 
 const findAll = async (userId, offset) => {
   const skip = appConfig.defaultNotificationsLimit * (offset - 1);
-  const notifications = await Notification
-    .find({ userId })
-    .sort({ createdAt: 'desc' })
-    .skip(skip)
-    .limit(appConfig.defaultNotificationsLimit);
+  const query = Notification.find({ userId }).sort({ createdAt: 'desc' });
+
+  if (offset) {
+    query.skip(skip).limit(appConfig.defaultNotificationsLimit);
+  }
+
+  const notifications = await query.exec();
 
   return notifications;
 };
