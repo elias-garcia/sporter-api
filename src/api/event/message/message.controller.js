@@ -12,7 +12,7 @@ const findAll = async (req, res, next) => {
     }
 
     const messages = await messageService.findAll(req.params.eventId);
-    console.log(messages);
+
     return res.status(200).send(json.createData([{ title: 'messages', data: messageDto.toMessagesDto(messages) }]));
   } catch (err) {
     return next(err);

@@ -144,7 +144,7 @@ const findAll = async (userId, sportId, startDate, latitude,
   const events = await query
     .populate('sport')
     .populate('host')
-    .sort({ startDate: 'asc' })
+    .sort({ startDate: 'desc' })
     .skip(skip)
     .limit(limit);
 
