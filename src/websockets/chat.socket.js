@@ -7,7 +7,7 @@ const initHandlers = (nsp) => {
 
     socket.on('new-message', async (req) => {
       let message = await messageService.create(req.userId, req.eventId, req.message);
-
+      console.log(message);
       message = messageDto.toMessageDto(message);
       socket.to(req.eventId).emit('message', message);
       socket.emit('message', message);

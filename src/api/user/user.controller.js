@@ -92,7 +92,6 @@ const update = async (req, res, next) => {
       req.body.firstName,
       req.body.lastName,
       req.body.birthdate,
-      req.body.location,
     );
 
     /**

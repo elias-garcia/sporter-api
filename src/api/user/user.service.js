@@ -73,9 +73,8 @@ const findById = async (userId) => {
  * @param {*} firstName - The new first name of the user
  * @param {*} lastName - The new last name of the user
  * @param {*} birthdate - The birthdate of the user
- * @param {*} location - The new location of the user
  */
-const update = async (userId, email, firstName, lastName, birthdate, location) => {
+const update = async (userId, email, firstName, lastName, birthdate) => {
   /**
    * Find and update the user information
    */
@@ -86,7 +85,6 @@ const update = async (userId, email, firstName, lastName, birthdate, location) =
       firstName,
       lastName,
       birthdate,
-      location,
     },
     { new: true },
   );

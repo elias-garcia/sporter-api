@@ -3,8 +3,8 @@ const json = require('../util/json');
 const acceptJson = (req, res, next) => {
   const contentType = req.get('Content-Type');
 
-  if (req.method.toUpperCase() !== 'OPTIONS' &&
-    (!contentType || contentType !== 'application/json')) {
+  if ((req.method.toUpperCase() === 'POST' || req.method.toUpperCase() === 'PUT'
+    || req.method.toUpperCase() === 'PATCH') && (!contentType || contentType !== 'application/json')) {
     return res.status(415).json(json.createError(415, 'unsupported media type'));
   }
 

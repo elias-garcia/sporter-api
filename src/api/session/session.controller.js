@@ -8,7 +8,7 @@ const logIn = async (req, res, next) => {
     /**
      * Validate the body params
      */
-    if (!validator.isEmail(req.body.email)) {
+    if (!req.body.email || !validator.isEmail(req.body.email)) {
       throw new ApiError(422, 'unprocessable entity');
     }
 
