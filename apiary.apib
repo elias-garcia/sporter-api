@@ -1,111 +1,885 @@
 FORMAT: 1A
-HOST: http://sporter.com/api
+HOST: https://sporter-api.herokuapp.com/api
 
 # Sporter API
 
-This is the REST API used internally by the Sporter App. This API blueprint is subject to change due to
-technology restrictions, performance optimizations or changing requirements.
+Esta es la API REST utilizada por la aplicación Sporter. Este documento está sujeto a cambios
+debido a restricciones de la tecnología, optimizaciones de rendimiento o cambios en los requisitos.
 
-## Authentication [/sessions]
+## Consideraciones generales
 
-## Authenticate [POST]
+### Fechas
+
+Todas las fechas enviadas a la API deben de cumplir el estándar
+[ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html), bien en su versión completa
+(**YYYY-MM-DDTHH:mm:ssZZ**) o bien en el formato de solo fecha (**YYYY-MM-DD**). En los endpoints donde se
+necesite algún campo de tipo fecha se especifica en que formato debe de ser enviada. Las fechas enviadas
+a la API en formato completo deben incluir la zona horaria del cliente. Asimismo, todas las fechas devueltas
+por la API se envían con zora horaria UTC +0, de forma que el cliente pueda aplicar el desfase horario adecuado.
+
+
+### Peticiones
+
+Todas las peticiones a la API que utilicen un método **POST**, **PUT** o **PATCH**
+deben incluir la cabecera **Content-Type: application/json** para indicar el
+tipo MIME enviado en el cuerpo de la petición. Si la cabecera no está presente o el tipo MIME no es el
+indicado anteriormente, la API devolverá un error.
+
+### Autenticación
+
+Determinados endpoints de la API requieren de autenticación por parte del usuario.
+Cualquier usuario se puede registrar en la plataforma. Una vez registrado podrás solicitar un token
+JWT [(RFC-7519)](https://tools.ietf.org/html/rfc7519), el cual debes enviar en la cabecera
+**Authorization** junto al tipo de autenticación **(Bearer)** de las peticiones que requieran autenticación
+tal y como se muestra a continuación:
+
++ Authorization: Bearer :token
+
+### Respuestas
+
+Todas las respuestas de la API devuelven las siguientes cabeceras:
+
++ Access-Control-Allow-Origin: https://sporter-client.herokuapp.com: De esta forma controlamos que solo
+las peticiones con dicho origen puedan acceder a la API, previniendo peticiones no deseadas.
+
++ Access-Control-Allow-Headers: Authorization, Origin, X-Requested-With, Content-Type, Accept: Indica
+al cliente las cabeceras permitidas por la API.
+
++ Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS: Indica al cliente los métodos
+aceptados por la API.
+
++ Content-Type: application/json: Indica al cliente que el cuerpo de la respuesta es del tipo MIME
+application/json.
+
+El cuerpo de las respuestas que no devuelven un código de error devuelven un esquema genérico
+para añadir consistencia a la API. El esquema es el siguiente:
+
+```json
+{
+    data: {
+        ...
+    }
+}
+```
+
+### Códigos de estado
+
+Para el código de estado devuelto en las peticiones a la API se han utilizado algunos de los
+códigos definidos en la [sección 10 del RFC 2626](https://tools.ietf.org/html/rfc2616#section-10).
+Se han utilizado los códigos más apropiados para cada situación en base a la descripción proporcionada
+en la especificación. En cada endpoint de esta documentación se especifica el código que devuelve para una 
+petición satisfactoria. Si se produce un error (en cualquier endpoint) se devuelven los códigos de
+error listados a continuación son su respectivo motivo
+
+| Código | Motivo |
+| --- | --- |
+| 401 Unauthorized | Un usuario no autenticado ha solicitado un endpoint que requiere autenticación y no ha enviado un token o bien el token no es válido |
+| 403 Forbidden | Un usuario (autenticado o no autenticado) ha solicitado un recurso al cual no tiene permisos para acceder |
+| 404 Not Found | El recurso solicitado no existe |
+| 409 Conflict | Se produce algún conflicto con el recurso solicitado por no cumplir con las reglas de negocio especificadas en el endpoint |
+| 422 Unprocessable Entity | Los parámetros o el cuerpo enviado en la petición no son válidos, es decir, no cumplen con su especificación |
+| 415 Unsupported Media Type | Una petición POST, PUT o PATCH no incluye la cabecera **Content-Type: application/json** |
+| 501 Not Implemented | La petición va dirigida a un endpoint no implementado |
+| 500 Internal Server Error | Se ha producido un error no capturado en el servidor |
+
+El cuerpo de las respuestas que devuelven un código de error también tienen un esquema genérico para añadir
+comodidad. El esquema es el siguiente:
+
+```json
+{
+    error: {
+        status: :códigoError,
+        message: :causaError
+    }
+}
+```
+
+## Autenticación [/sessions]
+
+## Obtener un token [POST]
 
 + Request (application/json)
-            
+
     + Attributes
     
-        + email: user@test.com (string, required)
-        + password: userpass (string, required)
+        + email (string, required)
+        + password (string, required)
+
+    + Body
+    
+            {
+                "email": "usuario@usuario.com",
+                "password": "usuario"
+            }
     
 + Response 200 (application/json; charset=utf-8)
 
-    + Attributes
+    + Body
     
-        + data
-            + token: <token> (string, required)
-        
-## Users Collection [/users]
+            {
+                "data": {
+                    "session": {
+                        "userId": "5ad4e576b3d03900149b79c0",
+                        "firstName": "Usuario",
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE"
+                    }
+                }
+            }
 
-### Register a New User [POST]
+## Deportes [/sports]
+
+### Obtener todos los deportes [GET]
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "sports": [
+                        {
+                            "name": "Baloncesto",
+                            "id": "5ad4e3fd8612430014f5755e"
+                        },
+                        {
+                            "name": "Fútbol",
+                            "id": "5ad4e3fd8612430014f5755d"
+                        },
+                        {
+                            "name": "Tenis",
+                            "id": "5ad4e3fd8612430014f5755f"
+                        }
+                    ]
+                }
+            }
+
+## Usuarios [/users]
+
+### Registrar un Usuario [POST]
 
 + Request (application/json)
 
     + Attributes
         
-        + email: user@test.com (string, required)
-        + password: userpass (string, required)
-        + firstName: User (string, required)
-        + lastName: Test (string, required)
-        + age: 30 (string, required)
-        + location: Madrid, Spain (string, required)
+        + email (string, required)
+        + password (string, required)
+        + passwordConfirm (string, required)
+        + firstName (string, required)
+        + lastName (string, required)
+        + birthdate (string, required)
+
+    + Body
+    
+            {
+                "email": "test@test.com",
+                "password": "test",
+                "passwordConfirm": "test",
+                "firstName": "Test",
+                "lastName": "User",
+                "birthdate": "1992-08-15"
+            }
+    
+    
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "session": {
+                        "userId": "5ad4ee83b3d03900149b79c5",
+                        "firstName": "Test",
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZWU4M2IzZDAzOTAwMTQ5Yjc5YzUiLCJpYXQiOjE1MjM5MDQxMzEsImV4cCI6MTUyNDUwODkzMX0.DReTgJyv1x-SzuCahCxB8_T-3mxdTQ03Dbg9bW2RoTI"
+                    }
+                }
+            }
+
+## Usuario [/users/{userId}]
+
+### Obtener un Usuario [GET]
+
++ Parameters
+    
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "user": {
+                        "updatedAt": "2018-04-16T18:42:11.269Z",
+                        "createdAt": "2018-04-16T18:42:11.269Z",
+                        "email": "test@test.com",
+                        "firstName": "Test",
+                        "lastName": "User",
+                        "birthdate": "1992-08-15",
+                        "id": "5ad4ee83b3d03900149b79c5"
+                    }
+                }
+            }
+
+### Actualizar Usuario [PUT]
+
++ Parameters
+
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+    
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZWU4M2IzZDAzOTAwMTQ5Yjc5YzUiLCJpYXQiOjE1MjM5MDQxMzEsImV4cCI6MTUyNDUwODkzMX0.DReTgJyv1x-SzuCahCxB8_T-3mxdTQ03Dbg9bW2RoTI
+
+    + Attributes
+        
+        + email (string, required)
+        + firstName (string, required)
+        + lastName (string, required)
+        + birthdate (string, required)
+
+    + Body
+    
+            {
+                "email": "updated@user.com",
+                "firstName": "Updated",
+                "lastName": "User",
+                "birthdate": "1992-08-15"
+            }
+        
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "user": {
+                        "updatedAt": "2018-04-16T18:51:46.484Z",
+                        "createdAt": "2018-04-16T18:42:11.269Z",
+                        "email": "updated@user.com",
+                        "firstName": "Updated",
+                        "lastName": "User",
+                        "birthdate": "1992-08-15",
+                        "id": "5ad4ee83b3d03900149b79c5"
+                    }
+                }
+            }
+
+### Actualizar contraseña [PATCH]
+
++ Parameters
+    
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+    
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZWU4M2IzZDAzOTAwMTQ5Yjc5YzUiLCJpYXQiOjE1MjM5MDQxMzEsImV4cCI6MTUyNDUwODkzMX0.DReTgJyv1x-SzuCahCxB8_T-3mxdTQ03Dbg9bW2RoTI
+    
+    + Attributes
+        
+        + oldPassword (string, required)
+        + newPassword (string, required)
+        + newPasswordConfirm (string, required)
+        + token (string, optional)
+
+    + Body
+
+            {
+                "oldPassword": "test",
+                "newPassword": "new",
+                "newPasswordConfirm": "new"
+            }
+
++ Response 204 (application/json; charset=utf-8)
+
+### Eliminar Usuario [DELETE]
+
++ Parameters
+
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+
++ Request
+
+    + Header
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZWU4M2IzZDAzOTAwMTQ5Yjc5YzUiLCJpYXQiOjE1MjM5MDQxMzEsImV4cCI6MTUyNDUwODkzMX0.DReTgJyv1x-SzuCahCxB8_T-3mxdTQ03Dbg9bW2RoTI
+
++ Response 204 (application/json; charset=utf-8)
+
+## Reseteo de contraseña [/password-reset-token]
+
+### Crear token de reseteo [POST]
+
++ Request
+
+    + Attributes
+    
+        + email (string, required)
+
+    + Body
+    
+            {
+                "email": "usuario@usuario.com"
+            }
+
++ Response 202 (application/json; charset=utf-8)
+
+## Valoraciones [/users/{userId}/ratings]
+
+### Crear una valoración [POST]
+
++ Parameters
+
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE
+
+    + Attributes
+    
+        + score (number, required)
+        + comment (string, required)
+
+    + Body
+    
+            {
+                "score": 4,
+                "comment": "Good user"
+            }
+    
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "rating": {
+                        "from": {
+                            "updatedAt": "2018-04-16T18:03:34.778Z",
+                            "createdAt": "2018-04-16T18:03:34.778Z",
+                            "email": "usuario@usuario.com",
+                            "firstName": "Usuario",
+                            "lastName": "Test",
+                            "birthdate": "2018-04-04",
+                            "id": "5ad4e576b3d03900149b79c0"
+                        },
+                        "to": "5ad4ee83b3d03900149b79c5",
+                        "score": 4,
+                        "comment": [
+                            {
+                                "version": 0,
+                                "value": "Good user",
+                                "date": "2018-04-16T19:08:29.542Z"
+                            }
+                        ],
+                        "id": "5ad4f4adb3d03900149b79c6"
+                    }
+                }
+            }
+
+### Obtener las valoraciones de un usuario [GET]
+
++ Parameters
+    
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+    
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "ratings": [
+                        {
+                            "from": {
+                                "updatedAt": "2018-04-16T18:03:34.778Z",
+                                "createdAt": "2018-04-16T18:03:34.778Z",
+                                "email": "usuario@usuario.com",
+                                "firstName": "Usuario",
+                                "lastName": "Test",
+                                "birthdate": "2018-04-04",
+                                "id": "5ad4e576b3d03900149b79c0"
+                            },
+                            "to": "5ad4ee83b3d03900149b79c5",
+                            "score": 4,
+                            "comment": [
+                                {
+                                    "version": 0,
+                                    "value": "Good user",
+                                    "date": "2018-04-16T19:08:29.542Z"
+                                }
+                            ],
+                            "id": "5ad4f4adb3d03900149b79c6"
+                        }
+                    ],
+                    "stats": {
+                        "totalCount": 1,
+                        "averageRating": 4,
+                        "scoresCount": [
+                            {
+                                "score": 1,
+                                "count": 0
+                            },
+                            {
+                                "score": 2,
+                                "count": 1
+                            },
+                            {
+                                "score": 3,
+                                "count": 0
+                            },
+                            {
+                                "score": 4,
+                                "count": 0
+                            },
+                            {
+                                "score": 5,
+                                "count": 0
+                            }
+                        ]
+                    }
+                }
+            }
+
+## Valoración [/users/{userId}/ratings/{ratingId}]
+
+### Actualizar valoración [PUT]
+
++ Parameters
+    
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+    + ratingId: 5ad4f4adb3d03900149b79c6 (string, required)
+        
++ Request
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE
+
+    + Attributes
+
+        + score (number, required)
+        + comment (string, required)
+
+    + Body
+    
+            {
+                "score": 2,
+                "comment": "Updated comment"
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "rating": {
+                        "from": {
+                            "updatedAt": "2018-04-16T18:03:34.778Z",
+                            "createdAt": "2018-04-16T18:03:34.778Z",
+                            "email": "usuario@usuario.com",
+                            "firstName": "Usuario",
+                            "lastName": "Test",
+                            "birthdate": "2018-04-04",
+                            "id": "5ad4e576b3d03900149b79c0"
+                        },
+                        "to": "5ad4ee83b3d03900149b79c5",
+                        "score": 2,
+                        "comment": [
+                            {
+                                "version": 0,
+                                "value": "Good user",
+                                "date": "2018-04-16T19:08:29.542Z"
+                            },
+                            {
+                                "version": 1,
+                                "value": "Updated comment",
+                                "date": "2018-04-16T19:15:52.760Z"
+                            }
+                        ],
+                        "id": "5ad4f4adb3d03900149b79c6"
+                    }
+                }
+            }
+
+### Eliminar valoración [DELETE]
+
++ Parameters
+    
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+    + ratingId: 5ad4f4adb3d03900149b79c6 (string, required)
+
++ Request
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE
+
++ Response 204 (application/json; charset=utf-8)
+
+
+## Eventos [/events{?userId}{?sportId}{?startDate}{?location}{?maxDistance}{?status}{?history}{?limit}{?offset}]
+
+### Crear evento [POST]
+
++ Request
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE
+    
+    + Attributes
+
+        + name (string, required)
+        + sport (string, required)
+        + location (array[number], required)
+        + startDate (string, required)
+        + endingDate (string, required)
+        + description (string, required)
+        + intensity (enum[string], required)
+            + Members
+                + LOW
+                + MEDIUM
+                + HIGH
+        + maxPlayers (number, required)
+        + fee (number, required)
+        + currencyCode (string, required)
+
+    + Body
+    
+            {
+                "name": "Partido 5v5 de fútbol sala",
+                "sport": "5ad4e3fd8612430014f5755d",
+                "location": [43.3687223, -8.4196722],
+                "startDate": "2018-07-21T16:00:00+01:00",
+                "endingDate": "2018-07-21T17:30:00+01:00",
+                "description": "Partidillo amistoso sin reglas oficiales.",
+                "intensity": "LOW",
+                "maxPlayers": 10,
+                "fee": 0,
+                "currencyCode": "EUR"
+            }
+            
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "data": {
+                    "event": {
+                        "updatedAt": "2018-04-17T17:20:25.990Z",
+                        "createdAt": "2018-04-17T17:20:25.968Z",
+                        "name": "Partido 5v5 de fútbol sala",
+                        "sport": {
+                            "updatedAt": "2018-04-16T17:57:17.265Z",
+                            "createdAt": "2018-04-16T17:57:17.265Z",
+                            "name": "Fútbol",
+                            "id": "5ad4e3fd8612430014f5755d"
+                        },
+                        "startDate": "2018-07-21T15:00:00.000Z",
+                        "endingDate": "2018-07-21T16:30:00.000Z",
+                        "description": "Partidillo amistoso sin reglas oficiales.",
+                        "intensity": "LOW",
+                        "maxPlayers": 10,
+                        "fee": 0,
+                        "currencyCode": "EUR",
+                        "host": {
+                            "updatedAt": "2018-04-16T18:03:34.778Z",
+                            "createdAt": "2018-04-16T18:03:34.778Z",
+                            "email": "usuario@usuario.com",
+                            "firstName": "Usuario",
+                            "lastName": "Test",
+                            "birthdate": "2018-04-04",
+                            "id": "5ad4e576b3d03900149b79c0"
+                        },
+                        "status": "WAITING",
+                        "location": [
+                            43.3687223,
+                            -8.4196722
+                        ],
+                        "id": "5ad62cd91c0d52001454417d"
+                    }
+                }
+            }
+
+## Obtener eventos [GET]
+
++ Parameters
+
+    + userId: 5ad4e576b3d03900149b79c0 (string, optional)
+    + sportId: 5ad4e3fd8612430014f5755d (string, optional)
+    + startDate: `2018-07-21T12:00:00%2B02:00` (string, optional)
+    + location: 43.3687223,-8.4196722 (array[number], optional)
+    + maxDistance: 5 (number, optional)
+    + status: WAITING (enum[string], optional)
+        + Members
+            + WAITING
+            + FULL
+            + CONFIRMED
+            + CANCELED
+            + DISPUTING
+            + FINISHED
+    + history: false (boolean, optional)
+    + limit: 10 (number, optional)
+    + offset: 1 (number, optional)
 
 + Response 200 (application/json; charset=utf-8)
 
     + Body
 
-    + Attributes
-        
-        + data
-            + token: <token> (required, string)
-            
-## User [/users/{id}]
+            {
+                "data": {
+                    "events": [
+                        {
+                            "updatedAt": "2018-04-17T17:20:25.990Z",
+                            "createdAt": "2018-04-17T17:20:25.968Z",
+                            "name": "Partido 5v5 de fútbol sala",
+                            "sport": {
+                                "updatedAt": "2018-04-16T17:57:17.265Z",
+                                "createdAt": "2018-04-16T17:57:17.265Z",
+                                "name": "Fútbol",
+                                "id": "5ad4e3fd8612430014f5755d"
+                            },
+                            "startDate": "2018-07-21T15:00:00.000Z",
+                            "endingDate": "2018-07-21T16:30:00.000Z",
+                            "description": "Partidillo amistoso sin reglas oficiales.",
+                            "intensity": "LOW",
+                            "maxPlayers": 10,
+                            "fee": 0,
+                            "currencyCode": "EUR",
+                            "host": {
+                                "updatedAt": "2018-04-16T18:03:34.778Z",
+                                "createdAt": "2018-04-16T18:03:34.778Z",
+                                "email": "usuario@usuario.com",
+                                "firstName": "Usuario",
+                                "lastName": "Test",
+                                "birthdate": "2018-04-04",
+                                "id": "5ad4e576b3d03900149b79c0"
+                            },
+                            "status": "WAITING",
+                            "location": [
+                                43.3687223,
+                                -8.4196722
+                            ],
+                            "id": "5ad62cd91c0d52001454417d"
+                        }
+                    ]
+                }
+            }
 
-### Get User Information [GET]
+# Evento [/events/{eventId}]
+
+## Obtener evento [GET]
 
 + Parameters
+
+    + eventId: 5ad62cd91c0d52001454417d (string, required)
     
-    + id: 58fab28f0826df9d2f09bd6f (string, required)
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "data": {
+                    "event": {
+                        "updatedAt": "2018-04-17T17:20:25.990Z",
+                        "createdAt": "2018-04-17T17:20:25.968Z",
+                        "name": "Partido 5v5 de fútbol sala",
+                        "sport": {
+                            "updatedAt": "2018-04-16T17:57:17.265Z",
+                            "createdAt": "2018-04-16T17:57:17.265Z",
+                            "name": "Fútbol",
+                            "id": "5ad4e3fd8612430014f5755d"
+                        },
+                        "startDate": "2018-07-21T15:00:00.000Z",
+                        "endingDate": "2018-07-21T16:30:00.000Z",
+                        "description": "Partidillo amistoso sin reglas oficiales.",
+                        "intensity": "LOW",
+                        "maxPlayers": 10,
+                        "fee": 0,
+                        "currencyCode": "EUR",
+                        "host": {
+                            "updatedAt": "2018-04-16T18:03:34.778Z",
+                            "createdAt": "2018-04-16T18:03:34.778Z",
+                            "email": "usuario@usuario.com",
+                            "firstName": "Usuario",
+                            "lastName": "Test",
+                            "birthdate": "2018-04-04",
+                            "id": "5ad4e576b3d03900149b79c0"
+                        },
+                        "status": "WAITING",
+                        "location": [
+                            43.3687223,
+                            -8.4196722
+                        ],
+                        "id": "5ad62cd91c0d52001454417d"
+                    }
+                }
+            }
+
+## Actualizar evento [PUT]
+
++ Parameters
+
+    + eventId: 5ad62cd91c0d52001454417d (string, required)
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE
+
+    + Attributes
+        + name (string, required)
+        + sport (string, required)
+        + location (array[number], required)
+        + startDate (string, required)
+        + endingDate (string, required)
+        + description (string, required)
+        + intensity (enum[string], required)
+            + Members
+                + LOW
+                + MEDIUM
+                + HIGH
+        + maxPlayers (number, required)
+        + fee (number, required)
+        + currencyCode (string, required)
+
+    + Body
+    
+            {
+                "name": "Partido de tenis",
+                "sport": "5ad4e3fd8612430014f5755f",
+                "location": [43.324849, -8.350617],
+                "startDate": "2018-07-26T12:00:00+01:00",
+                "endingDate": "2018-07-26T13:30:00+01:00",
+                "description": "Partidillo actualizado.",
+                "intensity": "MEDIUM",
+                "maxPlayers": 2,
+                "fee": 2.5,
+                "currencyCode": "EUR"
+            }
 
 + Response 200 (application/json; charset=utf-8)
 
-    + Attributes
-    
-        + data
-            + user
-            
-                + id: 58fab28f0826df9d2f09bd6f
-                + email: user@test.com
-                + updatedAt: `2017-04-24T15:58:53.598Z`
-                + createdAt: `2017-04-24T15:58:53.598Z`
-                + firstName: User
-                + lastName: Test
-                + age: 30
-                + location: `Madrid, Spain`
-                
-### Update User Information [PUT]
+    + Body
+
+            {
+                "data": {
+                    "event": {
+                        "updatedAt": "2018-04-17T18:46:03.424Z",
+                        "createdAt": "2018-04-17T17:20:25.968Z",
+                        "name": "Partido de tenis",
+                        "sport": {
+                            "updatedAt": "2018-04-16T17:57:17.315Z",
+                            "createdAt": "2018-04-16T17:57:17.315Z",
+                            "name": "Tenis",
+                            "id": "5ad4e3fd8612430014f5755f"
+                        },
+                        "startDate": "2018-07-26T11:00:00.000Z",
+                        "endingDate": "2018-07-26T12:30:00.000Z",
+                        "description": "Partidillo actualizado.",
+                        "intensity": "MEDIUM",
+                        "maxPlayers": 2,
+                        "fee": 2.5,
+                        "currencyCode": "EUR",
+                        "host": {
+                            "updatedAt": "2018-04-16T18:03:34.778Z",
+                            "createdAt": "2018-04-16T18:03:34.778Z",
+                            "email": "usuario@usuario.com",
+                            "firstName": "Usuario",
+                            "lastName": "Test",
+                            "birthdate": "2018-04-04",
+                            "id": "5ad4e576b3d03900149b79c0"
+                        },
+                        "status": "WAITING",
+                        "location": [
+                            43.324849,
+                            -8.350617
+                        ],
+                        "id": "5ad62cd91c0d52001454417d"
+                    }
+                }
+            }
+
+## Eliminar evento [DELETE]
 
 + Parameters
 
-    + id: 58fab28f0826df9d2f09bd6f (string, required)
-    
-+ Request (application/json)
-    
-    + Header
-    
-            Authorization: Bearer <token>
-    
-    + Attributes
-        
-        + email: newuser@test.com (string, required)
-        + password: newuserpass (string, required)
-        + firstName: User (string, required)
-        + lastName: Test (string, required)
-        + age: 30 (string, required)
-        + location: Barcelona, Spain (string, required)
-        
-+ Response 204 (application/json; charset=utf-8)
- 
-
-### Delete a User [DELETE]
-
-+ Parameters
-
-    + id: 58fab28f0826df9d2f09bd6f (string, required)
+    + eventId: 5ad62cd91c0d52001454417d (string, required)
 
 + Request
+
+    + Headers
     
-    + Header
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZTU3NmIzZDAzOTAwMTQ5Yjc5YzAiLCJpYXQiOjE1MjM5MDM4NjAsImV4cCI6MTUyNDUwODY2MH0.FX7jiX6jDs8oh5MWxMLJk3mwJ6ZbeX2sl6a9Ta9ZXGE
+
++ Response 200 (application/json; charset=utf-8)
+
+# Jugadores de un evento [/events/{eventId}/players]
+
+## Apuntar jugador a un evento [POST]
+
++ Parameters
+
+    + eventId: 5ad62cd91c0d52001454417d (string, required)
+
++ Request
+
+    + Headers
     
-            Authorization: Bearer <token>
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZWU4M2IzZDAzOTAwMTQ5Yjc5YzUiLCJpYXQiOjE1MjM5MDQxMzEsImV4cCI6MTUyNDUwODkzMX0.DReTgJyv1x-SzuCahCxB8_T-3mxdTQ03Dbg9bW2RoTI
+
++ Response 201 (application/json; charset=utf-8)
+
+
+## Obtener jugadores de un evento [GET]
+
++ Parameters
+
+    + eventId: 5ad62cd91c0d52001454417d (string, required)
+    
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "data": {
+                    "players": [
+                        {
+                            "updatedAt": "2018-04-16T18:03:34.778Z",
+                            "createdAt": "2018-04-16T18:03:34.778Z",
+                            "email": "usuario@usuario.com",
+                            "firstName": "Usuario",
+                            "lastName": "Test",
+                            "birthdate": "2018-04-04",
+                            "id": "5ad4e576b3d03900149b79c0"
+                        }
+                    ]
+                }
+            }
+
+# Jugador de un evento [/events/{eventId}/players/{userId}]
+
+## Desapuntar jugador de un evento [DELETE]
+
++ Parameters
+
+    + eventId: 5ad62cd91c0d52001454417d (string, required)
+    + userId: 5ad4ee83b3d03900149b79c5 (string, required)
+
++ Request
+
+    + Headers
+    
+            Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YWQ0ZWU4M2IzZDAzOTAwMTQ5Yjc5YzUiLCJpYXQiOjE1MjM5MDQxMzEsImV4cCI6MTUyNDUwODkzMX0.DReTgJyv1x-SzuCahCxB8_T-3mxdTQ03Dbg9bW2RoTI
 
 + Response 204 (application/json; charset=utf-8)
