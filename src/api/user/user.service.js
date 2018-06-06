@@ -109,28 +109,13 @@ const update = async (userId, email, firstName, lastName, birthdate) => {
  * @param {*} email - The new password of the user
  * @param {*} token - A reset password token
  */
-const changePassword = async (userId, oldPassword, newPassword, token) => {
+const changePassword = async (userId, oldPassword, newPassword) => {
   /**
    * Find the user to be updated to check if it exists
    */
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, 'user not found');
-  }
-
-  /**
-   * If token exists, find the hashed token in db and check if it's valid.
-   * If it's valid then cancel the scheduled job and remove the token info from db
-   */
-  if (token) {
-    const dbToken = await PasswordResetToken.findOne({ user: userId });
-
-    if (!bcrypt.compareSync(token, dbToken.value)) {
-      throw new ApiError(422, 'unprocessable entity');
-    }
-
-    await scheduler.cancel({ data: { userId } });
-    await dbToken.remove();
   }
 
   /**
@@ -167,10 +152,40 @@ const remove = async (userId) => {
   await user.remove();
 };
 
+const resetPassword = async (userId, newPassword, token) => {
+  /**
+   * Find the user to be updated to check if it exists
+   */
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, 'user not found');
+  }
+
+  /**
+   * Find the hashed token in db and check if it's valid.
+   * If it's valid then cancel the scheduled job and remove the token info from db
+   */
+  const dbToken = await PasswordResetToken.findOne({ user: userId });
+  if (!bcrypt.compareSync(token, dbToken.value)) {
+    throw new ApiError(422, 'unprocessable entity');
+  }
+
+  await scheduler.cancel({ data: { userId } });
+  await dbToken.remove();
+
+  /**
+   * Update the user password
+   */
+  user.password = newPassword;
+
+  await user.save();
+};
+
 module.exports = {
   register,
   findById,
   update,
   changePassword,
   remove,
+  resetPassword,
 };

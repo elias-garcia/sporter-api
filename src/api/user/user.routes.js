@@ -6,5 +6,6 @@ router.get('/:userId', userController.find);
 router.put('/:userId', userController.update);
 router.patch('/:userId', userController.changePassword);
 router.delete('/:userId', userController.remove);
+router.put('/:userId/password', userController.resetPassword);
 
 module.exports = router;

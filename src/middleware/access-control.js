@@ -1,6 +1,6 @@
 const accessControl = (req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:4000');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
   }
   if (process.env.NODE_ENV === 'production') {
     res.header('Access-Control-Allow-Origin', 'https://sporter-client.herokuapp.com');

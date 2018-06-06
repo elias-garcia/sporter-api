@@ -17,4 +17,5 @@ module.exports = {
     },
   },
   sentryDsn: process.env.SENTRY_DSN || '',
+  clientUrl: process.env.CLIENT_URL || 'http://localhost:4200',
 };

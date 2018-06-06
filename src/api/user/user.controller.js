@@ -130,7 +130,6 @@ const changePassword = async (req, res, next) => {
       req.params.userId,
       String(req.body.oldPassword),
       String(req.body.newPassword),
-      req.body.token,
     );
 
     /**
@@ -172,10 +171,42 @@ const remove = async (req, res, next) => {
   }
 };
 
+const resetPassword = async (req, res, next) => {
+  try {
+    /**
+     * Validate the input data
+     */
+    if (!validator.isMongoId(req.params.userId) ||
+      !req.body.token ||
+      !req.body.newPassword ||
+      !req.body.newPasswordConfirm ||
+      String(req.body.newPassword) !== String(req.body.newPasswordConfirm)) {
+      throw new ApiError(422, 'unprocessable entity');
+    }
+
+    /**
+     * Try to update the user password
+     */
+    await userService.resetPassword(
+      req.params.userId,
+      String(req.body.newPassword),
+      String(req.body.token),
+    );
+
+    /**
+     * Return no content
+     */
+    return res.status(204).end();
+  } catch (err) {
+    return next(err);
+  }
+};
+
 module.exports = {
   create,
   find,
   update,
   changePassword,
   remove,
+  resetPassword,
 };

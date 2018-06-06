@@ -9,8 +9,8 @@ const sendPasswordResetToken = async (email, userId, token) => {
       from: 'Sender Name <sender@example.com>',
       to: email,
       subject: 'Sporter App - Reset password',
-      text: token,
-      html: `<p>token: ${userId} and userId: ${token}</p>`,
+      text: `Please, visit ${appConfig.clientUrl}/forgot-password/${userId}-${token} to reset your password`,
+      html: `<p>Please, <a href="${appConfig.clientUrl}/forgot-password/reset/${userId}-${token}" target="_blank">click here</a> to reset your password</p>`,
     });
   } catch (err) {
     throw (err);
